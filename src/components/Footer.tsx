@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="col-span-2">
-            <h3 className="text-3xl font-bold text-shimmer mb-4">LUXE</h3>
+            <h3 className="text-3xl font-bold text-shimmer mb-4">GadgetHub</h3>
             <p className="text-gray-400 mb-6 max-w-md">
               Premium mobile accessories for the discerning customer. Experience luxury in every detail.
             </p>
@@ -37,7 +37,7 @@ const Footer = () => {
           <div>
             <h4 className="text-xl font-bold text-gold-400 mb-4">Contact</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>📧 info@luxemobile.com</li>
+              <li>📧 info@gadgethub.com</li>
               <li>📞 +1 (555) 123-4567</li>
               <li>📍 123 Luxury Ave, Premium City</li>
             </ul>
@@ -45,7 +45,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 LUXE Mobile. All rights reserved. Crafted with precision.</p>
+          <p>&copy; 2024 GadgetHub. All rights reserved. Crafted with precision.</p>
         </div>
       </div>
     </footer>

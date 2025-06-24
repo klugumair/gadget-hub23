@@ -78,6 +78,8 @@ const Index = () => {
         id="phones"
         title="Premium Smartphones"
         subtitle="Discover the latest flagship devices with cutting-edge technology and unparalleled performance."
+        buttonText="View All Phones"
+        buttonLink="/phones"
         products={phoneProducts}
       />
       
@@ -85,6 +87,8 @@ const Index = () => {
         id="covers"
         title="Protective Covers"
         subtitle="Shield your investment with our luxury cases designed for both protection and style."
+        buttonText="View All Covers"
+        buttonLink="/covers"
         products={coverProducts}
       />
       
@@ -92,6 +96,8 @@ const Index = () => {
         id="headphones"
         title="Premium Audio"
         subtitle="Immerse yourself in crystal-clear sound with our collection of high-end headphones."
+        buttonText="View All Headphones"
+        buttonLink="/headphones"
         products={headphoneProducts}
       />
       
