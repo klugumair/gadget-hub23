@@ -9,19 +9,19 @@ const Index = () => {
   const phoneProducts = [
     {
       title: "iPhone 15 Pro Max",
-      price: "$1,199",
+      price: "Rs. 3,49,999",
       image: "📱",
       category: "Premium Smartphone"
     },
     {
       title: "Samsung Galaxy S24 Ultra",
-      price: "$1,299",
+      price: "Rs. 3,79,999",
       image: "📱",
       category: "Flagship Android"
     },
     {
       title: "Google Pixel 8 Pro",
-      price: "$999",
+      price: "Rs. 2,89,999",
       image: "📱",
       category: "AI Photography"
     }
@@ -30,19 +30,19 @@ const Index = () => {
   const coverProducts = [
     {
       title: "Luxury Leather Case",
-      price: "$199",
+      price: "Rs. 58,999",
       image: "🛡️",
       category: "Premium Protection"
     },
     {
       title: "Carbon Fiber Shield",
-      price: "$159",
+      price: "Rs. 46,999",
       image: "🛡️",
       category: "Ultra Durable"
     },
     {
       title: "Crystal Clear Armor",
-      price: "$129",
+      price: "Rs. 37,999",
       image: "🛡️",
       category: "Transparent Guard"
     }
@@ -51,19 +51,19 @@ const Index = () => {
   const headphoneProducts = [
     {
       title: "AirPods Max Gold",
-      price: "$549",
+      price: "Rs. 1,59,999",
       image: "🎧",
       category: "Wireless Premium"
     },
     {
       title: "Sony WH-1000XM5",
-      price: "$399",
+      price: "Rs. 1,16,999",
       image: "🎧",
       category: "Noise Canceling"
     },
     {
       title: "Sennheiser Momentum 4",
-      price: "$349",
+      price: "Rs. 1,01,999",
       image: "🎧",
       category: "Audiophile Grade"
     }

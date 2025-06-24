@@ -1,37 +1,14 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-
-interface CartItem {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  category: string;
-  quantity: number;
-}
+import { Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity <= 0) return;
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems(items => items.filter(item => item.id !== id));
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
+  const { cartItems, updateQuantity, removeItem, clearCart } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = subtotal * 0.08;
@@ -57,9 +34,11 @@ const Cart = () => {
               <ShoppingBag size={80} className="mx-auto text-gray-600 mb-6" />
               <h2 className="text-3xl font-bold text-gray-300 mb-4">Your cart is empty</h2>
               <p className="text-gray-400 mb-8">Add some premium items to get started</p>
-              <Button className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-8 py-3 rounded-full">
-                Continue Shopping
-              </Button>
+              <Link to="/">
+                <Button className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-8 py-3 rounded-full">
+                  Continue Shopping
+                </Button>
+              </Link>
             </div>
           ) : (
             <div className="grid lg:grid-cols-3 gap-12">
@@ -91,7 +70,7 @@ const Cart = () => {
                           {item.title}
                         </h3>
                         <div className="text-2xl font-bold text-gold-400">
-                          ${item.price.toLocaleString()}
+                          Rs. {item.price.toLocaleString()}
                         </div>
                       </div>
                       
@@ -139,27 +118,31 @@ const Cart = () => {
                   <div className="space-y-4 mb-6">
                     <div className="flex justify-between text-gray-300">
                       <span>Subtotal:</span>
-                      <span>${subtotal.toLocaleString()}</span>
+                      <span>Rs. {subtotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-gray-300">
                       <span>Tax:</span>
-                      <span>${tax.toFixed(2)}</span>
+                      <span>Rs. {Math.round(tax).toLocaleString()}</span>
                     </div>
                     <div className="border-t border-gray-700 pt-4">
                       <div className="flex justify-between text-xl font-bold text-gold-400">
                         <span>Total:</span>
-                        <span>${total.toLocaleString()}</span>
+                        <span>Rs. {Math.round(total).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                   
                   <div className="space-y-4">
-                    <Button className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-bold py-4 text-lg rounded-full transition-all duration-300 hover:scale-105">
-                      Proceed to Checkout
-                    </Button>
-                    <Button variant="outline" className="w-full border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black font-semibold py-3 rounded-full">
-                      Continue Shopping
-                    </Button>
+                    <Link to="/checkout">
+                      <Button className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-bold py-4 text-lg rounded-full transition-all duration-300 hover:scale-105">
+                        Proceed to Checkout
+                      </Button>
+                    </Link>
+                    <Link to="/">
+                      <Button variant="outline" className="w-full border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black font-semibold py-3 rounded-full">
+                        Continue Shopping
+                      </Button>
+                    </Link>
                   </div>
                   
                   <div className="mt-8 text-center">

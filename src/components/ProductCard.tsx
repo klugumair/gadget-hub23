@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/CartContext';
 
 interface ProductCardProps {
   title: string;
@@ -13,8 +14,19 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ title, price, image, category }) => {
   const { toast } = useToast();
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
+    // Convert price string to number (remove "Rs. " and commas)
+    const numericPrice = parseInt(price.replace(/Rs\.\s?|,/g, ''));
+    
+    addToCart({
+      title,
+      price: numericPrice,
+      image,
+      category
+    });
+
     toast({
       title: "Added to Cart! 🛒",
       description: `${title} has been added to your cart`,
