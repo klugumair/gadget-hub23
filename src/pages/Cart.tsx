@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -15,24 +14,7 @@ interface CartItem {
 }
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: "iPhone 15 Pro Max",
-      price: 1199,
-      image: "📱",
-      category: "Premium Smartphone",
-      quantity: 1
-    },
-    {
-      id: 2,
-      title: "Luxury Leather Case",
-      price: 199,
-      image: "🛡️",
-      category: "Premium Protection",
-      quantity: 2
-    }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity <= 0) return;
