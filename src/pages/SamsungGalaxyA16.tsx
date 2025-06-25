@@ -8,38 +8,31 @@ import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 
-const SamsungGalaxyA06 = () => {
-  const [selectedVariant, setSelectedVariant] = useState(0);
+const SamsungGalaxyA16 = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
 
-  const variants = [
-    { storage: "4GB - 128GB", price: 25500 },
-    { storage: "6GB - 128GB", price: 30500 }
+  const productImages = [
+    "/lovable-uploads/18b83a62-8544-4569-9179-bd54aa18daa9.png",
+    "/lovable-uploads/d81ce6ad-bf45-4792-863a-7aa3fcc4eb2c.png",
+    "/lovable-uploads/3a9ff86a-053b-4665-947e-39015c2e3f1b.png"
   ];
 
-  const productImages = [
-    "/lovable-uploads/d5a93a8e-f1c9-4576-bba8-668019b6c72c.png",
-    "/lovable-uploads/fe526f3e-d2d3-4dc0-9bd4-e940cb3289b6.png",
-    "/lovable-uploads/9757f179-7069-476d-9ac1-e7f3bda202dd.png",
-    "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png"
-  ];
+  const price = 44500;
+  const storage = "8GB - 256GB";
 
   const handleAddToCart = () => {
-    const selectedPrice = variants[selectedVariant].price;
-    const selectedStorage = variants[selectedVariant].storage;
-    
     addToCart({
-      title: `Samsung Galaxy A06 (${selectedStorage})`,
-      price: selectedPrice,
+      title: `Samsung Galaxy A16 (${storage})`,
+      price: price,
       image: productImages[0],
       category: "Samsung"
     });
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `Samsung Galaxy A06 (${selectedStorage}) has been added to your cart`,
+      description: `Samsung Galaxy A16 (${storage}) has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
   };
@@ -73,7 +66,7 @@ const SamsungGalaxyA06 = () => {
               <div className="relative glass-morphism rounded-2xl p-8 h-96 flex items-center justify-center">
                 <img 
                   src={productImages[currentImageIndex]} 
-                  alt={`Samsung Galaxy A06 - Image ${currentImageIndex + 1}`}
+                  alt={`Samsung Galaxy A16 - Image ${currentImageIndex + 1}`}
                   className="max-w-full max-h-full object-contain"
                 />
                 
@@ -125,31 +118,20 @@ const SamsungGalaxyA06 = () => {
                   Samsung
                 </div>
                 <h1 className="text-4xl font-bold text-white mb-4">
-                  Galaxy A06
+                  Galaxy A16
                 </h1>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
-                  Rs. {variants[selectedVariant].price.toLocaleString()}
+                  Rs. {price.toLocaleString()}
                 </div>
               </div>
 
-              {/* Variant Selection */}
+              {/* Storage Display */}
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white">Storage Options</h3>
-                <div className="flex space-x-3">
-                  {variants.map((variant, index) => (
-                    <Button
-                      key={index}
-                      onClick={() => setSelectedVariant(index)}
-                      variant={selectedVariant === index ? "default" : "outline"}
-                      className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                        selectedVariant === index
-                          ? 'bg-gradient-gold text-black hover:bg-gold-500'
-                          : 'border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black'
-                      }`}
-                    >
-                      {variant.storage}
-                    </Button>
-                  ))}
+                <h3 className="text-xl font-bold text-white">Storage Configuration</h3>
+                <div className="inline-block">
+                  <div className="px-6 py-3 rounded-full font-semibold bg-gradient-gold text-black">
+                    {storage}
+                  </div>
                 </div>
               </div>
 
@@ -157,11 +139,11 @@ const SamsungGalaxyA06 = () => {
               <div className="glass-morphism rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Key Features</h3>
                 <ul className="space-y-2 text-gray-300">
-                  <li>• Premium Samsung build quality</li>
-                  <li>• Large vibrant display</li>
-                  <li>• Advanced camera system</li>
-                  <li>• Long-lasting battery</li>
-                  <li>• Latest Android experience</li>
+                  <li>• Modern Samsung design</li>
+                  <li>• Reliable performance for daily use</li>
+                  <li>• Quality camera system</li>
+                  <li>• Clear and bright display</li>
+                  <li>• Efficient battery life</li>
                 </ul>
               </div>
 
@@ -171,7 +153,7 @@ const SamsungGalaxyA06 = () => {
                 className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-bold py-4 text-lg rounded-full transition-all duration-300 hover:scale-105"
               >
                 <ShoppingCart size={20} className="mr-2" />
-                Add to Cart - Rs. {variants[selectedVariant].price.toLocaleString()}
+                Add to Cart - Rs. {price.toLocaleString()}
               </Button>
             </div>
           </div>
@@ -183,4 +165,4 @@ const SamsungGalaxyA06 = () => {
   );
 };
 
-export default SamsungGalaxyA06;
+export default SamsungGalaxyA16;

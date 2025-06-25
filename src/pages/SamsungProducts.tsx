@@ -12,8 +12,30 @@ const SamsungProducts = () => {
     {
       title: "Samsung Galaxy A06",
       price: "Rs. 25,500",
+      image: "/lovable-uploads/d5a93a8e-f1c9-4576-bba8-668019b6c72c.png",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a06"
+    },
+    {
+      title: "Samsung Galaxy A25 5G",
+      price: "Rs. 98,500",
+      image: "/lovable-uploads/e0a1f7bd-f278-4d47-899c-5d8a32a1b501.png",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a25-5g"
+    },
+    {
+      title: "Samsung Galaxy A16",
+      price: "Rs. 44,500",
+      image: "/lovable-uploads/d81ce6ad-bf45-4792-863a-7aa3fcc4eb2c.png",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a16"
+    },
+    {
+      title: "Samsung Galaxy A56",
+      price: "Rs. 130,000",
       image: "📱",
-      category: "Samsung"
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a56"
     }
   ];
 
@@ -41,7 +63,7 @@ const SamsungProducts = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {samsungProducts.map((product, index) => (
-              <Link key={index} to={`/phones/new/samsung/galaxy-a06`}>
+              <Link key={index} to={product.link}>
                 <ProductCard {...product} />
               </Link>
             ))}
