@@ -11,8 +11,8 @@ const Cart = () => {
   const { cartItems, updateQuantity, removeItem, clearCart } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  const deliveryCharges = 250;
+  const total = subtotal + deliveryCharges;
 
   return (
     <div className="min-h-screen bg-black">
@@ -121,13 +121,13 @@ const Cart = () => {
                       <span>Rs. {subtotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-gray-300">
-                      <span>Tax:</span>
-                      <span>Rs. {Math.round(tax).toLocaleString()}</span>
+                      <span>Delivery Charges:</span>
+                      <span>Rs. {deliveryCharges.toLocaleString()}</span>
                     </div>
                     <div className="border-t border-gray-700 pt-4">
                       <div className="flex justify-between text-xl font-bold text-gold-400">
                         <span>Total:</span>
-                        <span>Rs. {Math.round(total).toLocaleString()}</span>
+                        <span>Rs. {total.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>

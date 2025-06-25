@@ -12,8 +12,8 @@ const Checkout = () => {
   const { cartItems } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.08;
-  const total = subtotal + tax;
+  const deliveryCharges = 250;
+  const total = subtotal + deliveryCharges;
 
   const generateOrderSummary = () => {
     let summary = "Order Summary:\n\n";
@@ -24,8 +24,8 @@ const Checkout = () => {
       summary += `   Total: Rs. ${(item.price * item.quantity).toLocaleString()}\n\n`;
     });
     summary += `Subtotal: Rs. ${subtotal.toLocaleString()}\n`;
-    summary += `Tax: Rs. ${Math.round(tax).toLocaleString()}\n`;
-    summary += `Total Amount: Rs. ${Math.round(total).toLocaleString()}`;
+    summary += `Delivery Charges: Rs. ${deliveryCharges.toLocaleString()}\n`;
+    summary += `Total Amount: Rs. ${total.toLocaleString()}`;
     return summary;
   };
 
@@ -99,12 +99,12 @@ const Checkout = () => {
                   <span>Rs. {subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-gray-300">
-                  <span>Tax:</span>
-                  <span>Rs. {Math.round(tax).toLocaleString()}</span>
+                  <span>Delivery Charges:</span>
+                  <span>Rs. {deliveryCharges.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold text-gold-400 pt-2 border-t border-gray-700">
                   <span>Total:</span>
-                  <span>Rs. {Math.round(total).toLocaleString()}</span>
+                  <span>Rs. {total.toLocaleString()}</span>
                 </div>
               </div>
             </div>

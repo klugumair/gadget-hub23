@@ -1,7 +1,12 @@
 
 import React from 'react';
+import { Instagram, Facebook, Youtube, Music } from 'lucide-react';
 
 const Footer = () => {
+  const openLink = (url: string) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <footer id="contact" className="bg-gradient-to-r from-black to-gray-900 py-16">
       <div className="container mx-auto px-6">
@@ -12,14 +17,29 @@ const Footer = () => {
               Premium mobile accessories for the discerning customer. Experience luxury in every detail.
             </p>
             <div className="flex space-x-4">
-              <div className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform">
-                f
+              <div 
+                onClick={() => openLink('https://www.facebook.com/itxgadgethub2.0')}
+                className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform"
+              >
+                <Facebook size={20} />
               </div>
-              <div className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform">
-                t
+              <div 
+                onClick={() => openLink('https://www.tiktok.com/@itxgadgethub2.0')}
+                className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform"
+              >
+                <Music size={20} />
               </div>
-              <div className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform">
-                i
+              <div 
+                onClick={() => openLink('https://www.instagram.com/itxgadgethub2.0/')}
+                className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform"
+              >
+                <Instagram size={20} />
+              </div>
+              <div 
+                onClick={() => openLink('https://www.youtube.com/@itxgadgethub2.0')}
+                className="w-10 h-10 bg-gold-400 rounded-full flex items-center justify-center text-black font-bold cursor-pointer hover:scale-110 transition-transform"
+              >
+                <Youtube size={20} />
               </div>
             </div>
           </div>
@@ -37,9 +57,9 @@ const Footer = () => {
           <div>
             <h4 className="text-xl font-bold text-gold-400 mb-4">Contact</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>📧 info@gadgethub.com</li>
-              <li>📞 +1 (555) 123-4567</li>
-              <li>📍 123 Luxury Ave, Premium City</li>
+              <li>📧 itxgadgethub@gmail.com</li>
+              <li>📞 +92 320 0511010</li>
+              <li>📍 Min road chaklaza plaza CBR Town Block C Phase 1 Islamabad</li>
             </ul>
           </div>
         </div>

@@ -1,14 +1,21 @@
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
+import SamsungProducts from './SamsungProducts';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const BrandDetail = () => {
   const { category, brand } = useParams();
   const isNew = category === 'new';
+  
+  // If it's Samsung, show the Samsung products page
+  if (brand === 'samsung') {
+    return <SamsungProducts />;
+  }
   
   const brandName = brand?.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Brand';
   
