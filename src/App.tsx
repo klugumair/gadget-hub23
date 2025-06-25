@@ -15,6 +15,7 @@ import Covers from "./pages/Covers";
 import Headphones from "./pages/Headphones";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import RepairingService from "./pages/RepairingService";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/headphones" element={<Headphones />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/repairing-service" element={<RepairingService />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
