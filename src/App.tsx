@@ -8,6 +8,9 @@ import { CartProvider } from "./contexts/CartContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
 import Phones from "./pages/Phones";
+import NewPhones from "./pages/NewPhones";
+import UsedPhones from "./pages/UsedPhones";
+import BrandDetail from "./pages/BrandDetail";
 import Covers from "./pages/Covers";
 import Headphones from "./pages/Headphones";
 import Cart from "./pages/Cart";
@@ -27,6 +30,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/phones" element={<Phones />} />
+            <Route path="/phones/new" element={<NewPhones />} />
+            <Route path="/phones/used" element={<UsedPhones />} />
+            <Route path="/phones/:category/:brand" element={<BrandDetail />} />
             <Route path="/covers" element={<Covers />} />
             <Route path="/headphones" element={<Headphones />} />
             <Route path="/cart" element={<Cart />} />
