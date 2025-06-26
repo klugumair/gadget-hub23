@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -7,19 +7,34 @@ import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const SamsungGalaxyA56 = () => {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const [selectedImage, setSelectedImage] = useState(0);
 
   const price = 130000;
   const storage = "12GB - 256GB";
+
+  const images = [
+    "/lovable-uploads/7a291dd7-8f8c-4a9b-b4cd-769a23174b5f.png",
+    "/lovable-uploads/1db61834-4486-470d-8d69-4dff0bd3a184.png",
+    "/lovable-uploads/5d1acced-61df-4631-b3bb-6f6f169f0833.png",
+    "/lovable-uploads/a051e490-52dc-40f8-adf3-92f5d8dbf7a1.png"
+  ];
 
   const handleAddToCart = () => {
     addToCart({
       title: `Samsung Galaxy A56 (${storage})`,
       price: price,
-      image: "📱",
+      image: images[0],
       category: "Samsung"
     });
 
@@ -49,7 +64,41 @@ const SamsungGalaxyA56 = () => {
             {/* Image Gallery */}
             <div className="space-y-4">
               <div className="relative glass-morphism rounded-2xl p-8 h-96 flex items-center justify-center">
-                <span className="text-8xl">📱</span>
+                <img 
+                  src={images[selectedImage]} 
+                  alt="Samsung Galaxy A56"
+                  className="max-w-full max-h-full object-contain"
+                  loading="eager"
+                />
+              </div>
+              
+              {/* Image Carousel */}
+              <div className="w-full max-w-md mx-auto">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {images.map((image, index) => (
+                      <CarouselItem key={index} className="basis-1/3">
+                        <div className="p-1">
+                          <div 
+                            className={`glass-morphism rounded-lg p-2 cursor-pointer transition-all duration-300 ${
+                              selectedImage === index ? 'ring-2 ring-gold-400' : 'hover:ring-1 hover:ring-gold-400'
+                            }`}
+                            onClick={() => setSelectedImage(index)}
+                          >
+                            <img 
+                              src={image} 
+                              alt={`Samsung Galaxy A56 view ${index + 1}`}
+                              className="w-full h-20 object-contain"
+                              loading="eager"
+                            />
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
               </div>
             </div>
 

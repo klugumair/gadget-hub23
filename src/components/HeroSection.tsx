@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 
 const HeroSection = () => {
   return (
@@ -26,14 +25,6 @@ const HeroSection = () => {
               Discover the finest collection of smartphones, protective cases, and premium headphones. 
               Elevate your mobile lifestyle with our luxury accessories.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button className="bg-gradient-gold hover:bg-gold-500 text-black font-bold px-8 py-4 text-lg rounded-full transition-all duration-300 hover:scale-105 animate-glow">
-                Explore Collection
-              </Button>
-              <Button variant="outline" className="border-2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black font-bold px-8 py-4 text-lg rounded-full transition-all duration-300">
-                Watch Demo
-              </Button>
-            </div>
           </div>
           
           <div className="relative">

@@ -44,6 +44,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, price, image, category
             src={image} 
             alt={title}
             className="max-w-full max-h-full object-contain"
+            loading="eager"
+            onLoad={() => console.log(`Image loaded: ${title}`)}
+            onError={(e) => console.error(`Image failed to load: ${title}`, e)}
           />
         ) : (
           <span className="text-6xl">{image}</span>
