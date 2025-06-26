@@ -9,19 +9,19 @@ const Index = () => {
   const phoneProducts = [
     {
       title: "iPhone 15 Pro Max",
-      price: "Rs. 3,49,999",
+      price: "Rs. 4,72,000",
       image: "📱",
       category: "Premium Smartphone"
     },
     {
       title: "Samsung Galaxy S24 Ultra",
-      price: "Rs. 3,79,999",
+      price: "Rs. 5,41,999",
       image: "📱",
       category: "Flagship Android"
     },
     {
       title: "Google Pixel 8 Pro",
-      price: "Rs. 2,89,999",
+      price: "Rs. 1,15,000",
       image: "📱",
       category: "AI Photography"
     }

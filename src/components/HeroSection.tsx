@@ -31,8 +31,12 @@ const HeroSection = () => {
             <div className="relative z-10 animate-float">
               <div className="bg-gradient-gold p-8 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
                 <div className="bg-black p-6 rounded-2xl">
-                  <div className="w-full h-80 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center">
-                    <div className="text-gold-400 text-6xl font-bold">📱</div>
+                  <div className="w-full h-80 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center relative">
+                    <img 
+                      src="/lovable-uploads/f2353fe1-f956-4d32-8129-7eefb75528d2.png" 
+                      alt="Gadget Hub Logo"
+                      className="max-w-full max-h-full object-contain"
+                    />
                   </div>
                 </div>
               </div>

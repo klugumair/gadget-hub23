@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -55,60 +54,72 @@ const Cart = () => {
                   </Button>
                 </div>
                 
-                {cartItems.map((item) => (
-                  <div key={item.id} className="glass-morphism rounded-2xl p-6">
-                    <div className="flex items-center space-x-6">
-                      <div className="w-20 h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center text-3xl">
-                        {item.image}
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-1">
-                          {item.category}
+                {cartItems.map((item) => {
+                  const isImageUrl = item.image.startsWith('/') || item.image.startsWith('http');
+                  
+                  return (
+                    <div key={item.id} className="glass-morphism rounded-2xl p-6">
+                      <div className="flex items-center space-x-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center">
+                          {isImageUrl ? (
+                            <img 
+                              src={item.image} 
+                              alt={item.title}
+                              className="max-w-full max-h-full object-contain rounded-lg"
+                            />
+                          ) : (
+                            <span className="text-3xl">{item.image}</span>
+                          )}
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">
-                          {item.title}
-                        </h3>
-                        <div className="text-2xl font-bold text-gold-400">
-                          Rs. {item.price.toLocaleString()}
+                        
+                        <div className="flex-1">
+                          <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-1">
+                            {item.category}
+                          </div>
+                          <h3 className="text-xl font-bold text-white mb-2">
+                            {item.title}
+                          </h3>
+                          <div className="text-2xl font-bold text-gold-400">
+                            Rs. {item.price.toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex items-center space-x-3">
-                        <Button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          variant="outline"
-                          size="icon"
-                          className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
-                        >
-                          <Minus size={16} />
-                        </Button>
                         
-                        <span className="w-12 text-center text-white font-bold text-lg">
-                          {item.quantity}
-                        </span>
-                        
-                        <Button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          variant="outline"
-                          size="icon"
-                          className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
-                        >
-                          <Plus size={16} />
-                        </Button>
-                        
-                        <Button
-                          onClick={() => removeItem(item.id)}
-                          variant="outline"
-                          size="icon"
-                          className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white ml-4"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
+                        <div className="flex items-center space-x-3">
+                          <Button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            variant="outline"
+                            size="icon"
+                            className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
+                          >
+                            <Minus size={16} />
+                          </Button>
+                          
+                          <span className="w-12 text-center text-white font-bold text-lg">
+                            {item.quantity}
+                          </span>
+                          
+                          <Button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            variant="outline"
+                            size="icon"
+                            className="border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
+                          >
+                            <Plus size={16} />
+                          </Button>
+                          
+                          <Button
+                            onClick={() => removeItem(item.id)}
+                            variant="outline"
+                            size="icon"
+                            className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white ml-4"
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               
               <div className="lg:col-span-1">
