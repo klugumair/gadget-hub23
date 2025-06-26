@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -19,14 +18,14 @@ const SamsungProducts = () => {
     {
       title: "Samsung Galaxy A25 5G",
       price: "Rs. 98,500",
-      image: "/lovable-uploads/9757f179-7069-476d-9ac1-e7f3bda202dd.png",
+      image: "/lovable-uploads/e0a1f7bd-f278-4d47-899c-5d8a32a1b501.png",
       category: "Samsung",
       link: "/phones/new/samsung/galaxy-a25-5g"
     },
     {
       title: "Samsung Galaxy A16",
       price: "Rs. 44,500",
-      image: "/lovable-uploads/e0a1f7bd-f278-4d47-899c-5d8a32a1b501.png",
+      image: "/lovable-uploads/18b83a62-8544-4569-9179-bd54aa18daa9.png",
       category: "Samsung",
       link: "/phones/new/samsung/galaxy-a16"
     },
@@ -42,42 +41,42 @@ const SamsungProducts = () => {
       price: "Rs. 144,999",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s21-fe-128gb"
     },
     {
       title: "Galaxy S21 FE 5G (256GB)",
       price: "Rs. 154,999",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s21-fe-256gb"
     },
     {
       title: "Galaxy S23 FE",
       price: "Rs. 168,299",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s23-fe"
     },
     {
       title: "Galaxy S23 Ultra",
       price: "Rs. 332,999",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s23-ultra"
     },
     {
       title: "Galaxy S24 FE",
       price: "Rs. 289,999",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s24-fe"
     },
     {
       title: "Galaxy S24 Ultra",
       price: "Rs. 404,999",
       image: "📱",
       category: "Samsung",
-      link: "#"
+      link: "/phones/new/samsung/galaxy-s24-ultra"
     }
   ];
 

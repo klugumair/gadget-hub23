@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +16,12 @@ import SamsungGalaxyA06 from "./pages/SamsungGalaxyA06";
 import SamsungGalaxyA25 from "./pages/SamsungGalaxyA25";
 import SamsungGalaxyA16 from "./pages/SamsungGalaxyA16";
 import SamsungGalaxyA56 from "./pages/SamsungGalaxyA56";
+import SamsungGalaxyS21FE128 from "./pages/SamsungGalaxyS21FE128";
+import SamsungGalaxyS21FE256 from "./pages/SamsungGalaxyS21FE256";
+import SamsungGalaxyS23FE from "./pages/SamsungGalaxyS23FE";
+import SamsungGalaxyS23Ultra from "./pages/SamsungGalaxyS23Ultra";
+import SamsungGalaxyS24FE from "./pages/SamsungGalaxyS24FE";
+import SamsungGalaxyS24Ultra from "./pages/SamsungGalaxyS24Ultra";
 import Covers from "./pages/Covers";
 import Headphones from "./pages/Headphones";
 import Cart from "./pages/Cart";
@@ -46,6 +51,12 @@ const App = () => (
             <Route path="/phones/new/samsung/galaxy-a25-5g" element={<SamsungGalaxyA25 />} />
             <Route path="/phones/new/samsung/galaxy-a16" element={<SamsungGalaxyA16 />} />
             <Route path="/phones/new/samsung/galaxy-a56" element={<SamsungGalaxyA56 />} />
+            <Route path="/phones/new/samsung/galaxy-s21-fe-128gb" element={<SamsungGalaxyS21FE128 />} />
+            <Route path="/phones/new/samsung/galaxy-s21-fe-256gb" element={<SamsungGalaxyS21FE256 />} />
+            <Route path="/phones/new/samsung/galaxy-s23-fe" element={<SamsungGalaxyS23FE />} />
+            <Route path="/phones/new/samsung/galaxy-s23-ultra" element={<SamsungGalaxyS23Ultra />} />
+            <Route path="/phones/new/samsung/galaxy-s24-fe" element={<SamsungGalaxyS24FE />} />
+            <Route path="/phones/new/samsung/galaxy-s24-ultra" element={<SamsungGalaxyS24Ultra />} />
             <Route path="/covers" element={<Covers />} />
             <Route path="/headphones" element={<Headphones />} />
             <Route path="/cart" element={<Cart />} />
