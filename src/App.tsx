@@ -11,6 +11,8 @@ import Phones from "./pages/Phones";
 import NewPhones from "./pages/NewPhones";
 import UsedPhones from "./pages/UsedPhones";
 import BrandDetail from "./pages/BrandDetail";
+import SamsungProducts from "./pages/SamsungProducts";
+import UsedSamsungProducts from "./pages/UsedSamsungProducts";
 import SamsungGalaxyA06 from "./pages/SamsungGalaxyA06";
 import SamsungGalaxyA25 from "./pages/SamsungGalaxyA25";
 import SamsungGalaxyA16 from "./pages/SamsungGalaxyA16";
@@ -37,6 +39,8 @@ const App = () => (
             <Route path="/phones" element={<Phones />} />
             <Route path="/phones/new" element={<NewPhones />} />
             <Route path="/phones/used" element={<UsedPhones />} />
+            <Route path="/phones/new/samsung" element={<SamsungProducts />} />
+            <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
             <Route path="/phones/:category/:brand" element={<BrandDetail />} />
             <Route path="/phones/new/samsung/galaxy-a06" element={<SamsungGalaxyA06 />} />
             <Route path="/phones/new/samsung/galaxy-a25-5g" element={<SamsungGalaxyA25 />} />

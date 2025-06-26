@@ -40,42 +40,42 @@ const SamsungProducts = () => {
     {
       title: "Galaxy S21 FE 5G (128GB)",
       price: "Rs. 144,999",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     },
     {
       title: "Galaxy S21 FE 5G (256GB)",
       price: "Rs. 154,999",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     },
     {
       title: "Galaxy S23 FE",
       price: "Rs. 168,299",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     },
     {
       title: "Galaxy S23 Ultra",
       price: "Rs. 332,999",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     },
     {
       title: "Galaxy S24 FE",
       price: "Rs. 289,999",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     },
     {
       title: "Galaxy S24 Ultra",
       price: "Rs. 404,999",
-      image: "📱",
+      image: "/lovable-uploads/cf7ba06b-d027-44d2-80bc-a73f76cd2ffe.png",
       category: "Samsung",
       link: "#"
     }
@@ -105,9 +105,9 @@ const SamsungProducts = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {samsungProducts.map((product, index) => (
-              <Link key={index} to={product.link}>
+              <div key={index} onClick={() => product.link !== '#' && (window.location.href = product.link)} className={product.link !== '#' ? 'cursor-pointer' : ''}>
                 <ProductCard {...product} />
-              </Link>
+              </div>
             ))}
           </div>
         </div>

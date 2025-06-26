@@ -15,6 +15,7 @@ interface ProductSectionProps {
     price: string;
     image: string;
     category: string;
+    link?: string;
   }>;
 }
 
@@ -45,7 +46,12 @@ const ProductSection: React.FC<ProductSectionProps> = ({
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
-            <ProductCard key={index} {...product} />
+            <div key={index} className="cursor-pointer" onClick={() => {
+              // Make products clickable - for now just show a placeholder behavior
+              console.log(`Clicked on ${product.title}`);
+            }}>
+              <ProductCard {...product} />
+            </div>
           ))}
         </div>
       </div>
