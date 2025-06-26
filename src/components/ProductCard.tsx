@@ -34,10 +34,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, price, image, category
     });
   };
 
+  const isImageUrl = image.startsWith('/') || image.startsWith('http');
+
   return (
     <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300">
       <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-        <span className="text-6xl">{image}</span>
+        {isImageUrl ? (
+          <img 
+            src={image} 
+            alt={title}
+            className="max-w-full max-h-full object-contain"
+          />
+        ) : (
+          <span className="text-6xl">{image}</span>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
       </div>
       <div className="p-6">
