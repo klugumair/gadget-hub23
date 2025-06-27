@@ -77,6 +77,139 @@ const SamsungProducts = () => {
       image: "📱",
       category: "Samsung",
       link: "/phones/new/samsung/galaxy-s24-ultra"
+    },
+    {
+      title: "Galaxy Z Fold 5",
+      price: "Rs. 515,220",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-z-fold-5"
+    },
+    {
+      title: "Galaxy A14",
+      price: "Rs. 62,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a14"
+    },
+    {
+      title: "Galaxy A15",
+      price: "Rs. 59,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a15"
+    },
+    {
+      title: "Galaxy A25",
+      price: "Rs. 98,500",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a25"
+    },
+    {
+      title: "Galaxy A34 5G",
+      price: "Rs. 116,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a34-5g"
+    },
+    {
+      title: "Galaxy A05",
+      price: "Rs. 35,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a05"
+    },
+    {
+      title: "Galaxy A05s",
+      price: "Rs. 42,935",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a05s"
+    },
+    {
+      title: "Galaxy F14",
+      price: "Rs. 49,860",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-f14"
+    },
+    {
+      title: "Galaxy F34",
+      price: "Rs. 56,785",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-f34"
+    },
+    {
+      title: "Galaxy M54 5G",
+      price: "Rs. 126,035",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-m54-5g"
+    },
+    {
+      title: "Galaxy M34 5G",
+      price: "Rs. 100,000",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-m34-5g"
+    },
+    {
+      title: "Galaxy Z Flip 6",
+      price: "Rs. 384,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-z-flip-6"
+    },
+    {
+      title: "Galaxy Z Fold 6",
+      price: "Rs. 604,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-z-fold-6"
+    },
+    {
+      title: "Galaxy A05",
+      price: "Rs. 44,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a05-new"
+    },
+    {
+      title: "Galaxy S25 Ultra",
+      price: "Rs. 399,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-s25-ultra"
+    },
+    {
+      title: "Galaxy S25",
+      price: "Rs. 294,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-s25"
+    },
+    {
+      title: "Galaxy S25 Edge",
+      price: "Rs. 380,000",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-s25-edge"
+    },
+    {
+      title: "Galaxy A26 5G",
+      price: "Rs. 75,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a26-5g"
+    },
+    {
+      title: "Galaxy A36 5G",
+      price: "Rs. 106,999",
+      image: "📱",
+      category: "Samsung",
+      link: "/phones/new/samsung/galaxy-a36-5g"
     }
   ];
 

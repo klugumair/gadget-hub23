@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +22,8 @@ import SamsungGalaxyS23FE from "./pages/SamsungGalaxyS23FE";
 import SamsungGalaxyS23Ultra from "./pages/SamsungGalaxyS23Ultra";
 import SamsungGalaxyS24FE from "./pages/SamsungGalaxyS24FE";
 import SamsungGalaxyS24Ultra from "./pages/SamsungGalaxyS24Ultra";
+import SamsungGalaxyZFold5 from "./pages/SamsungGalaxyZFold5";
+import SamsungGalaxyA14 from "./pages/SamsungGalaxyA14";
 import Covers from "./pages/Covers";
 import Headphones from "./pages/Headphones";
 import Cart from "./pages/Cart";
@@ -89,6 +90,8 @@ const App = () => (
             <Route path="/phones/new/samsung/galaxy-s23-ultra" element={<SamsungGalaxyS23Ultra />} />
             <Route path="/phones/new/samsung/galaxy-s24-fe" element={<SamsungGalaxyS24FE />} />
             <Route path="/phones/new/samsung/galaxy-s24-ultra" element={<SamsungGalaxyS24Ultra />} />
+            <Route path="/phones/new/samsung/galaxy-z-fold-5" element={<SamsungGalaxyZFold5 />} />
+            <Route path="/phones/new/samsung/galaxy-a14" element={<SamsungGalaxyA14 />} />
             <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
             <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max" element={<IPhone11ProMax />} />
