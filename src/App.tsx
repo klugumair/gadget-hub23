@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -43,6 +44,20 @@ import IPhone13 from "./pages/IPhone13";
 import IPhone13Mini from "./pages/IPhone13Mini";
 import IPhone13Pro from "./pages/IPhone13Pro";
 import IPhone13ProMax from "./pages/IPhone13ProMax";
+import IPhone14 from "./pages/IPhone14";
+import IPhone14Plus from "./pages/IPhone14Plus";
+import IPhone14Pro from "./pages/IPhone14Pro";
+import IPhone14ProMax from "./pages/IPhone14ProMax";
+import IPhone15 from "./pages/IPhone15";
+import IPhone15Plus from "./pages/IPhone15Plus";
+import IPhone15Pro from "./pages/IPhone15Pro";
+import IPhone15ProMax from "./pages/IPhone15ProMax";
+import IPhone16 from "./pages/IPhone16";
+import IPhone16e from "./pages/IPhone16e";
+import IPhone16Plus from "./pages/IPhone16Plus";
+import IPhone16Pro from "./pages/IPhone16Pro";
+import IPhone16ProMax from "./pages/IPhone16ProMax";
+import IPhoneXR from "./pages/IPhoneXR";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +100,20 @@ const App = () => (
             <Route path="/phones/new/iphone/iphone-13-mini" element={<IPhone13Mini />} />
             <Route path="/phones/new/iphone/iphone-13-pro" element={<IPhone13Pro />} />
             <Route path="/phones/new/iphone/iphone-13-pro-max" element={<IPhone13ProMax />} />
+            <Route path="/phones/new/iphone/iphone-14" element={<IPhone14 />} />
+            <Route path="/phones/new/iphone/iphone-14-plus" element={<IPhone14Plus />} />
+            <Route path="/phones/new/iphone/iphone-14-pro" element={<IPhone14Pro />} />
+            <Route path="/phones/new/iphone/iphone-14-pro-max" element={<IPhone14ProMax />} />
+            <Route path="/phones/new/iphone/iphone-15" element={<IPhone15 />} />
+            <Route path="/phones/new/iphone/iphone-15-plus" element={<IPhone15Plus />} />
+            <Route path="/phones/new/iphone/iphone-15-pro" element={<IPhone15Pro />} />
+            <Route path="/phones/new/iphone/iphone-15-pro-max" element={<IPhone15ProMax />} />
+            <Route path="/phones/new/iphone/iphone-16" element={<IPhone16 />} />
+            <Route path="/phones/new/iphone/iphone-16e" element={<IPhone16e />} />
+            <Route path="/phones/new/iphone/iphone-16-plus" element={<IPhone16Plus />} />
+            <Route path="/phones/new/iphone/iphone-16-pro" element={<IPhone16Pro />} />
+            <Route path="/phones/new/iphone/iphone-16-pro-max" element={<IPhone16ProMax />} />
+            <Route path="/phones/new/iphone/iphone-xr" element={<IPhoneXR />} />
             <Route path="/phones/new/iphone/iphone-11-64gb" element={<IPhone11_64GB />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max-256gb" element={<IPhone11ProMax256GB />} />
             <Route path="/covers" element={<Covers />} />
