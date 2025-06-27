@@ -35,6 +35,14 @@ import UsedIPhoneProducts from "./pages/UsedIPhoneProducts";
 import IPhone11 from "./pages/IPhone11";
 import IPhone11Pro from "./pages/IPhone11Pro";
 import IPhone11ProMax from "./pages/IPhone11ProMax";
+import IPhone12 from "./pages/IPhone12";
+import IPhone12Mini from "./pages/IPhone12Mini";
+import IPhone12Pro from "./pages/IPhone12Pro";
+import IPhone12ProMax from "./pages/IPhone12ProMax";
+import IPhone13 from "./pages/IPhone13";
+import IPhone13Mini from "./pages/IPhone13Mini";
+import IPhone13Pro from "./pages/IPhone13Pro";
+import IPhone13ProMax from "./pages/IPhone13ProMax";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +77,14 @@ const App = () => (
             <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
             <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max" element={<IPhone11ProMax />} />
+            <Route path="/phones/new/iphone/iphone-12" element={<IPhone12 />} />
+            <Route path="/phones/new/iphone/iphone-12-mini" element={<IPhone12Mini />} />
+            <Route path="/phones/new/iphone/iphone-12-pro" element={<IPhone12Pro />} />
+            <Route path="/phones/new/iphone/iphone-12-pro-max" element={<IPhone12ProMax />} />
+            <Route path="/phones/new/iphone/iphone-13" element={<IPhone13 />} />
+            <Route path="/phones/new/iphone/iphone-13-mini" element={<IPhone13Mini />} />
+            <Route path="/phones/new/iphone/iphone-13-pro" element={<IPhone13Pro />} />
+            <Route path="/phones/new/iphone/iphone-13-pro-max" element={<IPhone13ProMax />} />
             <Route path="/phones/new/iphone/iphone-11-64gb" element={<IPhone11_64GB />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max-256gb" element={<IPhone11ProMax256GB />} />
             <Route path="/covers" element={<Covers />} />

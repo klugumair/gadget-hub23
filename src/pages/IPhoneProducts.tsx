@@ -29,6 +29,62 @@ const IPhoneProducts = () => {
       image: "📱",
       category: "iPhone",
       link: "/phones/new/iphone/iphone-11-pro-max"
+    },
+    {
+      title: "iPhone 12",
+      price: "From Rs. 109,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-12"
+    },
+    {
+      title: "iPhone 12 Mini",
+      price: "From Rs. 99,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-12-mini"
+    },
+    {
+      title: "iPhone 12 Pro",
+      price: "From Rs. 139,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-12-pro"
+    },
+    {
+      title: "iPhone 12 Pro Max",
+      price: "From Rs. 149,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-12-pro-max"
+    },
+    {
+      title: "iPhone 13",
+      price: "From Rs. 129,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-13"
+    },
+    {
+      title: "iPhone 13 Mini",
+      price: "From Rs. 119,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-13-mini"
+    },
+    {
+      title: "iPhone 13 Pro",
+      price: "From Rs. 159,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-13-pro"
+    },
+    {
+      title: "iPhone 13 Pro Max",
+      price: "From Rs. 169,999",
+      image: "📱",
+      category: "iPhone",
+      link: "/phones/new/iphone/iphone-13-pro-max"
     }
   ];
 
