@@ -31,6 +31,10 @@ import NotFound from "./pages/NotFound";
 import IPhoneProducts from "./pages/IPhoneProducts";
 import IPhone11_64GB from "./pages/IPhone11_64GB";
 import IPhone11ProMax256GB from "./pages/IPhone11ProMax256GB";
+import UsedIPhoneProducts from "./pages/UsedIPhoneProducts";
+import IPhone11 from "./pages/IPhone11";
+import IPhone11Pro from "./pages/IPhone11Pro";
+import IPhone11ProMax from "./pages/IPhone11ProMax";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +54,7 @@ const App = () => (
             <Route path="/phones/new/samsung" element={<SamsungProducts />} />
             <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
             <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
+            <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
             <Route path="/phones/:category/:brand" element={<BrandDetail />} />
             <Route path="/phones/new/samsung/galaxy-a06" element={<SamsungGalaxyA06 />} />
             <Route path="/phones/new/samsung/galaxy-a25-5g" element={<SamsungGalaxyA25 />} />
@@ -61,6 +66,9 @@ const App = () => (
             <Route path="/phones/new/samsung/galaxy-s23-ultra" element={<SamsungGalaxyS23Ultra />} />
             <Route path="/phones/new/samsung/galaxy-s24-fe" element={<SamsungGalaxyS24FE />} />
             <Route path="/phones/new/samsung/galaxy-s24-ultra" element={<SamsungGalaxyS24Ultra />} />
+            <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
+            <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
+            <Route path="/phones/new/iphone/iphone-11-pro-max" element={<IPhone11ProMax />} />
             <Route path="/phones/new/iphone/iphone-11-64gb" element={<IPhone11_64GB />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max-256gb" element={<IPhone11ProMax256GB />} />
             <Route path="/covers" element={<Covers />} />

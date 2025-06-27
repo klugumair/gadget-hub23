@@ -10,67 +10,25 @@ import ProductCard from '@/components/ProductCard';
 const IPhoneProducts = () => {
   const iPhoneProducts = [
     {
-      title: "iPhone 11 (64GB)",
-      price: "Rs. 89,999",
+      title: "iPhone 11",
+      price: "From Rs. 89,999",
       image: "📱",
       category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-64gb"
+      link: "/phones/new/iphone/iphone-11"
     },
     {
-      title: "iPhone 11 (128GB)",
-      price: "Rs. 94,999",
+      title: "iPhone 11 Pro",
+      price: "From Rs. 119,999",
       image: "📱",
       category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-128gb"
+      link: "/phones/new/iphone/iphone-11-pro"
     },
     {
-      title: "iPhone 11 (256GB)",
-      price: "Rs. 104,999",
+      title: "iPhone 11 Pro Max",
+      price: "From Rs. 129,999",
       image: "📱",
       category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-256gb"
-    },
-    {
-      title: "iPhone 11 Pro (64GB)",
-      price: "Rs. 119,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-64gb"
-    },
-    {
-      title: "iPhone 11 Pro (128GB)",
-      price: "Rs. 124,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-128gb"
-    },
-    {
-      title: "iPhone 11 Pro (256GB)",
-      price: "Rs. 134,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-256gb"
-    },
-    {
-      title: "iPhone 11 Pro Max (64GB)",
-      price: "Rs. 129,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-max-64gb"
-    },
-    {
-      title: "iPhone 11 Pro Max (128GB)",
-      price: "Rs. 134,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-max-128gb"
-    },
-    {
-      title: "iPhone 11 Pro Max (256GB)",
-      price: "Rs. 144,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-max-256gb"
+      link: "/phones/new/iphone/iphone-11-pro-max"
     }
   ];
 
