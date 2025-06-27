@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import SamsungProducts from './SamsungProducts';
 import UsedSamsungProducts from './UsedSamsungProducts';
+import IPhoneProducts from './IPhoneProducts';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,11 @@ const BrandDetail = () => {
     } else {
       return <UsedSamsungProducts />;
     }
+  }
+  
+  // If it's iPhone, show the iPhone products page (only for new phones for now)
+  if (brand === 'iphone') {
+    return <IPhoneProducts />;
   }
   
   const brandName = brand?.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Brand';
