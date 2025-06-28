@@ -66,6 +66,8 @@ import CrystalClearArmor from "./pages/CrystalClearArmor";
 import AirPodsMaxGold from "./pages/AirPodsMaxGold";
 import SonyWH1000XM5 from "./pages/SonyWH1000XM5";
 import SennheiserMomentum4 from "./pages/SennheiserMomentum4";
+import RoninR920Pro from "./pages/RoninR920Pro";
+import AudionicBlueBeatBB10 from "./pages/AudionicBlueBeatBB10";
 
 const queryClient = new QueryClient();
 
@@ -164,6 +166,11 @@ const App = () => (
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/repairing-service" element={<RepairingService />} />
+            
+            {/* Headphone Product Routes */}
+            <Route path="/headphones/ronin/r-920-pro" element={<RoninR920Pro />} />
+            <Route path="/headphones/audionic/blue-beat-bb-10" element={<AudionicBlueBeatBB10 />} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

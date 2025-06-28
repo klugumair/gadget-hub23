@@ -1,34 +1,66 @@
-
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import { Link } from 'react-router-dom';
 
 const Headphones = () => {
   const roninProducts = [
     {
-      title: "Ronin R-920",
+      title: "Ronin R-920 Pro",
       price: "Rs. 3,500",
       image: "🎧",
-      category: "Ronin"
+      category: "Ronin",
+      link: "/headphones/ronin/r-920-pro"
     },
     {
-      title: "Ronin R-810",
+      title: "Ronin R-810 Wireless",
       price: "Rs. 2,800",
       image: "🎧",
-      category: "Ronin"
+      category: "Ronin",
+      link: "/headphones/ronin/r-810-wireless"
     },
     {
-      title: "Ronin R-750",
+      title: "Ronin R-750 Gaming",
       price: "Rs. 2,200",
       image: "🎧",
-      category: "Ronin"
+      category: "Ronin",
+      link: "/headphones/ronin/r-750-gaming"
     },
     {
-      title: "Ronin R-650",
+      title: "Ronin R-650 Bass",
       price: "Rs. 1,800",
       image: "🎧",
-      category: "Ronin"
+      category: "Ronin",
+      link: "/headphones/ronin/r-650-bass"
+    },
+    {
+      title: "Ronin R-500 Sport",
+      price: "Rs. 1,500",
+      image: "🎧",
+      category: "Ronin",
+      link: "/headphones/ronin/r-500-sport"
+    },
+    {
+      title: "Ronin R-400 Classic",
+      price: "Rs. 1,200",
+      image: "🎧",
+      category: "Ronin",
+      link: "/headphones/ronin/r-400-classic"
+    },
+    {
+      title: "Ronin R-300 Compact",
+      price: "Rs. 900",
+      image: "🎧",
+      category: "Ronin",
+      link: "/headphones/ronin/r-300-compact"
+    },
+    {
+      title: "Ronin R-200 Essential",
+      price: "Rs. 750",
+      image: "🎧",
+      category: "Ronin",
+      link: "/headphones/ronin/r-200-essential"
     }
   ];
 
@@ -37,25 +69,57 @@ const Headphones = () => {
       title: "Audionic Blue Beat BB-10",
       price: "Rs. 4,500",
       image: "🎧",
-      category: "Audionic"
+      category: "Audionic",
+      link: "/headphones/audionic/blue-beat-bb-10"
     },
     {
-      title: "Audionic Pace P-5",
+      title: "Audionic Pace P-5 Pro",
       price: "Rs. 3,200",
       image: "🎧",
-      category: "Audionic"
+      category: "Audionic",
+      link: "/headphones/audionic/pace-p-5-pro"
     },
     {
-      title: "Audionic Max M-8",
+      title: "Audionic Max M-8 Wireless",
       price: "Rs. 2,900",
       image: "🎧",
-      category: "Audionic"
+      category: "Audionic",
+      link: "/headphones/audionic/max-m-8-wireless"
     },
     {
-      title: "Audionic Solo S-15",
+      title: "Audionic Solo S-15 Gaming",
       price: "Rs. 2,100",
       image: "🎧",
-      category: "Audionic"
+      category: "Audionic",
+      link: "/headphones/audionic/solo-s-15-gaming"
+    },
+    {
+      title: "Audionic Thunder T-20",
+      price: "Rs. 3,800",
+      image: "🎧",
+      category: "Audionic",
+      link: "/headphones/audionic/thunder-t-20"
+    },
+    {
+      title: "Audionic Wave W-12",
+      price: "Rs. 2,500",
+      image: "🎧",
+      category: "Audionic",
+      link: "/headphones/audionic/wave-w-12"
+    },
+    {
+      title: "Audionic Fusion F-18",
+      price: "Rs. 1,900",
+      image: "🎧",
+      category: "Audionic",
+      link: "/headphones/audionic/fusion-f-18"
+    },
+    {
+      title: "Audionic Echo E-25",
+      price: "Rs. 1,600",
+      image: "🎧",
+      category: "Audionic",
+      link: "/headphones/audionic/echo-e-25"
     }
   ];
 
@@ -137,7 +201,15 @@ const Headphones = () => {
           <BrandHeader title="Ronin" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
             {roninProducts.map((product, index) => (
-              <ProductCard key={`ronin-${index}`} {...product} />
+              <div key={`ronin-${index}`}>
+                {product.link ? (
+                  <Link to={product.link} className="block">
+                    <ProductCard {...product} />
+                  </Link>
+                ) : (
+                  <ProductCard {...product} />
+                )}
+              </div>
             ))}
           </div>
 
@@ -145,7 +217,15 @@ const Headphones = () => {
           <BrandHeader title="Audionic" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
             {audionicProducts.map((product, index) => (
-              <ProductCard key={`audionic-${index}`} {...product} />
+              <div key={`audionic-${index}`}>
+                {product.link ? (
+                  <Link to={product.link} className="block">
+                    <ProductCard {...product} />
+                  </Link>
+                ) : (
+                  <ProductCard {...product} />
+                )}
+              </div>
             ))}
           </div>
 
