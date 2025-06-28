@@ -3,46 +3,59 @@ import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Shield, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/CartContext';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const SamsungGalaxyA16 = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { addToCart } = useCart();
   const { toast } = useToast();
+  const { addToCart } = useCart();
+  const [selectedVariant, setSelectedVariant] = useState('4GB/128GB');
 
-  const productImages = [
-    "/lovable-uploads/18b83a62-8544-4569-9179-bd54aa18daa9.png",
-    "/lovable-uploads/d81ce6ad-bf45-4792-863a-7aa3fcc4eb2c.png",
-    "/lovable-uploads/3a9ff86a-053b-4665-947e-39015c2e3f1b.png"
+  const variants = [
+    { name: '4GB/128GB', price: 44500 },
+    { name: '6GB/128GB', price: 49500 }
   ];
 
-  const price = 44500;
-  const storage = "8GB - 256GB";
+  const images = [
+    "/lovable-uploads/18b83a62-8544-4569-9179-bd54aa18daa9.png",
+    "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+  ];
+
+  const keyFeatures = [
+    "6.7\" Super AMOLED Display",
+    "MediaTek Helio G85",
+    "Triple Camera 50MP+5MP+2MP",
+    "13MP Front Camera",
+    "5000mAh Battery",
+    "25W Fast Charging",
+    "Android 14 with One UI 6.1"
+  ];
 
   const handleAddToCart = () => {
+    const selectedPrice = variants.find(v => v.name === selectedVariant)?.price || variants[0].price;
+    
     addToCart({
-      title: `Samsung Galaxy A16 (${storage})`,
-      price: price,
-      image: productImages[0],
+      title: `Samsung Galaxy A16 (${selectedVariant})`,
+      price: selectedPrice,
+      image: images[0],
       category: "Samsung"
     });
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `Samsung Galaxy A16 (${storage}) has been added to your cart`,
+      description: `Galaxy A16 (${selectedVariant}) has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
-  };
-
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
   };
 
   return (
@@ -51,110 +64,106 @@ const SamsungGalaxyA16 = () => {
       
       <section className="py-32">
         <div className="container mx-auto px-6">
-          <div className="mb-8">
-            <Link to="/phones/new/samsung" className="inline-block">
-              <Button variant="ghost" className="text-gold-400 hover:text-gold-300">
-                <ArrowLeft size={20} className="mr-2" />
-                Back to Samsung
-              </Button>
-            </Link>
-          </div>
+          <Link to="/phones/new/samsung" className="inline-block mb-8">
+            <Button variant="ghost" className="text-gold-400 hover:text-gold-300">
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Samsung Products
+            </Button>
+          </Link>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Image Gallery */}
             <div className="space-y-4">
-              <div className="relative glass-morphism rounded-2xl p-8 h-96 flex items-center justify-center">
-                <img 
-                  src={productImages[currentImageIndex]} 
-                  alt={`Samsung Galaxy A16 - Image ${currentImageIndex + 1}`}
-                  className="max-w-full max-h-full object-contain"
-                />
-                
-                <Button
-                  onClick={prevImage}
-                  variant="outline"
-                  size="icon"
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
-                >
-                  <ChevronLeft size={20} />
-                </Button>
-                
-                <Button
-                  onClick={nextImage}
-                  variant="outline"
-                  size="icon"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-black"
-                >
-                  <ChevronRight size={20} />
-                </Button>
-              </div>
-              
-              {/* Thumbnail Images */}
-              <div className="flex space-x-2 justify-center">
-                {productImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`w-16 h-16 rounded-lg flex items-center justify-center transition-all duration-300 overflow-hidden ${
-                      currentImageIndex === index 
-                        ? 'ring-2 ring-gold-400' 
-                        : 'glass-morphism hover:ring-1 hover:ring-gold-400/50'
-                    }`}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {images.map((image, index) => (
+                    <CarouselItem key={index}>
+                      <div className="glass-morphism rounded-2xl p-8 h-96 flex items-center justify-center">
+                        <img 
+                          src={image} 
+                          alt={`Galaxy A16 ${index + 1}`}
+                          className="max-w-full max-h-full object-contain rounded-lg"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
 
-            {/* Product Details */}
             <div className="space-y-6">
               <div>
-                <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-                  Samsung
-                </div>
-                <h1 className="text-4xl font-bold text-white mb-4">
-                  Galaxy A16
+                <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+                  <span className="text-shimmer">Samsung Galaxy A16</span>
                 </h1>
-                <div className="text-3xl font-bold text-gold-400 mb-6">
-                  Rs. {price.toLocaleString()}
+                <div className="flex items-center gap-2 mb-4">
+                  {[...Array(4)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
+                  ))}
+                  <Star className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-400 ml-2">(4.3/5 - 95 reviews)</span>
                 </div>
               </div>
 
-              {/* Storage Display */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white">Storage Configuration</h3>
-                <div className="inline-block">
-                  <div className="px-6 py-3 rounded-full font-semibold bg-gradient-gold text-black">
-                    {storage}
-                  </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Choose Variant:</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {variants.map((variant) => (
+                    <button
+                      key={variant.name}
+                      onClick={() => setSelectedVariant(variant.name)}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        selectedVariant === variant.name
+                          ? 'border-gold-400 bg-gold-400/10 text-gold-400'
+                          : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                      }`}
+                    >
+                      <div className="font-medium">{variant.name}</div>
+                      <div className="text-sm">Rs. {variant.price.toLocaleString()}</div>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Product Features */}
-              <div className="glass-morphism rounded-2xl p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Key Features</h3>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• Modern Samsung design</li>
-                  <li>• Reliable performance for daily use</li>
-                  <li>• Quality camera system</li>
-                  <li>• Clear and bright display</li>
-                  <li>• Efficient battery life</li>
-                </ul>
+              <div className="text-3xl font-bold text-gold-400">
+                Rs. {variants.find(v => v.name === selectedVariant)?.price.toLocaleString()}
               </div>
 
-              {/* Add to Cart */}
               <Button 
                 onClick={handleAddToCart}
-                className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-bold py-4 text-lg rounded-full transition-all duration-300 hover:scale-105"
+                className="w-full bg-gold-400 hover:bg-gold-500 text-black font-semibold py-3 text-lg"
               >
-                <ShoppingCart size={20} className="mr-2" />
-                Add to Cart - Rs. {price.toLocaleString()}
+                <ShoppingCart className="mr-2" size={20} />
+                Add to Cart
               </Button>
+
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 py-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Shield className="w-4 h-4 text-green-400" />
+                  <span>1 Year Warranty</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <RotateCcw className="w-4 h-4 text-purple-400" />
+                  <span>7 Day Return</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Star className="w-4 h-4 text-gold-400" />
+                  <span>Great Value</span>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4">Key Features:</h3>
+                <ul className="space-y-2">
+                  {keyFeatures.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-3 text-gray-300">
+                      <div className="w-2 h-2 bg-gold-400 rounded-full"></div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

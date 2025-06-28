@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, Star, Shield, Truck, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Shield, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
 import {
   Carousel,
   CarouselContent,
@@ -16,14 +16,14 @@ import {
 } from "@/components/ui/carousel";
 
 const SamsungGalaxyZFold5 = () => {
-  const { toast } = useToast();
-  const { addToCart } = useCart();
   const [selectedVariant, setSelectedVariant] = useState('12GB/256GB');
+  const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const variants = [
     { name: '12GB/256GB', price: 515220 },
-    { name: '12GB/512GB', price: 565220 },
-    { name: '12GB/1TB', price: 615220 }
+    { name: '12GB/512GB', price: 575220 },
+    { name: '12GB/1TB', price: 655220 }
   ];
 
   const images = [
@@ -33,13 +33,13 @@ const SamsungGalaxyZFold5 = () => {
   ];
 
   const keyFeatures = [
-    "7.6\" Dynamic AMOLED 2X Main Display",
-    "6.2\" Cover Display",
-    "Qualcomm Snapdragon 8 Gen 2",
-    "Triple Camera System 50MP+12MP+10MP",
-    "4400mAh Battery with 25W Fast Charging",
-    "S Pen Support",
-    "IPX8 Water Resistance"
+    "7.6\" Foldable Dynamic AMOLED 2X",
+    "6.2\" Cover Screen",
+    "Snapdragon 8 Gen 2 for Galaxy",
+    "Triple Camera 50MP+10MP+12MP",
+    "4400mAh Battery",
+    "25W Fast Charging",
+    "S Pen Compatible"
   ];
 
   const handleAddToCart = () => {
@@ -54,7 +54,7 @@ const SamsungGalaxyZFold5 = () => {
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `Galaxy Z Fold 5 (${selectedVariant}) has been added to your cart`,
+      description: `Samsung Galaxy Z Fold 5 (${selectedVariant}) has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
   };
@@ -73,7 +73,6 @@ const SamsungGalaxyZFold5 = () => {
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Product Images */}
             <div className="space-y-4">
               <Carousel className="w-full">
                 <CarouselContent>
@@ -94,7 +93,6 @@ const SamsungGalaxyZFold5 = () => {
               </Carousel>
             </div>
 
-            {/* Product Details */}
             <div className="space-y-6">
               <div>
                 <h1 className="text-4xl lg:text-5xl font-bold mb-4">
@@ -104,13 +102,12 @@ const SamsungGalaxyZFold5 = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
                   ))}
-                  <span className="text-gray-400 ml-2">(4.8/5 - 124 reviews)</span>
+                  <span className="text-gray-400 ml-2">(4.9/5 - 163 reviews)</span>
                 </div>
               </div>
 
-              {/* Variant Selection */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">Choose Storage:</h3>
+                <h3 className="text-lg font-semibold text-white mb-3">Choose Variant:</h3>
                 <div className="grid grid-cols-3 gap-3">
                   {variants.map((variant) => (
                     <button
@@ -129,12 +126,10 @@ const SamsungGalaxyZFold5 = () => {
                 </div>
               </div>
 
-              {/* Price */}
               <div className="text-3xl font-bold text-gold-400">
                 Rs. {variants.find(v => v.name === selectedVariant)?.price.toLocaleString()}
               </div>
 
-              {/* Add to Cart */}
               <Button 
                 onClick={handleAddToCart}
                 className="w-full bg-gold-400 hover:bg-gold-500 text-black font-semibold py-3 text-lg"
@@ -143,15 +138,10 @@ const SamsungGalaxyZFold5 = () => {
                 Add to Cart
               </Button>
 
-              {/* Trust Badges */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 py-6">
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Shield className="w-4 h-4 text-green-400" />
-                  <span>2 Year Warranty</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Truck className="w-4 h-4 text-blue-400" />
-                  <span>Free Delivery</span>
+                  <span>1 Year Warranty</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <RotateCcw className="w-4 h-4 text-purple-400" />
@@ -159,11 +149,10 @@ const SamsungGalaxyZFold5 = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Star className="w-4 h-4 text-gold-400" />
-                  <span>Premium Quality</span>
+                  <span>Foldable Innovation</span>
                 </div>
               </div>
 
-              {/* Key Features */}
               <div>
                 <h3 className="text-xl font-semibold text-white mb-4">Key Features:</h3>
                 <ul className="space-y-2">

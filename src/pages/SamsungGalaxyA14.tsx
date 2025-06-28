@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, Star, Shield, Truck, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Star, Shield, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
@@ -139,14 +139,10 @@ const SamsungGalaxyA14 = () => {
                 Add to Cart
               </Button>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 py-6">
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Shield className="w-4 h-4 text-green-400" />
                   <span>1 Year Warranty</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Truck className="w-4 h-4 text-blue-400" />
-                  <span>Free Delivery</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <RotateCcw className="w-4 h-4 text-purple-400" />
