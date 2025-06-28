@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight, Star, Shield, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
@@ -20,6 +20,16 @@ const IPhone16e = () => {
     { storage: "128GB", price: 179999 },
     { storage: "256GB", price: 189999 },
     { storage: "1TB", price: 229999 }
+  ];
+
+  const keyFeatures = [
+    "A17 chip with 4-core GPU",
+    "6.1-inch Super Retina XDR display",
+    "Advanced dual-camera system with 48MP Fusion camera",
+    "Face ID for secure authentication",
+    "USB-C connectivity",
+    "All-day battery life",
+    "iOS 18 compatibility"
   ];
 
   const handleAddToCart = () => {
@@ -109,6 +119,13 @@ const IPhone16e = () => {
                 <h1 className="text-4xl font-bold text-white mb-4">
                   iPhone 16e
                 </h1>
+                <div className="flex items-center gap-2 mb-4">
+                  {[...Array(4)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
+                  ))}
+                  <Star className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-400 ml-2">(4.6/5 - 178 reviews)</span>
+                </div>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
                   Rs. {variants[selectedVariant].price.toLocaleString()}
                 </div>
@@ -136,14 +153,30 @@ const IPhone16e = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 py-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Shield className="w-4 h-4 text-green-400" />
+                  <span>1 Year Warranty</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <RotateCcw className="w-4 h-4 text-purple-400" />
+                  <span>7 Day Return</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Star className="w-4 h-4 text-gold-400" />
+                  <span>Budget Friendly</span>
+                </div>
+              </div>
+
               <div className="glass-morphism rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Key Features</h3>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• A17 chip with 4-core GPU</li>
-                  <li>• 6.1-inch Super Retina XDR display</li>
-                  <li>• Advanced dual-camera system with 48MP Fusion camera</li>
-                  <li>• Face ID for secure authentication</li>
-                  <li>• USB-C connectivity</li>
+                <ul className="space-y-2">
+                  {keyFeatures.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-3 text-gray-300">
+                      <div className="w-2 h-2 bg-gold-400 rounded-full"></div>
+                      {feature}
+                    </li>
+                  ))}
                 </ul>
               </div>
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight, Star, Shield, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
@@ -25,6 +25,16 @@ const IPhone12Pro = () => {
     { storage: "4GB RAM - 64GB", price: 139999 },
     { storage: "4GB RAM - 128GB", price: 144999 },
     { storage: "4GB RAM - 256GB", price: 154999 }
+  ];
+
+  const keyFeatures = [
+    "A14 Bionic chip with Next-generation Neural Engine",
+    "6.1-inch Super Retina XDR display",
+    "Pro camera system with 12MP Ultra Wide, Wide, and Telephoto cameras",
+    "Face ID for secure authentication",
+    "5G capability",
+    "LiDAR Scanner for enhanced AR",
+    "Professional video recording with Dolby Vision"
   ];
 
   const handleAddToCart = () => {
@@ -117,6 +127,13 @@ const IPhone12Pro = () => {
                 <h1 className="text-4xl font-bold text-white mb-4">
                   iPhone 12 Pro
                 </h1>
+                <div className="flex items-center gap-2 mb-4">
+                  {[...Array(4)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
+                  ))}
+                  <Star className="w-5 h-5 text-gray-400" />
+                  <span className="text-gray-400 ml-2">(4.7/5 - 289 reviews)</span>
+                </div>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
                   Rs. {variants[selectedVariant].price.toLocaleString()}
                 </div>
@@ -145,15 +162,31 @@ const IPhone12Pro = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 py-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Shield className="w-4 h-4 text-green-400" />
+                  <span>1 Year Warranty</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <RotateCcw className="w-4 h-4 text-purple-400" />
+                  <span>7 Day Return</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Star className="w-4 h-4 text-gold-400" />
+                  <span>Pro Model</span>
+                </div>
+              </div>
+
               {/* Product Features */}
               <div className="glass-morphism rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Key Features</h3>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• A14 Bionic chip with Next-generation Neural Engine</li>
-                  <li>• 6.1-inch Super Retina XDR display</li>
-                  <li>• Pro camera system with 12MP Ultra Wide, Wide, and Telephoto cameras</li>
-                  <li>• Face ID for secure authentication</li>
-                  <li>• 5G capability</li>
+                <ul className="space-y-2">
+                  {keyFeatures.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-3 text-gray-300">
+                      <div className="w-2 h-2 bg-gold-400 rounded-full"></div>
+                      {feature}
+                    </li>
+                  ))}
                 </ul>
               </div>
 
