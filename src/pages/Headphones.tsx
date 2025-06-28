@@ -7,26 +7,26 @@ import ProductCard from '@/components/ProductCard';
 const Headphones = () => {
   const roninProducts = [
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Ronin R-920",
+      price: "Rs. 3,500",
       image: "🎧",
       category: "Ronin"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Ronin R-810",
+      price: "Rs. 2,800",
       image: "🎧",
       category: "Ronin"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Ronin R-750",
+      price: "Rs. 2,200",
       image: "🎧",
       category: "Ronin"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Ronin R-650",
+      price: "Rs. 1,800",
       image: "🎧",
       category: "Ronin"
     }
@@ -34,26 +34,26 @@ const Headphones = () => {
 
   const audionicProducts = [
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Audionic Blue Beat BB-10",
+      price: "Rs. 4,500",
       image: "🎧",
       category: "Audionic"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Audionic Pace P-5",
+      price: "Rs. 3,200",
       image: "🎧",
       category: "Audionic"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Audionic Max M-8",
+      price: "Rs. 2,900",
       image: "🎧",
       category: "Audionic"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Audionic Solo S-15",
+      price: "Rs. 2,100",
       image: "🎧",
       category: "Audionic"
     }
@@ -61,50 +61,50 @@ const Headphones = () => {
 
   const moreHeadphones = [
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "JBL Tune 760NC",
+      price: "Rs. 8,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Boat Rockerz 450",
+      price: "Rs. 1,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Skullcandy Hesh 3",
+      price: "Rs. 6,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Marshall Major IV",
+      price: "Rs. 12,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Audio-Technica ATH-M40x",
+      price: "Rs. 8,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Bose QuietComfort 35 II",
+      price: "Rs. 29,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Beats Studio3 Wireless",
+      price: "Rs. 24,999",
       image: "🎧",
       category: "More Headphones"
     },
     {
-      title: "Unknown",
-      price: "Rs. 10",
+      title: "Plantronics BackBeat Pro 2",
+      price: "Rs. 14,999",
       image: "🎧",
       category: "More Headphones"
     }

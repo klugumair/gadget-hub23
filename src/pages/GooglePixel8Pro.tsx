@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 
-const SamsungGalaxyS24Ultra = () => {
+const GooglePixel8Pro = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const { addToCart } = useCart();
@@ -17,33 +17,33 @@ const SamsungGalaxyS24Ultra = () => {
   const productImages = ["📱", "📱", "📱", "📱"];
 
   const variants = [
-    { storage: "256GB", price: 541999 },
-    { storage: "512GB", price: 581999 },
-    { storage: "1TB", price: 641999 }
+    { storage: "128GB", price: 115000 },
+    { storage: "256GB", price: 125000 },
+    { storage: "512GB", price: 145000 }
   ];
 
   const keyFeatures = [
-    "Snapdragon 8 Gen 3 for Galaxy processor",
-    "6.8-inch Dynamic AMOLED 2X display with 120Hz",
-    "200MP main camera with 100x Space Zoom",
-    "Built-in S Pen with AI-powered features",
-    "5000mAh battery with 45W fast charging",
-    "IP68 water and dust resistance",
-    "One UI 6.1 based on Android 14",
-    "Galaxy AI features for enhanced productivity"
+    "Google Tensor G3 chip with Titan M security",
+    "6.7-inch LTPO OLED display with 120Hz refresh rate",
+    "50MP main camera with computational photography",
+    "Magic Eraser and Best Take AI features",
+    "24-hour battery life with adaptive charging",
+    "IP68 water resistance rating",
+    "Pure Android 14 with 7 years of updates",
+    "Live Translate and Call Screen features"
   ];
 
   const handleAddToCart = () => {
     addToCart({
-      title: `Samsung Galaxy S24 Ultra (${variants[selectedVariant].storage})`,
+      title: `Google Pixel 8 Pro (${variants[selectedVariant].storage})`,
       price: variants[selectedVariant].price,
       image: productImages[0],
-      category: "Flagship Android"
+      category: "AI Photography"
     });
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `Samsung Galaxy S24 Ultra (${variants[selectedVariant].storage}) has been added to your cart`,
+      description: `Google Pixel 8 Pro (${variants[selectedVariant].storage}) has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
   };
@@ -115,16 +115,16 @@ const SamsungGalaxyS24Ultra = () => {
             <div className="space-y-6">
               <div>
                 <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-                  Flagship Android
+                  AI Photography
                 </div>
                 <h1 className="text-4xl font-bold text-white mb-4">
-                  Samsung Galaxy S24 Ultra
+                  Google Pixel 8 Pro
                 </h1>
                 <div className="flex items-center gap-2 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
                   ))}
-                  <span className="text-gray-400 ml-2">(4.7/5 - 1,923 reviews)</span>
+                  <span className="text-gray-400 ml-2">(4.6/5 - 1,542 reviews)</span>
                 </div>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
                   Rs. {variants[selectedVariant].price.toLocaleString()}
@@ -197,4 +197,4 @@ const SamsungGalaxyS24Ultra = () => {
   );
 };
 
-export default SamsungGalaxyS24Ultra;
+export default GooglePixel8Pro;

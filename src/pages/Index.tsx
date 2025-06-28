@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import HeroSection from '@/components/HeroSection';
 import ProductSection from '@/components/ProductSection';
@@ -11,40 +12,46 @@ const Index = () => {
       title: "iPhone 15 Pro Max",
       price: "Rs. 4,72,000",
       image: "📱",
-      category: "Premium Smartphone"
+      category: "Premium Smartphone",
+      link: "/iphone-15-pro-max"
     },
     {
       title: "Samsung Galaxy S24 Ultra",
       price: "Rs. 5,41,999",
       image: "📱",
-      category: "Flagship Android"
+      category: "Flagship Android",
+      link: "/samsung-galaxy-s24-ultra"
     },
     {
       title: "Google Pixel 8 Pro",
       price: "Rs. 1,15,000",
       image: "📱",
-      category: "AI Photography"
+      category: "AI Photography",
+      link: "/google-pixel-8-pro"
     }
   ];
 
   const coverProducts = [
     {
       title: "Luxury Leather Case",
-      price: "Rs. 58,999",
+      price: "Rs. 1,500",
       image: "🛡️",
-      category: "Premium Protection"
+      category: "Premium Protection",
+      link: "/luxury-leather-case"
     },
     {
       title: "Carbon Fiber Shield",
-      price: "Rs. 46,999",
+      price: "Rs. 2,000",
       image: "🛡️",
-      category: "Ultra Durable"
+      category: "Ultra Durable",
+      link: "/carbon-fiber-shield"
     },
     {
       title: "Crystal Clear Armor",
-      price: "Rs. 37,999",
+      price: "Rs. 3,000",
       image: "🛡️",
-      category: "Transparent Guard"
+      category: "Transparent Guard",
+      link: "/crystal-clear-armor"
     }
   ];
 
@@ -53,19 +60,22 @@ const Index = () => {
       title: "AirPods Max Gold",
       price: "Rs. 1,59,999",
       image: "🎧",
-      category: "Wireless Premium"
+      category: "Wireless Premium",
+      link: "/airpods-max-gold"
     },
     {
       title: "Sony WH-1000XM5",
       price: "Rs. 1,16,999",
       image: "🎧",
-      category: "Noise Canceling"
+      category: "Noise Canceling",
+      link: "/sony-wh-1000xm5"
     },
     {
       title: "Sennheiser Momentum 4",
       price: "Rs. 1,01,999",
       image: "🎧",
-      category: "Audiophile Grade"
+      category: "Audiophile Grade",
+      link: "/sennheiser-momentum-4"
     }
   ];
 

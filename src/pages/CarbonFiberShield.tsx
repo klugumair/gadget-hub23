@@ -8,42 +8,42 @@ import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 
-const SamsungGalaxyS24Ultra = () => {
+const CarbonFiberShield = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const { addToCart } = useCart();
   const { toast } = useToast();
 
-  const productImages = ["📱", "📱", "📱", "📱"];
+  const productImages = ["🛡️", "🛡️", "🛡️", "🛡️"];
 
   const variants = [
-    { storage: "256GB", price: 541999 },
-    { storage: "512GB", price: 581999 },
-    { storage: "1TB", price: 641999 }
+    { compatibility: "iPhone 15 Series", price: 2000 },
+    { compatibility: "iPhone 14 Series", price: 2000 },
+    { compatibility: "Samsung Galaxy S24 Series", price: 2000 }
   ];
 
   const keyFeatures = [
-    "Snapdragon 8 Gen 3 for Galaxy processor",
-    "6.8-inch Dynamic AMOLED 2X display with 120Hz",
-    "200MP main camera with 100x Space Zoom",
-    "Built-in S Pen with AI-powered features",
-    "5000mAh battery with 45W fast charging",
-    "IP68 water and dust resistance",
-    "One UI 6.1 based on Android 14",
-    "Galaxy AI features for enhanced productivity"
+    "Real carbon fiber construction",
+    "Ultra-lightweight and strong",
+    "Military-grade drop protection",
+    "Raised edges for camera protection",
+    "Precise cutouts for all ports",
+    "Non-slip textured grip",
+    "Heat dissipation technology",
+    "Fade-resistant coating"
   ];
 
   const handleAddToCart = () => {
     addToCart({
-      title: `Samsung Galaxy S24 Ultra (${variants[selectedVariant].storage})`,
+      title: `Carbon Fiber Shield (${variants[selectedVariant].compatibility})`,
       price: variants[selectedVariant].price,
       image: productImages[0],
-      category: "Flagship Android"
+      category: "Ultra Durable"
     });
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `Samsung Galaxy S24 Ultra (${variants[selectedVariant].storage}) has been added to your cart`,
+      description: `Carbon Fiber Shield (${variants[selectedVariant].compatibility}) has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
   };
@@ -115,16 +115,16 @@ const SamsungGalaxyS24Ultra = () => {
             <div className="space-y-6">
               <div>
                 <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-                  Flagship Android
+                  Ultra Durable
                 </div>
                 <h1 className="text-4xl font-bold text-white mb-4">
-                  Samsung Galaxy S24 Ultra
+                  Carbon Fiber Shield
                 </h1>
                 <div className="flex items-center gap-2 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
                   ))}
-                  <span className="text-gray-400 ml-2">(4.7/5 - 1,923 reviews)</span>
+                  <span className="text-gray-400 ml-2">(4.7/5 - 289 reviews)</span>
                 </div>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
                   Rs. {variants[selectedVariant].price.toLocaleString()}
@@ -132,7 +132,7 @@ const SamsungGalaxyS24Ultra = () => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-xl font-bold text-white">Choose Storage</h3>
+                <h3 className="text-xl font-bold text-white">Choose Compatibility</h3>
                 <div className="grid gap-3">
                   {variants.map((variant, index) => (
                     <button
@@ -145,7 +145,7 @@ const SamsungGalaxyS24Ultra = () => {
                       }`}
                     >
                       <div className="flex justify-between items-center">
-                        <div className="text-white font-semibold">{variant.storage}</div>
+                        <div className="text-white font-semibold">{variant.compatibility}</div>
                         <div className="text-gold-400 font-bold">Rs. {variant.price.toLocaleString()}</div>
                       </div>
                     </button>
@@ -197,4 +197,4 @@ const SamsungGalaxyS24Ultra = () => {
   );
 };
 
-export default SamsungGalaxyS24Ultra;
+export default CarbonFiberShield;

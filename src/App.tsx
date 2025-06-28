@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -60,6 +59,13 @@ import IPhone16Plus from "./pages/IPhone16Plus";
 import IPhone16Pro from "./pages/IPhone16Pro";
 import IPhone16ProMax from "./pages/IPhone16ProMax";
 import IPhoneXR from "./pages/IPhoneXR";
+import GooglePixel8Pro from "./pages/GooglePixel8Pro";
+import LuxuryLeatherCase from "./pages/LuxuryLeatherCase";
+import CarbonFiberShield from "./pages/CarbonFiberShield";
+import CrystalClearArmor from "./pages/CrystalClearArmor";
+import AirPodsMaxGold from "./pages/AirPodsMaxGold";
+import SonyWH1000XM5 from "./pages/SonyWH1000XM5";
+import SennheiserMomentum4 from "./pages/SennheiserMomentum4";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +87,19 @@ const App = () => (
             <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
             <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
             <Route path="/phones/:category/:brand" element={<BrandDetail />} />
+            
+            {/* Home Page Product Routes */}
+            <Route path="/iphone-15-pro-max" element={<IPhone15ProMax />} />
+            <Route path="/samsung-galaxy-s24-ultra" element={<SamsungGalaxyS24Ultra />} />
+            <Route path="/google-pixel-8-pro" element={<GooglePixel8Pro />} />
+            <Route path="/luxury-leather-case" element={<LuxuryLeatherCase />} />
+            <Route path="/carbon-fiber-shield" element={<CarbonFiberShield />} />
+            <Route path="/crystal-clear-armor" element={<CrystalClearArmor />} />
+            <Route path="/airpods-max-gold" element={<AirPodsMaxGold />} />
+            <Route path="/sony-wh-1000xm5" element={<SonyWH1000XM5 />} />
+            <Route path="/sennheiser-momentum-4" element={<SennheiserMomentum4 />} />
+            
+            {/* Samsung Routes */}
             <Route path="/phones/new/samsung/galaxy-a06" element={<SamsungGalaxyA06 />} />
             <Route path="/phones/new/samsung/galaxy-a25-5g" element={<SamsungGalaxyA25 />} />
             <Route path="/phones/new/samsung/galaxy-a25" element={<SamsungGalaxyA25 />} />
@@ -110,6 +129,8 @@ const App = () => (
             <Route path="/phones/new/samsung/galaxy-s25-edge" element={<SamsungGalaxyS24Ultra />} />
             <Route path="/phones/new/samsung/galaxy-a26-5g" element={<SamsungGalaxyA25 />} />
             <Route path="/phones/new/samsung/galaxy-a36-5g" element={<SamsungGalaxyA56 />} />
+            
+            {/* iPhone Routes */}
             <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
             <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max" element={<IPhone11ProMax />} />
@@ -137,6 +158,7 @@ const App = () => (
             <Route path="/phones/new/iphone/iphone-xr" element={<IPhoneXR />} />
             <Route path="/phones/new/iphone/iphone-11-64gb" element={<IPhone11_64GB />} />
             <Route path="/phones/new/iphone/iphone-11-pro-max-256gb" element={<IPhone11ProMax256GB />} />
+            
             <Route path="/covers" element={<Covers />} />
             <Route path="/headphones" element={<Headphones />} />
             <Route path="/cart" element={<Cart />} />

@@ -17,19 +17,20 @@ const IPhone15ProMax = () => {
   const productImages = ["📱", "📱", "📱", "📱"];
 
   const variants = [
-    { storage: "8GB RAM - 128GB", price: 209999 },
-    { storage: "8GB RAM - 256GB", price: 219999 },
-    { storage: "8GB RAM - 1TB", price: 259999 }
+    { storage: "256GB", price: 472000 },
+    { storage: "512GB", price: 502000 },
+    { storage: "1TB", price: 562000 }
   ];
 
   const keyFeatures = [
     "A17 Pro chip with 6-core GPU",
     "6.7-inch Super Retina XDR display with ProMotion",
     "Pro camera system with 48MP Main, Ultra Wide, and Telephoto",
+    "5x optical zoom with titanium design",
     "Face ID for secure authentication",
-    "USB-C connectivity with Thunderbolt",
-    "All-day battery life",
-    "Professional video recording capabilities"
+    "USB-C with USB 3 for faster transfer speeds",
+    "All-day battery life with wireless charging",
+    "iOS 17 with advanced AI features"
   ];
 
   const handleAddToCart = () => {
@@ -62,10 +63,10 @@ const IPhone15ProMax = () => {
       <section className="py-32">
         <div className="container mx-auto px-6">
           <div className="mb-8">
-            <Link to="/phones/new/iphone" className="inline-block">
+            <Link to="/" className="inline-block">
               <Button variant="ghost" className="text-gold-400 hover:text-gold-300">
                 <ArrowLeft size={20} className="mr-2" />
-                Back to iPhone
+                Back to Home
               </Button>
             </Link>
           </div>
@@ -114,7 +115,7 @@ const IPhone15ProMax = () => {
             <div className="space-y-6">
               <div>
                 <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-                  iPhone
+                  Premium Smartphone
                 </div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   iPhone 15 Pro Max
@@ -123,7 +124,7 @@ const IPhone15ProMax = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
                   ))}
-                  <span className="text-gray-400 ml-2">(4.8/5 - 234 reviews)</span>
+                  <span className="text-gray-400 ml-2">(4.9/5 - 2,847 reviews)</span>
                 </div>
                 <div className="text-3xl font-bold text-gold-400 mb-6">
                   Rs. {variants[selectedVariant].price.toLocaleString()}
@@ -163,7 +164,7 @@ const IPhone15ProMax = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Star className="w-4 h-4 text-gold-400" />
-                  <span>Pro Max</span>
+                  <span>Premium Quality</span>
                 </div>
               </div>
 

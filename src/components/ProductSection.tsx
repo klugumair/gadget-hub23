@@ -46,11 +46,18 @@ const ProductSection: React.FC<ProductSectionProps> = ({
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
-            <div key={index} className="cursor-pointer" onClick={() => {
-              // Make products clickable - for now just show a placeholder behavior
-              console.log(`Clicked on ${product.title}`);
-            }}>
-              <ProductCard {...product} />
+            <div key={index}>
+              {product.link ? (
+                <Link to={product.link} className="block">
+                  <ProductCard {...product} />
+                </Link>
+              ) : (
+                <div className="cursor-pointer" onClick={() => {
+                  console.log(`Clicked on ${product.title}`);
+                }}>
+                  <ProductCard {...product} />
+                </div>
+              )}
             </div>
           ))}
         </div>
