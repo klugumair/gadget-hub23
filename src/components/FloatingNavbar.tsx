@@ -1,10 +1,16 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import AuthModal from './AuthModal';
 
 const FloatingNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const { user, signOut, loading } = useAuth();
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -21,6 +27,16 @@ const FloatingNavbar = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const openAuthModal = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    closeMobileMenu();
   };
 
   return (
@@ -62,10 +78,40 @@ const FloatingNavbar = () => {
                 </Button>
               </Link>
               
-              {/* Desktop Shop Now Button */}
-              <Button className="hidden md:block bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-6 py-2 rounded-full transition-all duration-300 hover:scale-105">
-                Shop Now
-              </Button>
+              {/* Authentication Section */}
+              {loading ? (
+                <div className="hidden md:block w-8 h-8 rounded-full bg-white/20 animate-pulse" />
+              ) : user ? (
+                <div className="hidden md:flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 text-white">
+                    <User size={16} />
+                    <span className="text-sm">Welcome!</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    onClick={handleSignOut}
+                    className="text-white hover:text-gold-400 p-2"
+                  >
+                    <LogOut size={16} />
+                  </Button>
+                </div>
+              ) : (
+                <div className="hidden md:flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => openAuthModal('login')}
+                    className="text-white hover:text-gold-400 font-medium"
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    onClick={() => openAuthModal('signup')}
+                    className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              )}
               
               {/* Mobile Menu Button */}
               <Button 
@@ -83,13 +129,11 @@ const FloatingNavbar = () => {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-          {/* Backdrop */}
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
             onClick={closeMobileMenu}
           ></div>
           
-          {/* Mobile Menu */}
           <div className="fixed top-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm">
             <div className="glass-morphism rounded-2xl p-6 shadow-2xl">
               <div className="flex flex-col space-y-4">
@@ -115,18 +159,59 @@ const FloatingNavbar = () => {
                   )
                 ))}
                 
-                {/* Mobile Shop Now Button */}
-                <Button 
-                  className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105 mt-4"
-                  onClick={closeMobileMenu}
-                >
-                  Shop Now
-                </Button>
+                {/* Mobile Authentication */}
+                {loading ? (
+                  <div className="w-full h-10 rounded-lg bg-white/20 animate-pulse mt-4" />
+                ) : user ? (
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center space-x-2 text-white py-2 px-4">
+                      <User size={16} />
+                      <span className="text-sm">Welcome!</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      onClick={handleSignOut}
+                      className="w-full text-white hover:text-gold-400 justify-start"
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-4 space-y-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        openAuthModal('login');
+                        closeMobileMenu();
+                      }}
+                      className="w-full text-white hover:text-gold-400 justify-center"
+                    >
+                      Login
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        openAuthModal('signup');
+                        closeMobileMenu();
+                      }}
+                      className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
+                    >
+                      Sign Up
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authMode}
+      />
     </>
   );
 };
