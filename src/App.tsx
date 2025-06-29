@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -115,17 +116,17 @@ const App = () => (
             <Route path="/phones/new/samsung/galaxy-s24-ultra" element={<SamsungGalaxyS24Ultra />} />
             <Route path="/phones/new/samsung/galaxy-z-fold-5" element={<SamsungGalaxyZFold5 />} />
             <Route path="/phones/new/samsung/galaxy-a14" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-a15" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-a34-5g" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-a05" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-a05s" element={<SamsungGalaxyA14 />} />
+            <Route path="/phones/new/samsung/galaxy-a15" element={<SamsungGalaxyA25 />} />
+            <Route path="/phones/new/samsung/galaxy-a34-5g" element={<SamsungGalaxyA56 />} />
+            <Route path="/phones/new/samsung/galaxy-a05" element={<SamsungGalaxyA06 />} />
+            <Route path="/phones/new/samsung/galaxy-a05s" element={<SamsungGalaxyA06 />} />
             <Route path="/phones/new/samsung/galaxy-f14" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-f34" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-m54-5g" element={<SamsungGalaxyA14 />} />
-            <Route path="/phones/new/samsung/galaxy-m34-5g" element={<SamsungGalaxyA14 />} />
+            <Route path="/phones/new/samsung/galaxy-f34" element={<SamsungGalaxyA56 />} />
+            <Route path="/phones/new/samsung/galaxy-m54-5g" element={<SamsungGalaxyA56 />} />
+            <Route path="/phones/new/samsung/galaxy-m34-5g" element={<SamsungGalaxyA56 />} />
             <Route path="/phones/new/samsung/galaxy-z-flip-6" element={<SamsungGalaxyZFold5 />} />
             <Route path="/phones/new/samsung/galaxy-z-fold-6" element={<SamsungGalaxyZFold5 />} />
-            <Route path="/phones/new/samsung/galaxy-a05-new" element={<SamsungGalaxyA14 />} />
+            <Route path="/phones/new/samsung/galaxy-a05-new" element={<SamsungGalaxyA06 />} />
             <Route path="/phones/new/samsung/galaxy-s25-ultra" element={<SamsungGalaxyS24Ultra />} />
             <Route path="/phones/new/samsung/galaxy-s25" element={<SamsungGalaxyS24FE />} />
             <Route path="/phones/new/samsung/galaxy-s25-edge" element={<SamsungGalaxyS24Ultra />} />
