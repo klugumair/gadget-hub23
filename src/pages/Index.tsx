@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import HeroSection from '@/components/HeroSection';
 import ProductSection from '@/components/ProductSection';
 import Footer from '@/components/Footer';
+import TawkToWidget from '@/components/TawkToWidget';
 
 const Index = () => {
   const phoneProducts = [
@@ -111,6 +113,7 @@ const Index = () => {
       />
       
       <Footer />
+      <TawkToWidget />
     </div>
   );
 };
