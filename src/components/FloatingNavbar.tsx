@@ -43,6 +43,23 @@ const FloatingNavbar = () => {
     }
   };
 
+  const getDisplayName = () => {
+    if (user?.user_metadata?.username) {
+      return user.user_metadata.username;
+    }
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name;
+    }
+    if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return 'User';
+  };
+
+  const getAvatarUrl = () => {
+    return user?.user_metadata?.avatar_url || '';
+  };
+
   return (
     <>
       <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
@@ -86,11 +103,20 @@ const FloatingNavbar = () => {
               {loading ? (
                 <div className="hidden md:block w-8 h-8 rounded-full bg-white/20 animate-pulse" />
               ) : user ? (
-                <div className="hidden md:flex items-center space-x-2">
-                  <Link to="/profile">
-                    <Button variant="ghost" className="text-white hover:text-gold-400 p-2">
-                      <User size={16} />
-                    </Button>
+                <div className="hidden md:flex items-center space-x-3">
+                  <span className="text-white text-sm font-medium">{getDisplayName()}</span>
+                  <Link to="/profile" className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-black text-sm font-bold overflow-hidden border-2 border-gold-400 hover:border-gold-300 transition-colors">
+                      {getAvatarUrl() ? (
+                        <img 
+                          src={getAvatarUrl()} 
+                          alt="Profile" 
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <User size={16} />
+                      )}
+                    </div>
                   </Link>
                   <Button
                     variant="ghost"
@@ -169,6 +195,20 @@ const FloatingNavbar = () => {
                   <div className="w-full h-10 rounded-lg bg-white/20 animate-pulse mt-4" />
                 ) : user ? (
                   <div className="mt-4 space-y-2">
+                    <div className="flex items-center space-x-3 py-2 px-4">
+                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-black text-sm font-bold overflow-hidden">
+                        {getAvatarUrl() ? (
+                          <img 
+                            src={getAvatarUrl()} 
+                            alt="Profile" 
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          <User size={16} />
+                        )}
+                      </div>
+                      <span className="text-white text-sm font-medium">{getDisplayName()}</span>
+                    </div>
                     <Link
                       to="/profile"
                       className="flex items-center space-x-2 text-white py-2 px-4 hover:bg-gold-400/10 rounded-lg"

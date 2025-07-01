@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Upload, Save } from 'lucide-react';
+import { User, Mail, Upload, Save, Camera } from 'lucide-react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import { Navigate } from 'react-router-dom';
 
@@ -119,10 +119,46 @@ const Profile = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      // For now, we'll show a message about implementing Supabase Storage
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid File",
+          description: "Please select an image file",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      setAvatarUrl(data.publicUrl);
+      
       toast({
-        title: "Upload Feature",
-        description: "Image upload will be implemented with Supabase Storage",
+        title: "Success",
+        description: "Profile image uploaded successfully",
       });
       
     } catch (error) {
@@ -169,12 +205,12 @@ const Profile = () => {
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-gradient-gold flex items-center justify-center text-black text-2xl font-bold mb-4 overflow-hidden">
+                <div className="w-24 h-24 rounded-full bg-gradient-gold flex items-center justify-center text-black text-2xl font-bold mb-4 overflow-hidden border-4 border-gold-400">
                   {avatarUrl ? (
                     <img 
                       src={avatarUrl} 
                       alt="Profile" 
-                      className="w-24 h-24 rounded-full object-cover"
+                      className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     <User size={32} />
@@ -182,9 +218,13 @@ const Profile = () => {
                 </div>
                 <label 
                   htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 bg-gold-400 hover:bg-gold-500 text-black p-2 rounded-full cursor-pointer transition-colors"
+                  className="absolute bottom-0 right-0 bg-gold-400 hover:bg-gold-500 text-black p-2 rounded-full cursor-pointer transition-colors shadow-lg"
                 >
-                  <Upload size={16} />
+                  {uploading ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
+                  ) : (
+                    <Camera size={16} />
+                  )}
                 </label>
                 <input
                   id="avatar-upload"
@@ -196,7 +236,7 @@ const Profile = () => {
                 />
               </div>
               {uploading && (
-                <p className="text-gold-400 text-sm">Uploading...</p>
+                <p className="text-gold-400 text-sm">Uploading image...</p>
               )}
             </div>
 
@@ -229,20 +269,6 @@ const Profile = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                   placeholder="Enter your username or full name"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="avatar-url" className="text-white">
-                  Profile Image URL (Optional)
-                </Label>
-                <Input
-                  id="avatar-url"
-                  type="url"
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  className="mt-2 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                  placeholder="Enter image URL"
                 />
               </div>
 
