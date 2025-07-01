@@ -35,8 +35,12 @@ const FloatingNavbar = () => {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    closeMobileMenu();
+    try {
+      await signOut();
+      closeMobileMenu();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (

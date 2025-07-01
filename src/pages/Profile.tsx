@@ -42,9 +42,17 @@ const Profile = () => {
         .eq('id', user?.id)
         .single();
 
-      if (error) {
+      if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
-        // If profile doesn't exist, create a basic one
+        throw error;
+      }
+
+      if (data) {
+        setProfile(data);
+        setFullName(data.full_name || '');
+        setAvatarUrl(data.avatar_url || '');
+      } else {
+        // Create basic profile from user data
         const newProfile = {
           id: user?.id || '',
           email: user?.email || '',
@@ -54,10 +62,6 @@ const Profile = () => {
         setProfile(newProfile);
         setFullName(newProfile.full_name || '');
         setAvatarUrl(newProfile.avatar_url || '');
-      } else {
-        setProfile(data);
-        setFullName(data.full_name || '');
-        setAvatarUrl(data.avatar_url || '');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -72,13 +76,15 @@ const Profile = () => {
   };
 
   const updateProfile = async () => {
+    if (!user) return;
+    
     try {
       setSaving(true);
       const { error } = await supabase
         .from('profiles')
         .upsert({
-          id: user?.id,
-          email: user?.email,
+          id: user.id,
+          email: user.email,
           full_name: fullName,
           avatar_url: avatarUrl,
           updated_at: new Date().toISOString(),
@@ -92,6 +98,9 @@ const Profile = () => {
         title: "Success",
         description: "Profile updated successfully",
       });
+      
+      // Refresh profile data
+      await fetchProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
@@ -110,11 +119,7 @@ const Profile = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
-      
-      // For now, we'll use a placeholder for the upload functionality
-      // In a real implementation, you would upload to Supabase Storage
+      // For now, we'll show a message about implementing Supabase Storage
       toast({
         title: "Upload Feature",
         description: "Image upload will be implemented with Supabase Storage",
@@ -164,7 +169,7 @@ const Profile = () => {
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-gradient-gold flex items-center justify-center text-black text-2xl font-bold mb-4">
+                <div className="w-24 h-24 rounded-full bg-gradient-gold flex items-center justify-center text-black text-2xl font-bold mb-4 overflow-hidden">
                   {avatarUrl ? (
                     <img 
                       src={avatarUrl} 
@@ -258,6 +263,7 @@ const Profile = () => {
                 <p><span className="text-gold-400">User ID:</span> {user?.id}</p>
                 <p><span className="text-gold-400">Account Created:</span> {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}</p>
                 <p><span className="text-gold-400">Email Verified:</span> {user?.email_confirmed_at ? 'Yes' : 'No'}</p>
+                <p><span className="text-gold-400">Provider:</span> {user?.app_metadata?.provider || 'email'}</p>
               </div>
             </div>
           </div>

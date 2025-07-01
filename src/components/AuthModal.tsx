@@ -30,6 +30,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    
     setLoading(true);
 
     try {
@@ -47,6 +49,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
             description: "You have successfully logged in.",
           });
           onClose();
+          resetForm();
         }
       } else {
         // Validate password confirmation
@@ -73,9 +76,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
             description: "Please check your email to confirm your account.",
           });
           onClose();
+          resetForm();
         }
       }
     } catch (error) {
+      console.error('Auth error:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -87,10 +92,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
   };
 
   const handleGoogleSignIn = async () => {
+    if (loading) return;
+    
     setLoading(true);
     try {
       const { error } = await signInWithGoogle();
       if (error) {
+        console.error('Google auth error:', error);
         toast({
           title: "Google Sign In Error",
           description: error.message,
@@ -102,11 +110,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
           description: "You have successfully signed in with Google.",
         });
         onClose();
+        resetForm();
       }
     } catch (error) {
+      console.error('Google auth unexpected error:', error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: "An unexpected error occurred with Google sign in",
         variant: "destructive",
       });
     } finally {
@@ -146,6 +156,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
               size="sm"
               onClick={onClose}
               className="text-gray-400 hover:text-white"
+              disabled={loading}
             >
               <X size={20} />
             </Button>
@@ -163,7 +174,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Continue with Google
+            {loading ? 'Please wait...' : `Continue with Google`}
           </Button>
 
           <div className="flex items-center mb-4">
@@ -182,6 +193,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
+                  disabled={loading}
                   className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                   placeholder="Enter your username"
                 />
@@ -196,6 +208,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
                 className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 placeholder="Enter your email"
               />
@@ -209,6 +222,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
                 className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 placeholder="Enter your password"
                 minLength={6}
@@ -224,6 +238,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  disabled={loading}
                   className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                   placeholder="Confirm your password"
                   minLength={6}
@@ -247,6 +262,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
             <Button
               variant="link"
               onClick={switchMode}
+              disabled={loading}
               className="text-gold-400 hover:text-gold-300 font-medium"
             >
               {mode === 'login' ? 'Sign up here' : 'Sign in here'}
