@@ -7,6 +7,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
+import Profile from "./pages/Profile";
 import Phones from "./pages/Phones";
 import NewPhones from "./pages/NewPhones";
 import UsedPhones from "./pages/UsedPhones";
@@ -83,6 +84,7 @@ const App = () => (
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/phones" element={<Phones />} />
               <Route path="/phones/new" element={<NewPhones />} />
               <Route path="/phones/used" element={<UsedPhones />} />

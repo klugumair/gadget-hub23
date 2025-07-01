@@ -83,10 +83,11 @@ const FloatingNavbar = () => {
                 <div className="hidden md:block w-8 h-8 rounded-full bg-white/20 animate-pulse" />
               ) : user ? (
                 <div className="hidden md:flex items-center space-x-2">
-                  <div className="flex items-center space-x-2 text-white">
-                    <User size={16} />
-                    <span className="text-sm">Welcome!</span>
-                  </div>
+                  <Link to="/profile">
+                    <Button variant="ghost" className="text-white hover:text-gold-400 p-2">
+                      <User size={16} />
+                    </Button>
+                  </Link>
                   <Button
                     variant="ghost"
                     onClick={handleSignOut}
@@ -164,10 +165,14 @@ const FloatingNavbar = () => {
                   <div className="w-full h-10 rounded-lg bg-white/20 animate-pulse mt-4" />
                 ) : user ? (
                   <div className="mt-4 space-y-2">
-                    <div className="flex items-center space-x-2 text-white py-2 px-4">
+                    <Link
+                      to="/profile"
+                      className="flex items-center space-x-2 text-white py-2 px-4 hover:bg-gold-400/10 rounded-lg"
+                      onClick={closeMobileMenu}
+                    >
                       <User size={16} />
-                      <span className="text-sm">Welcome!</span>
-                    </div>
+                      <span>Profile</span>
+                    </Link>
                     <Button
                       variant="ghost"
                       onClick={handleSignOut}
