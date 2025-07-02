@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CheckCircle, XCircle, Eye, DollarSign } from 'lucide-react';
+import { isAdmin } from '@/utils/adminUtils';
 
 interface PhoneSubmission {
   id: string;
@@ -36,11 +37,16 @@ const AdminPhoneSubmissions = () => {
   const [adminNotes, setAdminNotes] = useState('');
   const [finalPrice, setFinalPrice] = useState('');
 
+  // Check if user is admin
+  const userIsAdmin = user?.email ? isAdmin(user.email) : false;
+
   useEffect(() => {
-    if (user) {
+    if (user && userIsAdmin) {
       fetchSubmissions();
+    } else {
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, userIsAdmin]);
 
   const fetchSubmissions = async () => {
     try {
@@ -117,6 +123,22 @@ const AdminPhoneSubmissions = () => {
     );
   }
 
+  if (!userIsAdmin) {
+    return (
+      <div className="min-h-screen bg-black">
+        <FloatingNavbar />
+        <section className="min-h-screen flex items-center justify-center">
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold text-white mb-6">Access Denied</h1>
+            <p className="text-xl text-gray-400 mb-8">You don't have admin privileges to access this page</p>
+            <p className="text-md text-gray-500">Only authorized administrators can view phone submissions</p>
+          </div>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black">
@@ -138,6 +160,9 @@ const AdminPhoneSubmissions = () => {
           <h1 className="text-4xl font-bold mb-8 text-center">
             <span className="text-shimmer">Phone Submissions Admin</span>
           </h1>
+          <p className="text-center text-gray-400 mb-8">
+            Welcome, Admin ({user.email})
+          </p>
 
           <div className="grid gap-6">
             {submissions.length === 0 ? (
