@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,9 +5,10 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Upload, Save, Camera } from 'lucide-react';
+import { User, Mail, Upload, Save, Camera, Shield } from 'lucide-react';
 import FloatingNavbar from '@/components/FloatingNavbar';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import { isAdmin } from '@/utils/adminUtils';
 
 interface UserProfile {
   id: string;
@@ -26,6 +26,9 @@ const Profile = () => {
   const [uploading, setUploading] = useState(false);
   const [fullName, setFullName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+
+  // Check if user is admin
+  const userIsAdmin = user?.email ? isAdmin(user.email) : false;
 
   useEffect(() => {
     if (user) {
@@ -202,6 +205,25 @@ const Profile = () => {
               <p className="text-gray-300">Manage your account information</p>
             </div>
 
+            {/* Admin Access Button */}
+            {userIsAdmin && (
+              <div className="mb-8 p-4 bg-gold-400/10 rounded-2xl border border-gold-400/20">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-gold-400 mb-3 flex items-center justify-center gap-2">
+                    <Shield size={24} />
+                    Admin Access
+                  </h3>
+                  <p className="text-gray-300 mb-4">You have admin privileges to manage phone submissions</p>
+                  <Link to="/admin/phone-submissions">
+                    <Button className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105">
+                      <Shield size={16} className="mr-2" />
+                      Manage Phone Submissions
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            )}
+
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
@@ -290,6 +312,9 @@ const Profile = () => {
                 <p><span className="text-gold-400">Account Created:</span> {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}</p>
                 <p><span className="text-gold-400">Email Verified:</span> {user?.email_confirmed_at ? 'Yes' : 'No'}</p>
                 <p><span className="text-gold-400">Provider:</span> {user?.app_metadata?.provider || 'email'}</p>
+                {userIsAdmin && (
+                  <p><span className="text-gold-400">Role:</span> <span className="text-gold-400 font-semibold">Administrator</span></p>
+                )}
               </div>
             </div>
           </div>

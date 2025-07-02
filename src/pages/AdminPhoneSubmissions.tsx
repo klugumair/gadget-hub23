@@ -21,6 +21,7 @@ interface PhoneSubmission {
   condition: string;
   usage_duration: string;
   asking_price: number | null;
+  phone_number: string | null;
   phone_images: string[] | null;
   additional_notes: string | null;
   status: string;
@@ -183,6 +184,9 @@ const AdminPhoneSubmissions = () => {
                         <p><strong>Condition:</strong> {submission.condition}</p>
                         <p><strong>Usage:</strong> {submission.usage_duration}</p>
                         <p><strong>Asking Price:</strong> Rs. {submission.asking_price || 'Not specified'}</p>
+                        {submission.phone_number && (
+                          <p><strong>Phone Number:</strong> {submission.phone_number}</p>
+                        )}
                         <p><strong>Status:</strong> 
                           <span className={`ml-2 px-2 py-1 rounded text-sm ${
                             submission.status === 'approved' ? 'bg-green-600' :

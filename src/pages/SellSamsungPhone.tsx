@@ -24,6 +24,7 @@ const SellSamsungPhone = () => {
     condition: '',
     usage_duration: '',
     asking_price: '',
+    phone_number: '',
     additional_notes: ''
   });
   
@@ -118,6 +119,7 @@ const SellSamsungPhone = () => {
           condition: formData.condition,
           usage_duration: formData.usage_duration,
           asking_price: formData.asking_price ? parseFloat(formData.asking_price) : null,
+          phone_number: formData.phone_number,
           additional_notes: formData.additional_notes
         })
         .select()
@@ -299,19 +301,37 @@ const SellSamsungPhone = () => {
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="asking_price" className="text-white text-lg font-semibold">
-                    Asking Price (Optional)
-                  </Label>
-                  <Input
-                    id="asking_price"
-                    name="asking_price"
-                    type="number"
-                    value={formData.asking_price}
-                    onChange={handleInputChange}
-                    placeholder="Enter your expected price"
-                    className="mt-2 bg-gray-800 border-gray-600 text-white"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="asking_price" className="text-white text-lg font-semibold">
+                      Asking Price (Optional)
+                    </Label>
+                    <Input
+                      id="asking_price"
+                      name="asking_price"
+                      type="number"
+                      value={formData.asking_price}
+                      onChange={handleInputChange}
+                      placeholder="Enter your expected price"
+                      className="mt-2 bg-gray-800 border-gray-600 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phone_number" className="text-white text-lg font-semibold">
+                      Phone Number *
+                    </Label>
+                    <Input
+                      id="phone_number"
+                      name="phone_number"
+                      type="tel"
+                      value={formData.phone_number}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number"
+                      className="mt-2 bg-gray-800 border-gray-600 text-white"
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div>
