@@ -30,6 +30,60 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_submissions: {
+        Row: {
+          additional_notes: string | null
+          admin_notes: string | null
+          asking_price: number | null
+          brand: string
+          condition: string
+          created_at: string
+          id: string
+          model_name: string
+          phone_images: string[] | null
+          ram: string
+          status: string
+          storage: string
+          updated_at: string
+          usage_duration: string
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          admin_notes?: string | null
+          asking_price?: number | null
+          brand?: string
+          condition: string
+          created_at?: string
+          id?: string
+          model_name: string
+          phone_images?: string[] | null
+          ram: string
+          status?: string
+          storage: string
+          updated_at?: string
+          usage_duration: string
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          admin_notes?: string | null
+          asking_price?: number | null
+          brand?: string
+          condition?: string
+          created_at?: string
+          id?: string
+          model_name?: string
+          phone_images?: string[] | null
+          ram?: string
+          status?: string
+          storage?: string
+          updated_at?: string
+          usage_duration?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

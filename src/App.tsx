@@ -70,6 +70,7 @@ import SonyWH1000XM5 from "./pages/SonyWH1000XM5";
 import SennheiserMomentum4 from "./pages/SennheiserMomentum4";
 import RoninR920Pro from "./pages/RoninR920Pro";
 import AudionicBlueBeatBB10 from "./pages/AudionicBlueBeatBB10";
+import SellSamsungPhone from "./pages/SellSamsungPhone";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +91,7 @@ const App = () => (
               <Route path="/phones/used" element={<UsedPhones />} />
               <Route path="/phones/new/samsung" element={<SamsungProducts />} />
               <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
+              <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
               <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
               <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
               <Route path="/phones/:category/:brand" element={<BrandDetail />} />
