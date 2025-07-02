@@ -71,6 +71,7 @@ import SennheiserMomentum4 from "./pages/SennheiserMomentum4";
 import RoninR920Pro from "./pages/RoninR920Pro";
 import AudionicBlueBeatBB10 from "./pages/AudionicBlueBeatBB10";
 import SellSamsungPhone from "./pages/SellSamsungPhone";
+import AdminPhoneSubmissions from "./pages/AdminPhoneSubmissions";
 
 const queryClient = new QueryClient();
 
@@ -92,9 +93,7 @@ const App = () => (
               <Route path="/phones/new/samsung" element={<SamsungProducts />} />
               <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
               <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
-              <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
-              <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
-              <Route path="/phones/:category/:brand" element={<BrandDetail />} />
+              <Route path="/admin/phone-submissions" element={<AdminPhoneSubmissions />} />
               
               {/* Home Page Product Routes */}
               <Route path="/iphone-15-pro-max" element={<IPhone15ProMax />} />
