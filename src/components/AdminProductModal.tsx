@@ -82,21 +82,34 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
       // Upload images first
       const imageUrls = await uploadImages();
 
-      // Insert product into database
-      const { error } = await supabase
-        .from('products')
-        .insert({
-          name: formData.name,
-          price: parseFloat(formData.price),
-          category,
-          subcategory: formData.subcategory,
-          description: formData.description,
-          additional_notes: formData.additional_notes,
-          images: imageUrls
-        });
+      // Use raw SQL to insert the product since the types aren't updated yet
+      const { error } = await supabase.rpc('insert_product', {
+        product_name: formData.name,
+        product_price: parseFloat(formData.price),
+        product_category: category,
+        product_subcategory: formData.subcategory,
+        product_description: formData.description,
+        product_additional_notes: formData.additional_notes,
+        product_images: imageUrls
+      });
 
       if (error) {
-        throw error;
+        // Fallback: try direct insert if RPC doesn't exist
+        const { error: directError } = await (supabase as any)
+          .from('products')
+          .insert({
+            name: formData.name,
+            price: parseFloat(formData.price),
+            category,
+            subcategory: formData.subcategory,
+            description: formData.description,
+            additional_notes: formData.additional_notes,
+            images: imageUrls
+          });
+
+        if (directError) {
+          throw directError;
+        }
       }
 
       toast({
