@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +29,7 @@ import SamsungGalaxyZFold5 from "./pages/SamsungGalaxyZFold5";
 import SamsungGalaxyA14 from "./pages/SamsungGalaxyA14";
 import Covers from "./pages/Covers";
 import Headphones from "./pages/Headphones";
+import Gadgets from "./pages/Gadgets";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import RepairingService from "./pages/RepairingService";
@@ -92,6 +94,8 @@ const App = () => (
               <Route path="/phones/used" element={<UsedPhones />} />
               <Route path="/phones/new/samsung" element={<SamsungProducts />} />
               <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
+              <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
+              <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
               <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
               <Route path="/admin/phone-submissions" element={<AdminPhoneSubmissions />} />
               
@@ -168,6 +172,7 @@ const App = () => (
               
               <Route path="/covers" element={<Covers />} />
               <Route path="/headphones" element={<Headphones />} />
+              <Route path="/gadgets" element={<Gadgets />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/repairing-service" element={<RepairingService />} />

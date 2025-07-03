@@ -17,7 +17,8 @@ const FloatingNavbar = () => {
     { name: 'Phones', href: '/phones' },
     { name: 'Covers', href: '/covers' },
     { name: 'Headphones', href: '/headphones' },
-    { name: 'Repairing Service', href: '/repairing-service' },
+    { name: 'Gadgets', href: '/gadgets' },
+    { name: 'Services', href: '/repairing-service' },
     { name: 'Contact', href: '#contact' }
   ];
 
