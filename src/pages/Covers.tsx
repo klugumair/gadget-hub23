@@ -1,7 +1,7 @@
-
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
+import AdminFloatingButton from '@/components/AdminFloatingButton';
 
 const Covers = () => {
   return (
@@ -25,6 +25,7 @@ const Covers = () => {
         </div>
       </section>
       
+      <AdminFloatingButton category="cover" />
       <Footer />
     </div>
   );

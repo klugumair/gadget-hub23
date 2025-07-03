@@ -3,6 +3,7 @@ import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import { Link } from 'react-router-dom';
+import AdminFloatingButton from '@/components/AdminFloatingButton';
 
 const Headphones = () => {
   const roninProducts = [
@@ -239,6 +240,7 @@ const Headphones = () => {
         </div>
       </section>
       
+      <AdminFloatingButton category="headphone" />
       <Footer />
     </div>
   );

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -74,6 +73,8 @@ import RoninR920Pro from "./pages/RoninR920Pro";
 import AudionicBlueBeatBB10 from "./pages/AudionicBlueBeatBB10";
 import SellSamsungPhone from "./pages/SellSamsungPhone";
 import AdminPhoneSubmissions from "./pages/AdminPhoneSubmissions";
+import AndroidServices from "./pages/AndroidServices";
+import IPhoneServices from "./pages/IPhoneServices";
 
 const queryClient = new QueryClient();
 
@@ -141,7 +142,9 @@ const App = () => (
               <Route path="/phones/new/samsung/galaxy-a26-5g" element={<SamsungGalaxyA25 />} />
               <Route path="/phones/new/samsung/galaxy-a36-5g" element={<SamsungGalaxyA56 />} />
               
-              {/* iPhone Routes */}
+              {/* iPhone Routes - Fixed missing routes */}
+              <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
+              <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
               <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
               <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
               <Route path="/phones/new/iphone/iphone-11-pro-max" element={<IPhone11ProMax />} />
@@ -180,6 +183,9 @@ const App = () => (
               {/* Headphone Product Routes */}
               <Route path="/headphones/ronin/r-920-pro" element={<RoninR920Pro />} />
               <Route path="/headphones/audionic/blue-beat-bb-10" element={<AudionicBlueBeatBB10 />} />
+              
+              <Route path="/services/android" element={<AndroidServices />} />
+              <Route path="/services/iphone" element={<IPhoneServices />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -3,6 +3,7 @@ import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import ProductSection from '@/components/ProductSection';
+import AdminFloatingButton from '@/components/AdminFloatingButton';
 
 const Gadgets = () => {
   const localChargers = [
@@ -112,6 +113,7 @@ const Gadgets = () => {
         products={gadgets}
       />
       
+      <AdminFloatingButton category="gadget" />
       <Footer />
     </div>
   );
