@@ -75,6 +75,8 @@ import SellSamsungPhone from "./pages/SellSamsungPhone";
 import AdminPhoneSubmissions from "./pages/AdminPhoneSubmissions";
 import AndroidServices from "./pages/AndroidServices";
 import IPhoneServices from "./pages/IPhoneServices";
+import GooglePixelProducts from "./pages/GooglePixelProducts";
+import UsedGooglePixelProducts from "./pages/UsedGooglePixelProducts";
 
 const queryClient = new QueryClient();
 
@@ -186,6 +188,9 @@ const App = () => (
               
               <Route path="/services/android" element={<AndroidServices />} />
               <Route path="/services/iphone" element={<IPhoneServices />} />
+              
+              <Route path="/phones/new/google-pixel" element={<GooglePixelProducts />} />
+              <Route path="/phones/used/google-pixel" element={<UsedGooglePixelProducts />} />
               
               <Route path="*" element={<NotFound />} />
             </Routes>
