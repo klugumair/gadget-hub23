@@ -41,6 +41,7 @@ export type Database = {
           id: string
           model_name: string
           phone_images: string[] | null
+          phone_number: string | null
           ram: string
           status: string
           storage: string
@@ -58,6 +59,7 @@ export type Database = {
           id?: string
           model_name: string
           phone_images?: string[] | null
+          phone_number?: string | null
           ram: string
           status?: string
           storage: string
@@ -75,6 +77,7 @@ export type Database = {
           id?: string
           model_name?: string
           phone_images?: string[] | null
+          phone_number?: string | null
           ram?: string
           status?: string
           storage?: string
