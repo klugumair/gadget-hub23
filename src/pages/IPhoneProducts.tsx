@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -6,185 +6,60 @@ import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
+import DatabaseProductCard from '@/components/DatabaseProductCard';
+import { supabase } from '@/integrations/supabase/client';
 
 const IPhoneProducts = () => {
+  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const iPhoneProducts = [
     {
-      title: "iPhone 11",
-      price: "From Rs. 89,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11"
-    },
-    {
-      title: "iPhone 11 Pro",
-      price: "From Rs. 119,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro"
-    },
-    {
-      title: "iPhone 11 Pro Max",
-      price: "From Rs. 129,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-11-pro-max"
-    },
-    {
-      title: "iPhone 12",
-      price: "From Rs. 109,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-12"
-    },
-    {
-      title: "iPhone 12 Mini",
-      price: "From Rs. 99,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-12-mini"
-    },
-    {
-      title: "iPhone 12 Pro",
-      price: "From Rs. 139,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-12-pro"
-    },
-    {
-      title: "iPhone 12 Pro Max",
-      price: "From Rs. 149,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-12-pro-max"
-    },
-    {
-      title: "iPhone 13",
-      price: "From Rs. 129,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-13"
-    },
-    {
-      title: "iPhone 13 Mini",
-      price: "From Rs. 119,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-13-mini"
-    },
-    {
-      title: "iPhone 13 Pro",
-      price: "From Rs. 159,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-13-pro"
-    },
-    {
-      title: "iPhone 13 Pro Max",
-      price: "From Rs. 169,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-13-pro-max"
-    },
-    {
-      title: "iPhone 14",
-      price: "From Rs. 149,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-14"
-    },
-    {
-      title: "iPhone 14 Plus",
-      price: "From Rs. 159,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-14-plus"
-    },
-    {
-      title: "iPhone 14 Pro",
-      price: "From Rs. 179,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-14-pro"
-    },
-    {
-      title: "iPhone 14 Pro Max",
-      price: "From Rs. 189,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-14-pro-max"
-    },
-    {
-      title: "iPhone 15",
-      price: "From Rs. 169,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-15"
-    },
-    {
-      title: "iPhone 15 Plus",
-      price: "From Rs. 179,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-15-plus"
+      title: "iPhone 16 Pro Max",
+      price: "Rs. 599,999",
+      image: "🍎",
+      category: "iPhone"
     },
     {
       title: "iPhone 15 Pro",
-      price: "From Rs. 199,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-15-pro"
+      price: "Rs. 499,999",
+      image: "🍎",
+      category: "iPhone"
     },
     {
-      title: "iPhone 15 Pro Max",
-      price: "From Rs. 209,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-15-pro-max"
+      title: "iPhone 14 Pro Max",
+      price: "Rs. 399,999",
+      image: "🍎",
+      category: "iPhone"
     },
     {
-      title: "iPhone 16",
-      price: "From Rs. 189,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-16"
-    },
-    {
-      title: "iPhone 16e",
-      price: "From Rs. 179,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-16e"
-    },
-    {
-      title: "iPhone 16 Plus",
-      price: "From Rs. 199,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-16-plus"
-    },
-    {
-      title: "iPhone 16 Pro",
-      price: "From Rs. 219,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-16-pro"
-    },
-    {
-      title: "iPhone 16 Pro Max",
-      price: "From Rs. 229,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-16-pro-max"
-    },
-    {
-      title: "iPhone XR",
-      price: "From Rs. 69,999",
-      image: "📱",
-      category: "iPhone",
-      link: "/phones/new/iphone/iphone-xr"
+      title: "iPhone 13 Pro",
+      price: "Rs. 299,999",
+      image: "🍎",
+      category: "iPhone"
     }
   ];
+
+  const fetchDatabaseProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .ilike('subcategory', '%iphone%')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDatabaseProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching database products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDatabaseProducts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black">
@@ -204,15 +79,34 @@ const IPhoneProducts = () => {
               <span className="text-shimmer">iPhone Collection</span>
             </h1>
             <p className="text-xl text-gray-400 mb-12">
-              Discover our premium iPhone collection
+              Discover our premium iPhone smartphone collection
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {iPhoneProducts.map((product, index) => (
-              <Link key={index} to={product.link} className="block hover:scale-105 transition-transform duration-300">
-                <ProductCard {...product} />
-              </Link>
+              <ProductCard
+                key={index}
+                title={product.title}
+                price={product.price}
+                image={product.image}
+                category={product.category}
+                size="compact"
+              />
+            ))}
+            
+            {databaseProducts.map((product) => (
+              <DatabaseProductCard
+                key={product.id}
+                id={product.id}
+                title={product.name}
+                price={product.price}
+                images={product.images || []}
+                category={product.category}
+                subcategory={product.subcategory}
+                description={product.description}
+                onUpdate={fetchDatabaseProducts}
+              />
             ))}
           </div>
         </div>

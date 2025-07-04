@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -7,213 +6,150 @@ import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
+import DatabaseProductCard from '@/components/DatabaseProductCard';
+import { supabase } from '@/integrations/supabase/client';
 
 const SamsungProducts = () => {
+  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const samsungProducts = [
     {
-      title: "Samsung Galaxy A06",
-      price: "Rs. 25,500",
-      image: "/lovable-uploads/d5a93a8e-f1c9-4576-bba8-668019b6c72c.png",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a06"
-    },
-    {
-      title: "Samsung Galaxy A25 5G",
-      price: "Rs. 98,500",
-      image: "/lovable-uploads/e0a1f7bd-f278-4d47-899c-5d8a32a1b501.png",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a25-5g"
-    },
-    {
-      title: "Samsung Galaxy A16",
-      price: "Rs. 44,500",
-      image: "/lovable-uploads/18b83a62-8544-4569-9179-bd54aa18daa9.png",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a16"
-    },
-    {
-      title: "Samsung Galaxy A56",
-      price: "Rs. 130,000",
-      image: "/lovable-uploads/7a291dd7-8f8c-4a9b-b4cd-769a23174b5f.png",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a56"
-    },
-    {
-      title: "Galaxy S21 FE 5G (128GB)",
-      price: "Rs. 144,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s21-fe-128gb"
-    },
-    {
-      title: "Galaxy S21 FE 5G (256GB)",
-      price: "Rs. 154,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s21-fe-256gb"
-    },
-    {
-      title: "Galaxy S23 FE",
-      price: "Rs. 168,299",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s23-fe"
-    },
-    {
-      title: "Galaxy S23 Ultra",
-      price: "Rs. 332,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s23-ultra"
-    },
-    {
-      title: "Galaxy S24 FE",
+      title: "Samsung Galaxy S24 FE",
       price: "Rs. 289,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s24-fe"
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy S24 Ultra",
-      price: "Rs. 404,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s24-ultra"
+      title: "Samsung Galaxy S24 FE 8GB/256GB",
+      price: "Rs. 309,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy Z Fold 5",
-      price: "Rs. 515,220",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-z-fold-5"
+      title: "Samsung Galaxy S23 Ultra 8GB/256GB",
+      price: "Rs. 332,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A14",
-      price: "Rs. 62,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a14"
+      title: "Samsung Galaxy S23 Ultra 12GB/512GB",
+      price: "Rs. 382,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A15",
-      price: "Rs. 59,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a15"
+      title: "Samsung Galaxy S23 Ultra 12GB/1TB",
+      price: "Rs. 432,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A25",
+      title: "Samsung Galaxy A56 8GB/128GB",
+      price: "Rs. 130,000",
+      image: "🔵",
+      category: "Samsung"
+    },
+    {
+      title: "Samsung Galaxy A56 8GB/256GB",
+      price: "Rs. 140,000",
+      image: "🔵",
+      category: "Samsung"
+    },
+    {
+      title: "Samsung Galaxy A56 12GB/256GB",
+      price: "Rs. 150,000",
+      image: "🔵",
+      category: "Samsung"
+    },
+    {
+      title: "Samsung Galaxy A25 6GB/128GB",
       price: "Rs. 98,500",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a25"
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A34 5G",
-      price: "Rs. 116,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a34-5g"
+      title: "Samsung Galaxy A25 8GB/256GB",
+      price: "Rs. 108,500",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A05",
-      price: "Rs. 35,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a05"
+      title: "Samsung Galaxy A16 4GB/128GB",
+      price: "Rs. 44,500",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A05s",
-      price: "Rs. 42,935",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a05s"
+      title: "Samsung Galaxy A16 6GB/128GB",
+      price: "Rs. 49,500",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy F14",
-      price: "Rs. 49,860",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-f14"
+      title: "Samsung Galaxy A14 4GB/64GB",
+      price: "Rs. 62,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy F34",
-      price: "Rs. 56,785",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-f34"
+      title: "Samsung Galaxy A14 4GB/128GB",
+      price: "Rs. 68,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy M54 5G",
-      price: "Rs. 126,035",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-m54-5g"
+      title: "Samsung Galaxy A14 6GB/128GB",
+      price: "Rs. 74,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy M34 5G",
-      price: "Rs. 100,000",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-m34-5g"
+      title: "Samsung Galaxy A06 4GB/64GB",
+      price: "Rs. 25,500",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy Z Flip 6",
-      price: "Rs. 384,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-z-flip-6"
+      title: "Samsung Galaxy A06 4GB/128GB",
+      price: "Rs. 28,500",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy Z Fold 6",
-      price: "Rs. 604,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-z-fold-6"
+      title: "Samsung Galaxy S21 FE 8GB/128GB",
+      price: "Rs. 144,999",
+      image: "🔵",
+      category: "Samsung"
     },
     {
-      title: "Galaxy A05",
-      price: "Rs. 44,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a05-new"
-    },
-    {
-      title: "Galaxy S25 Ultra",
-      price: "Rs. 399,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s25-ultra"
-    },
-    {
-      title: "Galaxy S25",
-      price: "Rs. 294,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s25"
-    },
-    {
-      title: "Galaxy S25 Edge",
-      price: "Rs. 380,000",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-s25-edge"
-    },
-    {
-      title: "Galaxy A26 5G",
-      price: "Rs. 75,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a26-5g"
-    },
-    {
-      title: "Galaxy A36 5G",
-      price: "Rs. 106,999",
-      image: "📱",
-      category: "Samsung",
-      link: "/phones/new/samsung/galaxy-a36-5g"
+      title: "Samsung Galaxy S21 FE 8GB/256GB",
+      price: "Rs. 154,999",
+      image: "🔵",
+      category: "Samsung"
     }
   ];
+
+  const fetchDatabaseProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .ilike('subcategory', '%samsung%')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDatabaseProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching database products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDatabaseProducts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black">
@@ -237,11 +173,30 @@ const SamsungProducts = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {samsungProducts.map((product, index) => (
-              <Link key={index} to={product.link} className="block hover:scale-105 transition-transform duration-300">
-                <ProductCard {...product} />
-              </Link>
+              <ProductCard
+                key={index}
+                title={product.title}
+                price={product.price}
+                image={product.image}
+                category={product.category}
+                size="compact"
+              />
+            ))}
+            
+            {databaseProducts.map((product) => (
+              <DatabaseProductCard
+                key={product.id}
+                id={product.id}
+                title={product.name}
+                price={product.price}
+                images={product.images || []}
+                category={product.category}
+                subcategory={product.subcategory}
+                description={product.description}
+                onUpdate={fetchDatabaseProducts}
+              />
             ))}
           </div>
         </div>

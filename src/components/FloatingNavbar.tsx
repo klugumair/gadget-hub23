@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart, User, Menu, X, Phone } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const FloatingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const { getTotalItems } = useCart();
   const { user } = useAuth();
   const location = useLocation();
@@ -20,6 +22,33 @@ const FloatingNavbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', user.id)
+            .single();
+          
+          if (error) {
+            console.error('Error fetching profile:', error);
+            return;
+          }
+          
+          if (data?.avatar_url) {
+            setProfilePicture(data.avatar_url);
+          }
+        } catch (error) {
+          console.error('Error fetching profile picture:', error);
+        }
+      }
+    };
+
+    fetchProfilePicture();
+  }, [user]);
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -46,9 +75,11 @@ const FloatingNavbar = () => {
       scrolled ? 'glass-morphism backdrop-blur-xl shadow-2xl' : 'glass-morphism backdrop-blur-md'
     } rounded-full px-6 py-3 border border-gold-400/20`}>
       <div className="flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold">
-          <span className="text-shimmer">GadgetHub</span>
-        </Link>
+        <div className="flex items-center space-x-4">
+          <Link to="/" className="text-xl font-bold">
+            <span className="text-shimmer">GadgetHub</span>
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
@@ -95,9 +126,19 @@ const FloatingNavbar = () => {
           
           {/* Profile Section */}
           <Link to={user ? "/profile" : "/"} className="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-white/5 transition-colors">
-            <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
-              <User size={20} />
-            </Button>
+            <div className="relative">
+              {profilePicture ? (
+                <img 
+                  src={profilePicture} 
+                  alt="Profile" 
+                  className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
+                />
+              ) : (
+                <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
+                  <User size={20} />
+                </Button>
+              )}
+            </div>
             {user && (
               <span className="text-white text-sm font-medium">
                 {user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
@@ -159,9 +200,19 @@ const FloatingNavbar = () => {
               </Link>
               
               <Link to={user ? "/profile" : "/"} className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
-                  <User size={20} />
-                </Button>
+                <div className="relative">
+                  {profilePicture ? (
+                    <img 
+                      src={profilePicture} 
+                      alt="Profile" 
+                      className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
+                    />
+                  ) : (
+                    <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
+                      <User size={20} />
+                    </Button>
+                  )}
+                </div>
                 <span className="text-white">
                   {user ? (user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Profile') : 'Login'}
                 </span>

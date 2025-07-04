@@ -1,11 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { X, Upload, Trash2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, X, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
@@ -20,283 +23,267 @@ interface Product {
 interface AdminProductEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product;
+  product?: Product;
   onUpdate: () => void;
 }
 
-const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({ 
-  isOpen, 
-  onClose, 
+const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
+  isOpen,
+  onClose,
   product,
-  onUpdate 
+  onUpdate
 }) => {
   const [formData, setFormData] = useState({
-    name: product.name,
-    price: product.price.toString(),
-    description: product.description || '',
-    subcategory: product.subcategory || ''
+    name: product?.name || '',
+    price: product?.price || 0,
+    category: product?.category || 'gadget' as const,
+    subcategory: product?.subcategory || '',
+    description: product?.description || '',
   });
-  const [currentImages, setCurrentImages] = useState<string[]>(product.images || []);
-  const [newImages, setNewImages] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<string[]>(product?.images || []);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const handleImageUpload = async (files: FileList) => {
+    if (!files || files.length === 0) return;
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const images = Array.from(e.target.files);
-      setNewImages(prev => [...prev, ...images]);
-    }
-  };
+    setUploading(true);
+    const uploadedUrls: string[] = [];
 
-  const removeNewImage = (index: number) => {
-    setNewImages(prev => prev.filter((_, i) => i !== index));
-  };
+    try {
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `products/${fileName}`;
 
-  const removeCurrentImage = (index: number) => {
-    setCurrentImages(prev => prev.filter((_, i) => i !== index));
-  };
+        const { error: uploadError } = await supabase.storage
+          .from('gadgethub')
+          .upload(filePath, file);
 
-  const uploadImages = async (): Promise<string[]> => {
-    const imageUrls: string[] = [];
-    
-    for (const image of newImages) {
-      const fileExt = image.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-      const filePath = `products/${fileName}`;
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw uploadError;
+        }
 
-      const { error: uploadError } = await supabase.storage
-        .from('gadgethub')
-        .upload(filePath, image);
+        const { data: urlData } = supabase.storage
+          .from('gadgethub')
+          .getPublicUrl(filePath);
 
-      if (uploadError) {
-        console.error('Error uploading image:', uploadError);
-        throw uploadError;
+        uploadedUrls.push(urlData.publicUrl);
       }
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('gadgethub')
-        .getPublicUrl(filePath);
-
-      imageUrls.push(publicUrl);
+      setImages(prev => [...prev, ...uploadedUrls]);
+      toast({
+        title: "Images Uploaded! ✅",
+        description: `${uploadedUrls.length} image(s) uploaded successfully`,
+        className: "bg-gradient-gold text-black font-semibold",
+      });
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload images. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
     }
+  };
 
-    return imageUrls;
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
 
     try {
-      let updatedImages = [...currentImages];
+      const updateData = {
+        name: formData.name,
+        price: formData.price,
+        category: formData.category,
+        subcategory: formData.subcategory || null,
+        description: formData.description || null,
+        images: images,
+        updated_at: new Date().toISOString()
+      };
+
+      let error;
       
-      if (newImages.length > 0) {
-        const newImageUrls = await uploadImages();
-        updatedImages = [...updatedImages, ...newImageUrls];
+      if (product) {
+        // Update existing product
+        const { error: updateError } = await supabase
+          .from('products')
+          .update(updateData)
+          .eq('id', product.id);
+        error = updateError;
+      } else {
+        // Create new product
+        const { error: insertError } = await supabase
+          .from('products')
+          .insert([updateData]);
+        error = insertError;
       }
 
-      const { error } = await supabase
-        .from('products')
-        .update({
-          name: formData.name,
-          price: parseFloat(formData.price),
-          subcategory: formData.subcategory || null,
-          description: formData.description || null,
-          images: updatedImages,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', product.id);
-
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       toast({
-        title: "Product Updated Successfully! ✅",
-        description: `${formData.name} has been updated with all changes`,
-        className: "bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold",
+        title: product ? "Product Updated! ✅" : "Product Created! ✅",
+        description: `${formData.name} has been ${product ? 'updated' : 'created'} successfully`,
+        className: "bg-gradient-gold text-black font-semibold",
       });
 
-      // Reset form state
-      setCurrentImages(updatedImages);
-      setNewImages([]);
-      
-      // Call onUpdate to refresh the parent component
       onUpdate();
       onClose();
-
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error saving product:', error);
       toast({
-        title: "Update Failed",
-        description: "Failed to update product. Please check your connection and try again.",
+        title: "Error",
+        description: `Failed to ${product ? 'update' : 'create'} product. Please try again.`,
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="glass-morphism rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Edit Product</h2>
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              className="text-white hover:text-gold-400 p-2"
-            >
-              <X size={24} />
-            </Button>
-          </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700">
+        <DialogHeader>
+          <DialogTitle className="text-white">
+            {product ? 'Edit Product' : 'Add New Product'}
+          </DialogTitle>
+        </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="name" className="text-white">Product Name *</Label>
+              <Label htmlFor="name" className="text-white">Product Name</Label>
               <Input
                 id="name"
-                name="name"
                 value={formData.name}
-                onChange={handleInputChange}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                className="bg-gray-800 border-gray-600 text-white"
                 required
-                className="mt-2 bg-white/10 border-gold-400/30 text-white"
               />
             </div>
 
             <div>
-              <Label htmlFor="price" className="text-white">Price (Rs.) *</Label>
+              <Label htmlFor="price" className="text-white">Price (PKR)</Label>
               <Input
                 id="price"
-                name="price"
                 type="number"
-                step="0.01"
                 value={formData.price}
-                onChange={handleInputChange}
+                onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+                className="bg-gray-800 border-gray-600 text-white"
                 required
-                className="mt-2 bg-white/10 border-gold-400/30 text-white"
               />
+            </div>
+
+            <div>
+              <Label htmlFor="category" className="text-white">Category</Label>
+              <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as 'gadget' | 'headphone' | 'cover' }))}>
+                <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gadget">Phone</SelectItem>
+                  <SelectItem value="headphone">Headphone</SelectItem>
+                  <SelectItem value="cover">Cover</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
               <Label htmlFor="subcategory" className="text-white">Subcategory</Label>
               <Input
                 id="subcategory"
-                name="subcategory"
                 value={formData.subcategory}
-                onChange={handleInputChange}
-                className="mt-2 bg-white/10 border-gold-400/30 text-white"
+                onChange={(e) => setFormData(prev => ({ ...prev, subcategory: e.target.value }))}
+                className="bg-gray-800 border-gray-600 text-white"
+                placeholder="e.g., Samsung, iPhone, etc."
               />
             </div>
 
             <div>
               <Label htmlFor="description" className="text-white">Description</Label>
-              <textarea
+              <Textarea
                 id="description"
-                name="description"
                 value={formData.description}
-                onChange={handleInputChange}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="bg-gray-800 border-gray-600 text-white"
                 rows={3}
-                className="mt-2 w-full bg-white/10 border border-gold-400/30 text-white rounded-md px-3 py-2 resize-none"
               />
             </div>
 
             <div>
-              <Label className="text-white">Current Images</Label>
-              {currentImages.length > 0 ? (
-                <div className="mt-2 grid grid-cols-3 gap-2">
-                  {currentImages.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={image}
-                        alt={`Product ${index + 1}`}
-                        className="w-full h-20 object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        onClick={() => removeCurrentImage(index)}
-                        className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 hover:bg-red-600 rounded-full"
-                      >
-                        <X size={12} />
-                      </Button>
-                    </div>
-                  ))}
+              <Label className="text-white">Product Images</Label>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading ? 'Uploading...' : 'Upload Images'}
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => e.target.files && handleImageUpload(e.target.files)}
+                    className="hidden"
+                  />
                 </div>
-              ) : (
-                <p className="text-gray-400 mt-2">No images currently</p>
-              )}
-            </div>
 
-            <div>
-              <Label className="text-white">Add New Images</Label>
-              <div className="mt-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <label
-                  htmlFor="image-upload"
-                  className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gold-400/30 rounded-lg cursor-pointer hover:bg-white/5 transition-colors"
-                >
-                  <Upload className="mr-2 text-gold-400" size={20} />
-                  <span className="text-white">Upload New Images</span>
-                </label>
+                {images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-4">
+                    {images.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={image}
+                          alt={`Product ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 p-0"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-
-              {newImages.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-4">
-                  {newImages.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`New ${index + 1}`}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        onClick={() => removeNewImage(index)}
-                        className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 hover:bg-red-600 rounded-full"
-                      >
-                        <X size={12} />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
+          </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onClose}
-                className="flex-1 text-white hover:text-gold-400"
-                disabled={loading}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-semibold"
-                disabled={loading}
-              >
-                {loading ? 'Updating...' : 'Update Product'}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          <div className="flex justify-end space-x-4">
+            <Button type="button" variant="outline" onClick={onClose} className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving} className="bg-gold-400 hover:bg-gold-500 text-black">
+              {saving ? 'Saving...' : (product ? 'Update Product' : 'Create Product')}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,8 @@ import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
+import DatabaseProductCard from '@/components/DatabaseProductCard';
+import { supabase } from '@/integrations/supabase/client';
 
 const googlePixelProducts = [
   {
@@ -71,6 +74,30 @@ const googlePixelProducts = [
 ];
 
 const GooglePixelProducts = () => {
+  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDatabaseProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .or('subcategory.ilike.%pixel%,subcategory.ilike.%google%')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDatabaseProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching database products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDatabaseProducts();
+  }, []);
+
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -90,7 +117,7 @@ const GooglePixelProducts = () => {
               Browse our collection of brand new Google Pixel smartphones
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {googlePixelProducts.map((product, idx) => (
               <ProductCard
                 key={idx}
@@ -98,6 +125,21 @@ const GooglePixelProducts = () => {
                 price={product.price}
                 image={product.image}
                 category={product.category}
+                size="compact"
+              />
+            ))}
+            
+            {databaseProducts.map((product) => (
+              <DatabaseProductCard
+                key={product.id}
+                id={product.id}
+                title={product.name}
+                price={product.price}
+                images={product.images || []}
+                category={product.category}
+                subcategory={product.subcategory}
+                description={product.description}
+                onUpdate={fetchDatabaseProducts}
               />
             ))}
           </div>
