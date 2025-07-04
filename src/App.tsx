@@ -16,6 +16,16 @@ const Covers = lazy(() => import("./pages/Covers"));
 const IPhoneProducts = lazy(() => import("./pages/IPhoneProducts"));
 const SamsungProducts = lazy(() => import("./pages/SamsungProducts"));
 const GooglePixelProducts = lazy(() => import("./pages/GooglePixelProducts"));
+const InfinixProducts = lazy(() => import("./pages/InfinixProducts"));
+const RealmeProducts = lazy(() => import("./pages/RealmeProducts"));
+const SparkXProducts = lazy(() => import("./pages/SparkXProducts"));
+const TecnoProducts = lazy(() => import("./pages/TecnoProducts"));
+const VivoProducts = lazy(() => import("./pages/VivoProducts"));
+const RedmiProducts = lazy(() => import("./pages/RedmiProducts"));
+const HonorProducts = lazy(() => import("./pages/HonorProducts"));
+const OppoProducts = lazy(() => import("./pages/OppoProducts"));
+const ItelProducts = lazy(() => import("./pages/ItelProducts"));
+const HuaweiProducts = lazy(() => import("./pages/HuaweiProducts"));
 const UsedIPhoneProducts = lazy(() => import("./pages/UsedIPhoneProducts"));
 const UsedSamsungProducts = lazy(() => import("./pages/UsedSamsungProducts"));
 const UsedGooglePixelProducts = lazy(() => import("./pages/UsedGooglePixelProducts"));
@@ -51,6 +61,16 @@ function App() {
                   <Route path="/phones/new/iphone" element={<IPhoneProducts />} />
                   <Route path="/phones/new/samsung" element={<SamsungProducts />} />
                   <Route path="/phones/new/google-pixel" element={<GooglePixelProducts />} />
+                  <Route path="/phones/new/infinix" element={<InfinixProducts />} />
+                  <Route path="/phones/new/realme" element={<RealmeProducts />} />
+                  <Route path="/phones/new/sparkx" element={<SparkXProducts />} />
+                  <Route path="/phones/new/tecno" element={<TecnoProducts />} />
+                  <Route path="/phones/new/vivo" element={<VivoProducts />} />
+                  <Route path="/phones/new/redmi" element={<RedmiProducts />} />
+                  <Route path="/phones/new/honor" element={<HonorProducts />} />
+                  <Route path="/phones/new/oppo" element={<OppoProducts />} />
+                  <Route path="/phones/new/itel" element={<ItelProducts />} />
+                  <Route path="/phones/new/huawei" element={<HuaweiProducts />} />
                   <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
                   <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
                   <Route path="/phones/used/google-pixel" element={<UsedGooglePixelProducts />} />

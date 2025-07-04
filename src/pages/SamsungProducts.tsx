@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
+import AdminPhoneButton from '@/components/AdminPhoneButton';
 
 const SamsungProducts = () => {
   const samsungProducts = [
@@ -246,6 +247,7 @@ const SamsungProducts = () => {
         </div>
       </section>
       
+      <AdminPhoneButton category="Samsung" />
       <Footer />
     </div>
   );

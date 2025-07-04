@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
+import AdminPhoneButton from '@/components/AdminPhoneButton';
 
 const IPhoneProducts = () => {
   const iPhoneProducts = [
@@ -203,26 +204,21 @@ const IPhoneProducts = () => {
               <span className="text-shimmer">iPhone Collection</span>
             </h1>
             <p className="text-xl text-gray-400 mb-12">
-              Discover our premium iPhone smartphone collection
+              Discover our premium iPhone collection
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {iPhoneProducts.map((product, index) => (
-              <div key={index} className="cursor-pointer" onClick={() => {
-                if (product.link !== '#') {
-                  window.location.href = product.link;
-                } else {
-                  console.log(`Clicked on ${product.title}`);
-                }
-              }}>
+              <Link key={index} to={product.link} className="block hover:scale-105 transition-transform duration-300">
                 <ProductCard {...product} />
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
       
+      <AdminPhoneButton category="iPhone" />
       <Footer />
     </div>
   );

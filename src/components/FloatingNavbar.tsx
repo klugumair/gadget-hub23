@@ -75,10 +75,17 @@ const FloatingNavbar = () => {
                 )}
               </Button>
             </Link>
-            <Link to={user ? "/profile" : "/login"}>
+            
+            {/* Profile Section */}
+            <Link to={user ? "/profile" : "/"} className="flex items-center space-x-2">
               <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
                 <User size={20} />
               </Button>
+              {user && (
+                <span className="text-white text-sm font-medium hidden lg:block">
+                  {user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                </span>
+              )}
             </Link>
           </div>
 
@@ -111,8 +118,8 @@ const FloatingNavbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="flex space-x-4 pt-4 border-t border-white/10">
-                <Link to="/cart" className="relative" onClick={() => setIsMenuOpen(false)}>
+              <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
+                <Link to="/cart" className="relative flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
                     <ShoppingCart size={20} />
                     {getTotalItems() > 0 && (
@@ -121,11 +128,15 @@ const FloatingNavbar = () => {
                       </span>
                     )}
                   </Button>
+                  <span className="text-white">Cart</span>
                 </Link>
-                <Link to={user ? "/profile" : "/login"} onClick={() => setIsMenuOpen(false)}>
+                <Link to={user ? "/profile" : "/"} className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
                     <User size={20} />
                   </Button>
+                  <span className="text-white">
+                    {user ? (user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Profile') : 'Login'}
+                  </span>
                 </Link>
               </div>
             </div>
