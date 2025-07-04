@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, Upload } from 'lucide-react';
+import { X, Upload, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -34,9 +34,9 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     name: product.name,
     price: product.price.toString(),
     description: product.description || '',
-    additional_notes: '',
     subcategory: product.subcategory || ''
   });
+  const [currentImages, setCurrentImages] = useState<string[]>(product.images || []);
   const [newImages, setNewImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -57,6 +57,10 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     setNewImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const removeCurrentImage = (index: number) => {
+    setCurrentImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const uploadImages = async (): Promise<string[]> => {
     const imageUrls: string[] = [];
     
@@ -71,7 +75,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
       if (uploadError) {
         console.error('Error uploading image:', uploadError);
-        continue;
+        throw uploadError;
       }
 
       const { data: { publicUrl } } = supabase.storage
@@ -89,7 +93,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     setLoading(true);
 
     try {
-      let updatedImages = [...product.images];
+      let updatedImages = [...currentImages];
       
       if (newImages.length > 0) {
         const newImageUrls = await uploadImages();
@@ -111,18 +115,24 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       if (error) throw error;
 
       toast({
-        title: "Product Updated! ✅",
-        description: `${formData.name} has been updated successfully`,
-        className: "bg-gradient-gold text-black font-semibold",
+        title: "Product Updated Successfully! ✅",
+        description: `${formData.name} has been updated with all changes`,
+        className: "bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold",
       });
 
+      // Reset form state
+      setCurrentImages(updatedImages);
+      setNewImages([]);
+      
+      // Call onUpdate to refresh the parent component
       onUpdate();
+      onClose();
 
     } catch (error) {
       console.error('Error updating product:', error);
       toast({
-        title: "Error",
-        description: "Failed to update product. Please try again.",
+        title: "Update Failed",
+        description: "Failed to update product. Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -199,17 +209,27 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
             <div>
               <Label className="text-white">Current Images</Label>
-              {product.images.length > 0 && (
+              {currentImages.length > 0 ? (
                 <div className="mt-2 grid grid-cols-3 gap-2">
-                  {product.images.map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Product ${index + 1}`}
-                      className="w-full h-20 object-cover rounded-lg"
-                    />
+                  {currentImages.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="w-full h-20 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => removeCurrentImage(index)}
+                        className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 hover:bg-red-600 rounded-full"
+                      >
+                        <X size={12} />
+                      </Button>
+                    </div>
                   ))}
                 </div>
+              ) : (
+                <p className="text-gray-400 mt-2">No images currently</p>
               )}
             </div>
 
@@ -226,7 +246,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                 />
                 <label
                   htmlFor="image-upload"
-                  className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gold-400/30 rounded-lg cursor-pointer hover:bg-white/5"
+                  className="flex items-center justify-center w-full p-4 border-2 border-dashed border-gold-400/30 rounded-lg cursor-pointer hover:bg-white/5 transition-colors"
                 >
                   <Upload className="mr-2 text-gold-400" size={20} />
                   <span className="text-white">Upload New Images</span>
@@ -267,7 +287,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-gradient-gold hover:bg-gold-500 text-black font-semibold"
+                className="flex-1 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-semibold"
                 disabled={loading}
               >
                 {loading ? 'Updating...' : 'Update Product'}

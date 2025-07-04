@@ -58,7 +58,7 @@ const VivoProducts = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {vivoProducts.map((product, index) => (
               <ProductCard
                 key={index}
@@ -66,6 +66,7 @@ const VivoProducts = () => {
                 price={product.price}
                 image={product.image}
                 category={product.category}
+                size="compact"
               />
             ))}
           </div>
