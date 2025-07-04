@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, Upload, Plus } from 'lucide-react';
+import { X, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -82,16 +82,16 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
       // Upload images first
       const imageUrls = await uploadImages();
 
-      // Direct insert with type casting to bypass type checking issues
-      const { error } = await (supabase as any)
+      // Insert product into the database
+      const { error } = await supabase
         .from('products')
         .insert({
           name: formData.name,
           price: parseFloat(formData.price),
           category,
-          subcategory: formData.subcategory,
-          description: formData.description,
-          additional_notes: formData.additional_notes,
+          subcategory: formData.subcategory || null,
+          description: formData.description || null,
+          additional_notes: formData.additional_notes || null,
           images: imageUrls
         });
 
