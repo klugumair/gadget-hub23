@@ -1,268 +1,138 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
-import AuthModal from './AuthModal';
 
 const FloatingNavbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const { user, signOut, loading } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { getTotalItems } = useCart();
+  const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Phones', href: '/phones' },
-    { name: 'Covers', href: '/covers' },
-    { name: 'Headphones', href: '/headphones' },
-    { name: 'Gadgets', href: '/gadgets' },
-    { name: 'Services', href: '/repairing-service' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Home', path: '/' },
+    { name: 'Phones', path: '/phones' },
+    { name: 'Headphones', path: '/headphones' },
+    { name: 'Covers', path: '/covers' },
   ];
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  const openAuthModal = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      closeMobileMenu();
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  const getDisplayName = () => {
-    if (user?.user_metadata?.username) {
-      return user.user_metadata.username;
-    }
-    if (user?.user_metadata?.full_name) {
-      return user.user_metadata.full_name;
-    }
-    if (user?.email) {
-      return user.email.split('@')[0];
-    }
-    return 'User';
-  };
-
-  const getAvatarUrl = () => {
-    return user?.user_metadata?.avatar_url || '';
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
   };
 
   return (
-    <>
-      <nav className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="glass-morphism rounded-full px-8 py-4 shadow-2xl">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-gold-400 font-bold text-xl">
-              <span className="text-shimmer">GadgetHub</span>
-            </Link>
-            
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              {navItems.map((item) => (
-                item.href.startsWith('#') ? (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="text-white hover:text-gold-400 transition-colors duration-300 font-medium"
-                  >
-                    {item.name}
-                  </a>
-                ) : (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className="text-white hover:text-gold-400 transition-colors duration-300 font-medium"
-                  >
-                    {item.name}
-                  </Link>
-                )
-              ))}
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Link to="/cart">
-                <Button variant="ghost" className="text-white hover:text-gold-400 p-2">
-                  <ShoppingCart size={20} />
-                </Button>
-              </Link>
-              
-              {/* Authentication Section */}
-              {loading ? (
-                <div className="hidden md:block w-8 h-8 rounded-full bg-white/20 animate-pulse" />
-              ) : user ? (
-                <div className="hidden md:flex items-center space-x-3">
-                  <span className="text-white text-sm font-medium">{getDisplayName()}</span>
-                  <Link to="/profile" className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-black text-sm font-bold overflow-hidden border-2 border-gold-400 hover:border-gold-300 transition-colors">
-                      {getAvatarUrl() ? (
-                        <img 
-                          src={getAvatarUrl()} 
-                          alt="Profile" 
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      ) : (
-                        <User size={16} />
-                      )}
-                    </div>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    onClick={handleSignOut}
-                    className="text-white hover:text-gold-400 p-2"
-                  >
-                    <LogOut size={16} />
-                  </Button>
-                </div>
-              ) : (
-                <div className="hidden md:flex items-center space-x-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => openAuthModal('login')}
-                    className="text-white hover:text-gold-400 font-medium"
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    onClick={() => openAuthModal('signup')}
-                    className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
-                  >
-                    Sign Up
-                  </Button>
-                </div>
-              )}
-              
-              {/* Mobile Menu Button */}
-              <Button 
-                variant="ghost" 
-                className="md:hidden text-white hover:text-gold-400 p-2"
-                onClick={toggleMobileMenu}
-              >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled ? 'glass-morphism backdrop-blur-md shadow-2xl' : 'bg-transparent'
+    }`}>
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-2xl font-bold">
+            <span className="text-shimmer">GadgetHub</span>
+          </Link>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
-            onClick={closeMobileMenu}
-          ></div>
-          
-          <div className="fixed top-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm">
-            <div className="glass-morphism rounded-2xl p-6 shadow-2xl">
-              <div className="flex flex-col space-y-4">
-                {navItems.map((item) => (
-                  item.href.startsWith('#') ? (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="text-white hover:text-gold-400 transition-colors duration-300 font-medium py-2 px-4 rounded-lg hover:bg-gold-400/10"
-                      onClick={closeMobileMenu}
-                    >
-                      {item.name}
-                    </a>
-                  ) : (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className="text-white hover:text-gold-400 transition-colors duration-300 font-medium py-2 px-4 rounded-lg hover:bg-gold-400/10"
-                      onClick={closeMobileMenu}
-                    >
-                      {item.name}
-                    </Link>
-                  )
-                ))}
-                
-                {/* Mobile Authentication */}
-                {loading ? (
-                  <div className="w-full h-10 rounded-lg bg-white/20 animate-pulse mt-4" />
-                ) : user ? (
-                  <div className="mt-4 space-y-2">
-                    <div className="flex items-center space-x-3 py-2 px-4">
-                      <div className="w-8 h-8 rounded-full bg-gradient-gold flex items-center justify-center text-black text-sm font-bold overflow-hidden">
-                        {getAvatarUrl() ? (
-                          <img 
-                            src={getAvatarUrl()} 
-                            alt="Profile" 
-                            className="w-full h-full object-cover rounded-full"
-                          />
-                        ) : (
-                          <User size={16} />
-                        )}
-                      </div>
-                      <span className="text-white text-sm font-medium">{getDisplayName()}</span>
-                    </div>
-                    <Link
-                      to="/profile"
-                      className="flex items-center space-x-2 text-white py-2 px-4 hover:bg-gold-400/10 rounded-lg"
-                      onClick={closeMobileMenu}
-                    >
-                      <User size={16} />
-                      <span>Profile</span>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      onClick={handleSignOut}
-                      className="w-full text-white hover:text-gold-400 justify-start"
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="mt-4 space-y-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        openAuthModal('login');
-                        closeMobileMenu();
-                      }}
-                      className="w-full text-white hover:text-gold-400 justify-center"
-                    >
-                      Login
-                    </Button>
-                    <Button 
-                      onClick={() => {
-                        openAuthModal('signup');
-                        closeMobileMenu();
-                      }}
-                      className="w-full bg-gradient-gold hover:bg-gold-500 text-black font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
-                    >
-                      Sign Up
-                    </Button>
-                  </div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`relative px-4 py-2 rounded-full transition-all duration-300 ${
+                  isActive(item.path)
+                    ? 'text-gold-400 bg-gold-400/10'
+                    : 'text-white hover:text-gold-400 hover:bg-white/5'
+                }`}
+              >
+                {item.name}
+                {isActive(item.path) && (
+                  <div className="absolute inset-0 rounded-full border border-gold-400/30 animate-pulse" />
                 )}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/cart" className="relative">
+              <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
+                <ShoppingCart size={20} />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Button>
+            </Link>
+            <Link to={user ? "/profile" : "/login"}>
+              <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
+                <User size={20} />
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden text-white hover:text-gold-400"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </Button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 p-4 glass-morphism rounded-2xl">
+            <div className="flex flex-col space-y-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                    isActive(item.path)
+                      ? 'text-gold-400 bg-gold-400/10'
+                      : 'text-white hover:text-gold-400 hover:bg-white/5'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="flex space-x-4 pt-4 border-t border-white/10">
+                <Link to="/cart" className="relative" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
+                    <ShoppingCart size={20} />
+                    {getTotalItems() > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                        {getTotalItems()}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+                <Link to={user ? "/profile" : "/login"} onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" size="icon" className="text-white hover:text-gold-400">
+                    <User size={20} />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Authentication Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialMode={authMode}
-      />
-    </>
+        )}
+      </div>
+    </nav>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
+import AdminPhoneButton from '@/components/AdminPhoneButton';
 
 const googlePixelProducts = [
   {
@@ -103,6 +103,7 @@ const GooglePixelProducts = () => {
           </div>
         </div>
       </section>
+      <AdminPhoneButton category="Google Pixel" />
       <Footer />
     </div>
   );

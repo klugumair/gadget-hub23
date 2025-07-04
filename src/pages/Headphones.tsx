@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import DatabaseProductCard from '@/components/DatabaseProductCard';
 import { Link } from 'react-router-dom';
 import AdminFloatingButton from '@/components/AdminFloatingButton';
+import { supabase } from '@/integrations/supabase/client';
 
 const Headphones = () => {
+  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', 'headphone')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDatabaseProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const roninProducts = [
     {
       title: "Ronin R-920 Pro",
@@ -197,6 +223,28 @@ const Headphones = () => {
               Discover our collection of high-quality headphones
             </p>
           </div>
+
+          {/* Database Products Section */}
+          {!loading && databaseProducts.length > 0 && (
+            <>
+              <BrandHeader title="Latest Additions" />
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                {databaseProducts.map((product) => (
+                  <DatabaseProductCard
+                    key={product.id}
+                    id={product.id}
+                    title={product.name}
+                    price={product.price}
+                    images={product.images || []}
+                    category={product.category}
+                    subcategory={product.subcategory}
+                    description={product.description}
+                    onUpdate={fetchProducts}
+                  />
+                ))}
+              </div>
+            </>
+          )}
 
           {/* Ronin Section */}
           <BrandHeader title="Ronin" />
