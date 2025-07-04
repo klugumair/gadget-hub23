@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -8,8 +9,9 @@ import UsedPhoneCard from '@/components/UsedPhoneCard';
 
 const usedGooglePixelProducts = [
   {
+    id: '1',
     title: 'Pixel 6 (8GB/128GB, PTA approved)',
-    price: '₨ 105,000 – ₨ 110,000',
+    price: 107500, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -18,8 +20,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '2',
     title: 'Pixel 6 Pro (12GB/128GB, PTA approved)',
-    price: '₨ 120,000 – ₨ 125,000',
+    price: 122500, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -28,8 +31,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '3',
     title: 'Pixel 6a (6GB/128GB, PTA approved)',
-    price: '₨ 88,000 – ₨ 95,000',
+    price: 91500, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -38,8 +42,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '4',
     title: 'Pixel 7 (8GB/128GB, Non-PTA)',
-    price: '₨ 129,999 – ₨ 130,000',
+    price: 130000, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -48,8 +53,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '5',
     title: 'Pixel 7 (8GB/128GB, Import)',
-    price: '₨ 144,999 – ₨ 165,923',
+    price: 155000, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -58,8 +64,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '6',
     title: 'Pixel 7 (8GB/256GB, Import)',
-    price: '₨ 169,999',
+    price: 169999,
     image: '🔍',
     condition: 'Like New',
     storage: '256GB',
@@ -68,8 +75,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '7',
     title: 'Pixel 7 Pro (12GB/128GB, Not PTA)',
-    price: '₨ 90,000 – ₨ 120,000',
+    price: 105000, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -78,8 +86,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '8',
     title: 'Pixel 7 Pro (12GB/256GB, PTA approved (CPID))',
-    price: '₨ 94,999 – ₨ 99,000',
+    price: 97000, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '256GB',
@@ -88,8 +97,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '9',
     title: 'Pixel 7 Pro (12GB/256GB, Retail (import))',
-    price: '₨ 161,999',
+    price: 161999,
     image: '🔍',
     condition: 'Like New',
     storage: '256GB',
@@ -98,8 +108,9 @@ const usedGooglePixelProducts = [
     usage_duration: 'N/A',
   },
   {
+    id: '10',
     title: 'Pixel 7 Pro (12GB/512GB, Retail import)',
-    price: '₨ 144,999 – ₨ 209,999',
+    price: 177500, // Average of the range
     image: '🔍',
     condition: 'Like New',
     storage: '512GB',
@@ -133,6 +144,7 @@ const UsedGooglePixelProducts = () => {
             {usedGooglePixelProducts.map((product, idx) => (
               <UsedPhoneCard
                 key={idx}
+                id={product.id}
                 title={product.title}
                 price={product.price}
                 condition={product.condition}
@@ -151,4 +163,4 @@ const UsedGooglePixelProducts = () => {
   );
 };
 
-export default UsedGooglePixelProducts; 
+export default UsedGooglePixelProducts;

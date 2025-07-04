@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -11,71 +12,61 @@ const googlePixelProducts = [
     title: 'Pixel 6 (8GB/128GB, PTA approved)',
     price: '₨ 105,000 – ₨ 110,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 6 Pro (12GB/128GB, PTA approved)',
     price: '₨ 120,000 – ₨ 125,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 6a (6GB/128GB, PTA approved)',
     price: '₨ 88,000 – ₨ 95,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 (8GB/128GB, Non-PTA)',
     price: '₨ 129,999 – ₨ 130,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 (8GB/128GB, Import)',
     price: '₨ 144,999 – ₨ 165,923',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 (8GB/256GB, Import)',
     price: '₨ 169,999',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 Pro (12GB/128GB, Not PTA)',
     price: '₨ 90,000 – ₨ 120,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 Pro (12GB/256GB, PTA approved (CPID))',
     price: '₨ 94,999 – ₨ 99,000',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 Pro (12GB/256GB, Retail (import))',
     price: '₨ 161,999',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   },
   {
     title: 'Pixel 7 Pro (12GB/512GB, Retail import)',
     price: '₨ 144,999 – ₨ 209,999',
     image: '🔍',
-    category: 'Google Pixel',
-    link: '#'
+    category: 'Google Pixel'
   }
 ];
 
@@ -107,7 +98,6 @@ const GooglePixelProducts = () => {
                 price={product.price}
                 image={product.image}
                 category={product.category}
-                link={product.link}
               />
             ))}
           </div>
@@ -118,4 +108,4 @@ const GooglePixelProducts = () => {
   );
 };
 
-export default GooglePixelProducts; 
+export default GooglePixelProducts;
