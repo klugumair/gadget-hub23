@@ -33,6 +33,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { isAdmin } = useAdminCheck();
   const { toast } = useToast();
   const { addToCart } = useCart();
@@ -69,7 +70,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     addToCart({
       title,
       price,
-      image: images[0] || '📦',
+      image: (images && images.length > 0) ? images[0] : '📦',
       category: subcategory || category
     });
 
@@ -80,23 +81,45 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     });
   };
 
+  const handleImageError = () => {
+    console.log('Image failed to load for product:', title);
+    setImageError(true);
+  };
+
+  const getDisplayImage = () => {
+    if (!images || images.length === 0 || imageError) {
+      return null;
+    }
+    return images[0];
+  };
+
+  const displayImage = getDisplayImage();
+
   return (
     <>
       <Card className="glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/40 transition-all duration-300 group hover:scale-105">
         <CardContent className="p-4">
           <div className="relative">
             <div 
-              className="aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center text-4xl cursor-pointer"
+              className="aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center text-4xl cursor-pointer overflow-hidden"
               onClick={() => setIsDetailModalOpen(true)}
             >
-              {images && images.length > 0 ? (
+              {displayImage ? (
                 <img 
-                  src={images[0]} 
+                  src={displayImage} 
                   alt={title}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                  onError={handleImageError}
+                  onLoad={() => {
+                    console.log('Image loaded successfully for:', title);
+                    setImageError(false);
+                  }}
                 />
               ) : (
-                <span>📦</span>
+                <div className="flex flex-col items-center justify-center text-gray-500">
+                  <span className="text-2xl mb-2">📦</span>
+                  <span className="text-xs">No Image</span>
+                </div>
               )}
             </div>
             

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, X, Plus } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,46 +54,79 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
     try {
       for (const file of Array.from(files)) {
-        const fileExt = file.name.split('.').pop();
+        console.log('Uploading file:', file.name, 'Size:', file.size);
+        
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error(`File ${file.name} is too large. Maximum size is 5MB.`);
+        }
+
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+          throw new Error(`File ${file.name} is not an image.`);
+        }
+
+        const fileExt = file.name.split('.').pop()?.toLowerCase();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
         const filePath = `products/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
+        console.log('Uploading to path:', filePath);
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
           .from('gadgethub')
-          .upload(filePath, file);
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
         if (uploadError) {
           console.error('Upload error:', uploadError);
-          throw uploadError;
+          throw new Error(`Failed to upload ${file.name}: ${uploadError.message}`);
         }
+
+        console.log('Upload successful:', uploadData);
 
         const { data: urlData } = supabase.storage
           .from('gadgethub')
           .getPublicUrl(filePath);
 
-        uploadedUrls.push(urlData.publicUrl);
+        const publicUrl = urlData.publicUrl;
+        console.log('Public URL:', publicUrl);
+        
+        uploadedUrls.push(publicUrl);
       }
 
       setImages(prev => [...prev, ...uploadedUrls]);
+      
       toast({
-        title: "Images Uploaded! ✅",
-        description: `${uploadedUrls.length} image(s) uploaded successfully`,
+        title: "Images Uploaded Successfully! ✅",
+        description: `${uploadedUrls.length} image(s) uploaded`,
         className: "bg-gradient-gold text-black font-semibold",
       });
+
     } catch (error) {
       console.error('Error uploading images:', error);
       toast({
         title: "Upload Failed",
-        description: "Failed to upload images. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to upload images. Please try again.",
         variant: "destructive",
       });
     } finally {
       setUploading(false);
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
+    toast({
+      title: "Image Removed",
+      description: "Image has been removed from the product",
+      className: "bg-gradient-gold text-black font-semibold",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -101,12 +134,17 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     setSaving(true);
 
     try {
+      console.log('Saving product with data:', {
+        ...formData,
+        images: images
+      });
+
       const updateData = {
-        name: formData.name,
-        price: formData.price,
+        name: formData.name.trim(),
+        price: Number(formData.price),
         category: formData.category,
-        subcategory: formData.subcategory || null,
-        description: formData.description || null,
+        subcategory: formData.subcategory.trim() || null,
+        description: formData.description.trim() || null,
         images: images,
         updated_at: new Date().toISOString()
       };
@@ -115,6 +153,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       
       if (product) {
         // Update existing product
+        console.log('Updating product:', product.id);
         const { error: updateError } = await supabase
           .from('products')
           .update(updateData)
@@ -122,6 +161,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         error = updateError;
       } else {
         // Create new product
+        console.log('Creating new product');
         const { error: insertError } = await supabase
           .from('products')
           .insert([updateData]);
@@ -134,8 +174,8 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       }
 
       toast({
-        title: product ? "Product Updated! ✅" : "Product Created! ✅",
-        description: `${formData.name} has been ${product ? 'updated' : 'created'} successfully`,
+        title: product ? "Product Updated Successfully! ✅" : "Product Created Successfully! ✅",
+        description: `${formData.name} has been ${product ? 'updated' : 'created'}`,
         className: "bg-gradient-gold text-black font-semibold",
       });
 
@@ -153,6 +193,19 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     }
   };
 
+  React.useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name,
+        price: product.price,
+        category: product.category,
+        subcategory: product.subcategory || '',
+        description: product.description || '',
+      });
+      setImages(product.images || []);
+    }
+  }, [product]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700">
@@ -165,30 +218,34 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name" className="text-white">Product Name</Label>
+              <Label htmlFor="name" className="text-white">Product Name *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 className="bg-gray-800 border-gray-600 text-white"
                 required
+                placeholder="Enter product name"
               />
             </div>
 
             <div>
-              <Label htmlFor="price" className="text-white">Price (PKR)</Label>
+              <Label htmlFor="price" className="text-white">Price (PKR) *</Label>
               <Input
                 id="price"
                 type="number"
+                min="0"
+                step="0.01"
                 value={formData.price}
-                onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
                 className="bg-gray-800 border-gray-600 text-white"
                 required
+                placeholder="Enter price"
               />
             </div>
 
             <div>
-              <Label htmlFor="category" className="text-white">Category</Label>
+              <Label htmlFor="category" className="text-white">Category *</Label>
               <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as 'gadget' | 'headphone' | 'cover' }))}>
                 <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
                   <SelectValue />
@@ -220,6 +277,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 className="bg-gray-800 border-gray-600 text-white"
                 rows={3}
+                placeholder="Enter product description"
               />
             </div>
 
@@ -237,6 +295,9 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                     <Upload className="w-4 h-4 mr-2" />
                     {uploading ? 'Uploading...' : 'Upload Images'}
                   </Button>
+                  <span className="text-sm text-gray-400">
+                    Max 5MB per image. Supported: JPG, PNG, WebP
+                  </span>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -254,7 +315,11 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                         <img
                           src={image}
                           alt={`Product ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg"
+                          className="w-full h-24 object-cover rounded-lg border border-gray-600"
+                          onError={(e) => {
+                            console.error('Failed to load image:', image);
+                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjEyIiB5PSIxMiIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1zaXplPSIxMCI+SW1hZ2U8L3RleHQ+Cjwvc3ZnPg==';
+                          }}
                         />
                         <Button
                           type="button"
@@ -274,10 +339,20 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
           </div>
 
           <div className="flex justify-end space-x-4">
-            <Button type="button" variant="outline" onClick={onClose} className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose} 
+              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+              disabled={saving || uploading}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={saving} className="bg-gold-400 hover:bg-gold-500 text-black">
+            <Button 
+              type="submit" 
+              disabled={saving || uploading || !formData.name.trim()} 
+              className="bg-gold-400 hover:bg-gold-500 text-black"
+            >
               {saving ? 'Saving...' : (product ? 'Update Product' : 'Create Product')}
             </Button>
           </div>
