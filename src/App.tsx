@@ -29,6 +29,16 @@ const HuaweiProducts = lazy(() => import("./pages/HuaweiProducts"));
 const UsedIPhoneProducts = lazy(() => import("./pages/UsedIPhoneProducts"));
 const UsedSamsungProducts = lazy(() => import("./pages/UsedSamsungProducts"));
 const UsedGooglePixelProducts = lazy(() => import("./pages/UsedGooglePixelProducts"));
+const UsedInfinixProducts = lazy(() => import("./pages/UsedInfinixProducts"));
+const UsedRealmeProducts = lazy(() => import("./pages/UsedRealmeProducts"));
+const UsedSparkXProducts = lazy(() => import("./pages/UsedSparkXProducts"));
+const UsedTecnoProducts = lazy(() => import("./pages/UsedTecnoProducts"));
+const UsedVivoProducts = lazy(() => import("./pages/UsedVivoProducts"));
+const UsedRedmiProducts = lazy(() => import("./pages/UsedRedmiProducts"));
+const UsedHonorProducts = lazy(() => import("./pages/UsedHonorProducts"));
+const UsedOppoProducts = lazy(() => import("./pages/UsedOppoProducts"));
+const UsedItelProducts = lazy(() => import("./pages/UsedItelProducts"));
+const UsedHuaweiProducts = lazy(() => import("./pages/UsedHuaweiProducts"));
 const IPhone11 = lazy(() => import("./pages/IPhone11"));
 const IPhone11Pro = lazy(() => import("./pages/IPhone11Pro"));
 const IPhone11ProMax256GB = lazy(() => import("./pages/IPhone11ProMax256GB"));
@@ -74,6 +84,16 @@ function App() {
                   <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
                   <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
                   <Route path="/phones/used/google-pixel" element={<UsedGooglePixelProducts />} />
+                  <Route path="/phones/used/infinix" element={<UsedInfinixProducts />} />
+                  <Route path="/phones/used/realme" element={<UsedRealmeProducts />} />
+                  <Route path="/phones/used/sparkx" element={<UsedSparkXProducts />} />
+                  <Route path="/phones/used/tecno" element={<UsedTecnoProducts />} />
+                  <Route path="/phones/used/vivo" element={<UsedVivoProducts />} />
+                  <Route path="/phones/used/redmi" element={<UsedRedmiProducts />} />
+                  <Route path="/phones/used/honor" element={<UsedHonorProducts />} />
+                  <Route path="/phones/used/oppo" element={<UsedOppoProducts />} />
+                  <Route path="/phones/used/itel" element={<UsedItelProducts />} />
+                  <Route path="/phones/used/huawei" element={<UsedHuaweiProducts />} />
                   <Route path="/phones/new/iphone/iphone-11" element={<IPhone11 />} />
                   <Route path="/phones/new/iphone/iphone-11-pro" element={<IPhone11Pro />} />
                   <Route path="/phones/new/iphone/iphone-11-pro-max-256gb" element={<IPhone11ProMax256GB />} />

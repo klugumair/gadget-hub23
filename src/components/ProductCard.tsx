@@ -1,29 +1,40 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { ShoppingCart, Eye } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
+import ProductDetailModal from './ProductDetailModal';
 
 interface ProductCardProps {
   title: string;
-  price: string;
+  price: string | number;
   image: string;
   category: string;
-  size?: 'default' | 'compact';
+  size?: 'normal' | 'compact';
+  description?: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ title, price, image, category, size = 'default' }) => {
-  const { toast } = useToast();
+const ProductCard: React.FC<ProductCardProps> = ({ 
+  title, 
+  price, 
+  image, 
+  category, 
+  size = 'normal',
+  description 
+}) => {
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = () => {
-    // Convert price string to number (remove "Rs. " and commas)
-    const numericPrice = parseInt(price.replace(/Rs\.\s?|,|₨/g, ''));
+    const priceValue = typeof price === 'string' ? 
+      parseFloat(price.replace(/[^0-9.-]+/g, "")) : price;
     
     addToCart({
       title,
-      price: numericPrice,
+      price: priceValue,
       image,
       category
     });
@@ -35,48 +46,88 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, price, image, category
     });
   };
 
-  const isImageUrl = image.startsWith('/') || image.startsWith('http');
-  const cardHeight = size === 'compact' ? 'h-56' : 'h-64';
-  const imageHeight = size === 'compact' ? 'h-40' : 'h-48';
+  const formatPrice = (priceValue: string | number) => {
+    if (typeof priceValue === 'string') {
+      return priceValue;
+    }
+    return `Rs. ${priceValue.toLocaleString()}`;
+  };
+
+  const cardClasses = size === 'compact' 
+    ? "glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/40 transition-all duration-300 group hover:scale-105"
+    : "glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/50 transition-all duration-300 hover:scale-105";
+
+  const imageClasses = size === 'compact'
+    ? "aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center text-4xl cursor-pointer"
+    : "aspect-square bg-gray-800 rounded-lg mb-6 flex items-center justify-center text-6xl cursor-pointer";
+
+  const titleClasses = size === 'compact'
+    ? "text-white font-semibold text-sm mb-2 line-clamp-2"
+    : "text-white font-semibold text-lg mb-3 line-clamp-2";
+
+  const priceClasses = size === 'compact'
+    ? "text-gold-400 font-bold text-lg"
+    : "text-gold-400 font-bold text-xl";
+
+  const buttonSize = size === 'compact' ? 'sm' : 'default';
+  const buttonTextSize = size === 'compact' ? 'text-xs px-2 py-1' : 'text-sm px-4 py-2';
 
   return (
-    <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300">
-      <div className={`relative ${cardHeight} bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center`}>
-        {isImageUrl ? (
-          <img 
-            src={image} 
-            alt={title}
-            className={`max-w-full ${imageHeight} object-contain`}
-            loading="eager"
-            onLoad={() => console.log(`Image loaded: ${title}`)}
-            onError={(e) => console.error(`Image failed to load: ${title}`, e)}
-          />
-        ) : (
-          <span className={size === 'compact' ? 'text-5xl' : 'text-6xl'}>{image}</span>
-        )}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
-      </div>
-      <div className="p-4">
-        <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-          {category}
-        </div>
-        <h3 className={`font-bold text-white mb-3 group-hover:text-gold-400 transition-colors line-clamp-2 ${size === 'compact' ? 'text-sm' : 'text-lg'}`}>
-          {title}
-        </h3>
-        <div className="flex items-center justify-between">
-          <span className={`font-bold text-gold-400 ${size === 'compact' ? 'text-lg' : 'text-xl'}`}>
-            {price}
-          </span>
-          <Button 
-            onClick={handleAddToCart}
-            className={`bg-gold-400 hover:bg-gold-500 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105 ${size === 'compact' ? 'px-3 py-1 text-sm' : 'px-4 py-2'}`}
+    <>
+      <Card className={cardClasses}>
+        <CardContent className={size === 'compact' ? 'p-4' : 'p-6'}>
+          <div 
+            className={imageClasses}
+            onClick={() => setIsDetailModalOpen(true)}
           >
-            <ShoppingCart size={size === 'compact' ? 14 : 16} className="mr-1" />
-            Add
-          </Button>
-        </div>
-      </div>
-    </div>
+            {image}
+          </div>
+          
+          <div className="text-center space-y-3">
+            <h3 className={titleClasses}>
+              {title}
+            </h3>
+            <p className={priceClasses}>
+              {formatPrice(price)}
+            </p>
+            <p className="text-gray-400 text-xs mt-1">{category}</p>
+            
+            <div className="flex justify-center space-x-2 mt-3">
+              <Button
+                onClick={() => setIsDetailModalOpen(true)}
+                variant="outline"
+                size={buttonSize}
+                className={`bg-gray-700 border-gray-600 text-white hover:bg-gray-600 ${buttonTextSize}`}
+              >
+                <Eye size={size === 'compact' ? 12 : 16} className="mr-1" />
+                View
+              </Button>
+              <Button
+                onClick={handleAddToCart}
+                size={buttonSize}
+                className={`bg-gold-400 hover:bg-gold-500 text-black font-semibold ${buttonTextSize}`}
+              >
+                <ShoppingCart size={size === 'compact' ? 12 : 16} className="mr-1" />
+                Add
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <ProductDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        product={{
+          id: `static-${title.replace(/\s+/g, '-').toLowerCase()}`,
+          title,
+          price: typeof price === 'string' ? parseFloat(price.replace(/[^0-9.-]+/g, "")) : price,
+          images: [image],
+          category,
+          description: description || `${title} - ${category} device with premium features and quality.`
+        }}
+      />
+    </>
   );
 };
 

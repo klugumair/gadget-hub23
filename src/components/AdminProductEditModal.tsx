@@ -56,23 +56,20 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       const uploadPromises = Array.from(files).map(async (file) => {
         console.log('Processing file:', file.name, 'Size:', file.size, 'Type:', file.type);
         
-        // Validate file
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error(`File ${file.name} is too large. Maximum size is 5MB.`);
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`File ${file.name} is too large. Maximum size is 10MB.`);
         }
 
         if (!file.type.startsWith('image/')) {
           throw new Error(`File ${file.name} is not an image.`);
         }
 
-        // Generate unique filename
         const fileExt = file.name.split('.').pop()?.toLowerCase();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
         const filePath = `products/${fileName}`;
 
-        console.log('Uploading to:', filePath);
+        console.log('Uploading to path:', filePath);
 
-        // Upload file to Supabase Storage
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('gadgethub')
           .upload(filePath, file, {
@@ -87,7 +84,6 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
         console.log('Upload successful:', uploadData);
 
-        // Get public URL
         const { data: urlData } = supabase.storage
           .from('gadgethub')
           .getPublicUrl(filePath);
@@ -95,21 +91,34 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         const publicUrl = urlData.publicUrl;
         console.log('Generated public URL:', publicUrl);
         
+        // Test if the image is accessible
+        try {
+          const response = await fetch(publicUrl, { method: 'HEAD' });
+          if (!response.ok) {
+            console.error('Image not accessible:', publicUrl, response.status);
+          } else {
+            console.log('Image verified accessible:', publicUrl);
+          }
+        } catch (e) {
+          console.error('Error verifying image accessibility:', e);
+        }
+        
         return publicUrl;
       });
 
       const uploadedUrls = await Promise.all(uploadPromises);
       console.log('All uploads completed:', uploadedUrls);
 
-      setImages(prev => {
-        const newImages = [...prev, ...uploadedUrls];
+      // Directly update the images state with new URLs
+      setImages(prevImages => {
+        const newImages = [...prevImages, ...uploadedUrls];
         console.log('Updated images array:', newImages);
         return newImages;
       });
       
       toast({
         title: "Images Uploaded Successfully! ✅",
-        description: `${uploadedUrls.length} image(s) uploaded`,
+        description: `${uploadedUrls.length} image(s) uploaded and added`,
         className: "bg-gradient-gold text-black font-semibold",
       });
 
@@ -160,7 +169,6 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       let error;
       
       if (product) {
-        // Update existing product
         console.log('Updating product:', product.id);
         const { error: updateError } = await supabase
           .from('products')
@@ -168,7 +176,6 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
           .eq('id', product.id);
         error = updateError;
       } else {
-        // Create new product
         console.log('Creating new product');
         const { error: insertError } = await supabase
           .from('products')
@@ -202,7 +209,8 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
   };
 
   React.useEffect(() => {
-    if (product) {
+    if (product && isOpen) {
+      console.log('Setting form data for product:', product);
       setFormData({
         name: product.name,
         price: product.price,
@@ -211,8 +219,8 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         description: product.description || '',
       });
       setImages(product.images || []);
-    } else {
-      // Reset form for new product
+    } else if (!product && isOpen) {
+      console.log('Resetting form for new product');
       setFormData({
         name: '',
         price: 0,
@@ -314,7 +322,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                     {uploading ? 'Uploading...' : 'Upload Images'}
                   </Button>
                   <span className="text-sm text-gray-400">
-                    Max 5MB per image. Supported: JPG, PNG, WebP
+                    Max 10MB per image. Supported: JPG, PNG, WebP
                   </span>
                   <input
                     ref={fileInputRef}
@@ -335,11 +343,11 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                           alt={`Product ${index + 1}`}
                           className="w-full h-24 object-cover rounded-lg border border-gray-600"
                           onError={(e) => {
-                            console.error('Failed to load image:', image);
+                            console.error('Failed to display image:', image);
                             e.currentTarget.style.display = 'none';
                           }}
                           onLoad={() => {
-                            console.log('Image loaded successfully:', image);
+                            console.log('Image displayed successfully:', image);
                           }}
                         />
                         <Button
