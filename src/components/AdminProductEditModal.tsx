@@ -50,28 +50,29 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     if (!files || files.length === 0) return;
 
     setUploading(true);
-    const uploadedUrls: string[] = [];
+    console.log('Starting image upload process...');
 
     try {
-      for (const file of Array.from(files)) {
-        console.log('Uploading file:', file.name, 'Size:', file.size);
+      const uploadPromises = Array.from(files).map(async (file) => {
+        console.log('Processing file:', file.name, 'Size:', file.size, 'Type:', file.type);
         
-        // Check file size (max 5MB)
+        // Validate file
         if (file.size > 5 * 1024 * 1024) {
           throw new Error(`File ${file.name} is too large. Maximum size is 5MB.`);
         }
 
-        // Check file type
         if (!file.type.startsWith('image/')) {
           throw new Error(`File ${file.name} is not an image.`);
         }
 
+        // Generate unique filename
         const fileExt = file.name.split('.').pop()?.toLowerCase();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
         const filePath = `products/${fileName}`;
 
-        console.log('Uploading to path:', filePath);
+        console.log('Uploading to:', filePath);
 
+        // Upload file to Supabase Storage
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('gadgethub')
           .upload(filePath, file, {
@@ -86,17 +87,25 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
         console.log('Upload successful:', uploadData);
 
+        // Get public URL
         const { data: urlData } = supabase.storage
           .from('gadgethub')
           .getPublicUrl(filePath);
 
         const publicUrl = urlData.publicUrl;
-        console.log('Public URL:', publicUrl);
+        console.log('Generated public URL:', publicUrl);
         
-        uploadedUrls.push(publicUrl);
-      }
+        return publicUrl;
+      });
 
-      setImages(prev => [...prev, ...uploadedUrls]);
+      const uploadedUrls = await Promise.all(uploadPromises);
+      console.log('All uploads completed:', uploadedUrls);
+
+      setImages(prev => {
+        const newImages = [...prev, ...uploadedUrls];
+        console.log('Updated images array:', newImages);
+        return newImages;
+      });
       
       toast({
         title: "Images Uploaded Successfully! ✅",
@@ -113,7 +122,6 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       });
     } finally {
       setUploading(false);
-      // Clear the file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -318,7 +326,10 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                           className="w-full h-24 object-cover rounded-lg border border-gray-600"
                           onError={(e) => {
                             console.error('Failed to load image:', image);
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjEyIiB5PSIxMiIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgZm9udC1zaXplPSIxMCI+SW1hZ2U8L3RleHQ+Cjwvc3ZnPg==';
+                            e.currentTarget.style.display = 'none';
+                          }}
+                          onLoad={() => {
+                            console.log('Image loaded successfully:', image);
                           }}
                         />
                         <Button

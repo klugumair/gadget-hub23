@@ -33,7 +33,8 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
 }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [imageError, setImageError] = useState<{[key: string]: boolean}>({});
+  const [imageLoaded, setImageLoaded] = useState<{[key: string]: boolean}>({});
   const { isAdmin } = useAdminCheck();
   const { toast } = useToast();
   const { addToCart } = useCart();
@@ -70,7 +71,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     addToCart({
       title,
       price,
-      image: (images && images.length > 0) ? images[0] : '📦',
+      image: getDisplayImage() || '📦',
       category: subcategory || category
     });
 
@@ -81,16 +82,33 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     });
   };
 
-  const handleImageError = () => {
-    console.log('Image failed to load for product:', title);
-    setImageError(true);
+  const handleImageError = (imageUrl: string) => {
+    console.log('Image failed to load:', imageUrl, 'for product:', title);
+    setImageError(prev => ({ ...prev, [imageUrl]: true }));
+  };
+
+  const handleImageLoad = (imageUrl: string) => {
+    console.log('Image loaded successfully:', imageUrl, 'for product:', title);
+    setImageLoaded(prev => ({ ...prev, [imageUrl]: true }));
+    setImageError(prev => ({ ...prev, [imageUrl]: false }));
   };
 
   const getDisplayImage = () => {
-    if (!images || images.length === 0 || imageError) {
+    if (!images || images.length === 0) {
+      console.log('No images available for product:', title);
       return null;
     }
-    return images[0];
+
+    // Find the first image that hasn't failed to load
+    for (const image of images) {
+      if (!imageError[image]) {
+        console.log('Using image:', image, 'for product:', title);
+        return image;
+      }
+    }
+
+    console.log('All images failed to load for product:', title);
+    return null;
   };
 
   const displayImage = getDisplayImage();
@@ -109,13 +127,15 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
                   src={displayImage} 
                   alt={title}
                   className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
-                  onError={handleImageError}
-                  onLoad={() => {
-                    console.log('Image loaded successfully for:', title);
-                    setImageError(false);
+                  onError={() => handleImageError(displayImage)}
+                  onLoad={() => handleImageLoad(displayImage)}
+                  style={{ 
+                    display: imageError[displayImage] ? 'none' : 'block' 
                   }}
                 />
-              ) : (
+              ) : null}
+              
+              {(!displayImage || imageError[displayImage || '']) && (
                 <div className="flex flex-col items-center justify-center text-gray-500">
                   <span className="text-2xl mb-2">📦</span>
                   <span className="text-xs">No Image</span>
