@@ -211,8 +211,18 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         description: product.description || '',
       });
       setImages(product.images || []);
+    } else {
+      // Reset form for new product
+      setFormData({
+        name: '',
+        price: 0,
+        category: 'gadget',
+        subcategory: '',
+        description: '',
+      });
+      setImages([]);
     }
-  }, [product]);
+  }, [product, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
