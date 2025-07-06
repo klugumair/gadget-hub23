@@ -1,11 +1,11 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ShoppingCart, Eye, Trash2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { ShoppingCart, Eye, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { isAdmin } from "@/utils/adminUtils";
 
 interface UsedPhoneCardProps {
   id: string;
@@ -21,40 +21,30 @@ interface UsedPhoneCardProps {
   isDatabase?: boolean;
 }
 
-const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({ 
-  id, 
-  title, 
-  price, 
-  condition, 
-  storage, 
-  ram, 
-  images, 
+const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
+  id,
+  title,
+  price,
+  condition,
+  storage,
+  ram,
+  images,
   usage_duration,
   onClick,
   onDelete,
-  isDatabase = false
+  isDatabase = false,
 }) => {
   const { toast } = useToast();
   const { addToCart } = useCart();
   const { user } = useAuth();
-  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [isAdminUser, setIsAdminUser] = React.useState(false);
 
   React.useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (user) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('email')
-            .eq('id', user.id)
-            .single();
-          
-          if (data && data.email === 'admin@gadgethub.com') {
-            setIsAdmin(true);
-          }
-        } catch (error) {
-          console.error('Error checking admin status:', error);
-        }
+    const checkAdminStatus = () => {
+      if (user?.email) {
+        setIsAdminUser(isAdmin(user.email));
+      } else {
+        setIsAdminUser(false);
       }
     };
 
@@ -63,12 +53,12 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     addToCart({
       title: `${title} (Used)`,
       price: price,
-      image: images[0] || '/placeholder-phone.jpg',
-      category: 'Used Phone'
+      image: images[0] || "/placeholder-phone.jpg",
+      category: "Used Phone",
     });
 
     toast({
@@ -80,8 +70,8 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    
-    if (!isAdmin) {
+
+    if (!isAdminUser) {
       toast({
         title: "Access Denied",
         description: "Only administrators can delete products",
@@ -89,12 +79,12 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       });
       return;
     }
-    
+
     try {
       const { error } = await supabase
-        .from('phone_submissions')
+        .from("phone_submissions")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
@@ -108,7 +98,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
         onDelete();
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error("Error deleting product:", error);
       toast({
         title: "Error",
         description: "Failed to delete product",
@@ -120,9 +110,9 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
   const getDisplayImage = () => {
     if (images && images.length > 0) {
       const imageUrl = images[0];
-      if (imageUrl.startsWith('http')) {
+      if (imageUrl.startsWith("http")) {
         return imageUrl;
-      } else if (imageUrl.startsWith('phone-images/')) {
+      } else if (imageUrl.startsWith("phone-images/")) {
         return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/${imageUrl}`;
       } else {
         return imageUrl;
@@ -135,32 +125,35 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
   return (
     <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer">
-      <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center" onClick={onClick}>
+      <div
+        className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center"
+        onClick={onClick}
+      >
         {displayImage ? (
-          <img 
-            src={displayImage} 
+          <img
+            src={displayImage}
             alt={title}
             className="w-full h-full object-contain p-4"
             loading="lazy"
             onError={(e) => {
-              console.error('Image failed to load:', displayImage);
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              console.error("Image failed to load:", displayImage);
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextElementSibling?.classList.remove("hidden");
             }}
           />
         ) : (
           <span className="text-6xl">📱</span>
         )}
-        
+
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
-        
+
         <div className="absolute top-4 right-4">
           <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
             USED
           </span>
         </div>
-        
-        {isAdmin && isDatabase && (
+
+        {isAdminUser && isDatabase && (
           <div className="absolute top-4 left-4">
             <Button
               onClick={handleDelete}
@@ -181,14 +174,22 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
           {title}
         </h3>
         <div className="space-y-1 text-sm text-gray-400 mb-4">
-          <p><strong>Condition:</strong> {condition}</p>
-          <p><strong>Storage:</strong> {storage} | <strong>RAM:</strong> {ram}</p>
-          <p><strong>Used for:</strong> {usage_duration}</p>
+          <p>
+            <strong>Condition:</strong> {condition}
+          </p>
+          <p>
+            <strong>Storage:</strong> {storage} | <strong>RAM:</strong> {ram}
+          </p>
+          <p>
+            <strong>Used for:</strong> {usage_duration}
+          </p>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-gold-400">Rs. {price.toLocaleString()}</span>
+          <span className="text-2xl font-bold text-gold-400">
+            Rs. {price.toLocaleString()}
+          </span>
           <div className="flex gap-2">
-            <Button 
+            <Button
               onClick={onClick}
               variant="ghost"
               size="sm"
@@ -196,7 +197,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
             >
               <Eye size={16} />
             </Button>
-            <Button 
+            <Button
               onClick={handleAddToCart}
               className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
             >
