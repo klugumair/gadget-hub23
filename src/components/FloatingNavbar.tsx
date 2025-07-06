@@ -35,11 +35,9 @@ const FloatingNavbar = () => {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const navItems = [
-    { name: 'Home', path: '/' },
     { name: 'Phones', path: '/phones' },
     { name: 'Covers', path: '/covers' },
     { name: 'Headphones', path: '/headphones' },
-    { name: 'Services', path: '/repairing-service' },
   ];
 
   return (
@@ -122,14 +120,19 @@ const FloatingNavbar = () => {
               {/* User Actions */}
               {user ? (
                 <div className="hidden md:flex items-center space-x-2">
+                  {/* Profile Picture */}
                   <Link to="/profile">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 hover:scale-110"
-                    >
-                      <User size={18} />
-                    </Button>
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg hover:shadow-gold-400/25 transition-all duration-300 hover:scale-110 cursor-pointer border-2 border-gold-400/30">
+                      {user.user_metadata?.avatar_url ? (
+                        <img 
+                          src={user.user_metadata.avatar_url} 
+                          alt="Profile" 
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      ) : (
+                        <User size={20} className="text-black" />
+                      )}
+                    </div>
                   </Link>
                   <Button
                     onClick={handleSignOut}
@@ -188,7 +191,17 @@ const FloatingNavbar = () => {
                         onClick={() => setIsMenuOpen(false)}
                         className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-all duration-300"
                       >
-                        <User size={18} />
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                          {user.user_metadata?.avatar_url ? (
+                            <img 
+                              src={user.user_metadata.avatar_url} 
+                              alt="Profile" 
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          ) : (
+                            <User size={16} className="text-black" />
+                          )}
+                        </div>
                         <span>Profile</span>
                       </Link>
                       <button

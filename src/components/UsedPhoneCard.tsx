@@ -86,6 +86,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
     try {
       setIsDeleting(true);
+      console.log("Attempting to delete phone submission with ID:", id);
       
       const { error } = await supabase
         .from("phone_submissions")
@@ -96,6 +97,8 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
         console.error("Delete error:", error);
         throw error;
       }
+
+      console.log("Phone submission deleted successfully");
 
       toast({
         title: "Product Deleted! ✅",
@@ -138,16 +141,16 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
   return (
     <div className="group relative">
-      <div className="glass-morphism rounded-3xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer border border-gold-400/20 shadow-2xl">
+      <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer border border-gold-400/20 shadow-xl max-w-sm mx-auto">
         <div
-          className="relative h-72 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden"
+          className="relative h-48 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden"
           onClick={onClick}
         >
           {displayImage ? (
             <img
               src={displayImage}
               alt={title}
-              className="w-full h-full object-contain p-6 transition-transform duration-300 group-hover:scale-110"
+              className="w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-110"
               loading="lazy"
               onError={(e) => {
                 console.error("Image failed to load:", displayImage);
@@ -156,47 +159,47 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
               }}
             />
           ) : (
-            <div className="text-8xl text-gold-400/30">📱</div>
+            <div className="text-6xl text-gold-400/30">📱</div>
           )}
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          <div className="absolute top-4 right-4 z-10">
-            <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg border border-blue-400/30">
+          <div className="absolute top-3 right-3 z-10">
+            <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg border border-blue-400/30">
               USED
             </span>
           </div>
 
           {isAdminUser && isDatabase && (
-            <div className="absolute top-4 left-4 z-10">
+            <div className="absolute top-3 left-3 z-10">
               <Button
                 onClick={handleDelete}
                 disabled={isDeleting}
                 variant="destructive"
                 size="sm"
-                className="bg-red-600 hover:bg-red-700 text-white p-2 h-9 w-9 rounded-full shadow-lg border border-red-400/30 transition-all duration-200 hover:scale-110"
+                className="bg-red-600 hover:bg-red-700 text-white p-1.5 h-8 w-8 rounded-full shadow-lg border border-red-400/30 transition-all duration-200 hover:scale-110"
               >
                 {isDeleting ? (
-                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                  <div className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />
                 ) : (
-                  <Trash2 size={14} />
+                  <Trash2 size={12} />
                 )}
               </Button>
             </div>
           )}
         </div>
 
-        <div className="p-6 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm">
-          <div className="text-sm text-gold-400 font-semibold uppercase tracking-wider mb-3 flex items-center">
-            <span className="w-2 h-2 bg-gold-400 rounded-full mr-2"></span>
+        <div className="p-4 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm">
+          <div className="text-xs text-gold-400 font-semibold uppercase tracking-wider mb-2 flex items-center">
+            <span className="w-1.5 h-1.5 bg-gold-400 rounded-full mr-1.5"></span>
             Pre-Owned Device
           </div>
           
-          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-gold-400 transition-colors duration-300 line-clamp-2 leading-tight">
+          <h3 className="text-lg font-bold text-white mb-2 group-hover:text-gold-400 transition-colors duration-300 line-clamp-2 leading-tight">
             {title}
           </h3>
           
-          <div className="space-y-2 text-sm text-gray-300 mb-5">
+          <div className="space-y-1.5 text-xs text-gray-300 mb-4">
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Condition:</span>
               <span className="font-medium text-green-400">{condition}</span>
@@ -215,27 +218,27 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
             </div>
           </div>
           
-          <div className="flex items-center justify-between border-t border-gray-700/50 pt-4">
+          <div className="flex items-center justify-between border-t border-gray-700/50 pt-3">
             <div>
-              <span className="text-3xl font-bold text-transparent bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text">
+              <span className="text-xl font-bold text-transparent bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text">
                 Rs. {price.toLocaleString()}
               </span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <Button
                 onClick={onClick}
                 variant="ghost"
                 size="sm"
-                className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-2 rounded-full transition-all duration-200"
+                className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-1.5 rounded-full transition-all duration-200"
               >
-                <Eye size={18} />
+                <Eye size={14} />
               </Button>
               <Button
                 onClick={handleAddToCart}
-                className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-bold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg border border-gold-300/30"
+                className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-bold px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105 shadow-lg border border-gold-300/30 text-xs"
               >
-                <ShoppingCart size={16} className="mr-2" />
-                Add to Cart
+                <ShoppingCart size={12} className="mr-1" />
+                Add
               </Button>
             </div>
           </div>

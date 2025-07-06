@@ -53,64 +53,82 @@ const ProductCard: React.FC<ProductCardProps> = ({
     return `Rs. ${priceValue.toLocaleString()}`;
   };
 
-  const cardClasses = size === 'compact' 
-    ? "glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/40 transition-all duration-300 group hover:scale-105"
-    : "glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/50 transition-all duration-300 hover:scale-105";
-
-  const imageClasses = size === 'compact'
-    ? "aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center text-4xl cursor-pointer relative"
-    : "aspect-square bg-gray-800 rounded-lg mb-6 flex items-center justify-center text-6xl cursor-pointer relative";
-
-  const titleClasses = size === 'compact'
-    ? "text-white font-semibold text-sm mb-2 line-clamp-2"
-    : "text-white font-semibold text-lg mb-3 line-clamp-2";
-
-  const priceClasses = size === 'compact'
-    ? "text-gold-400 font-bold text-lg"
-    : "text-gold-400 font-bold text-xl";
-
-  const buttonSize = size === 'compact' ? 'sm' : 'default';
-  const buttonTextSize = size === 'compact' ? 'text-xs px-2 py-1' : 'text-sm px-4 py-2';
+  const isCompact = size === 'compact';
 
   return (
     <>
-      <Card className={cardClasses}>
-        <CardContent className={size === 'compact' ? 'p-4' : 'p-6'}>
-          <div className={imageClasses} onClick={() => setIsDetailModalOpen(true)}>
-            {image}
-          </div>
-          
-          <div className="text-center space-y-3">
-            <h3 className={titleClasses}>
-              {title}
-            </h3>
-            <p className={priceClasses}>
-              {formatPrice(price)}
-            </p>
-            <p className="text-gray-400 text-xs mt-1">{category}</p>
-            
-            <div className="flex justify-center space-x-2 mt-3">
-              <Button
-                onClick={() => setIsDetailModalOpen(true)}
-                variant="outline"
-                size={buttonSize}
-                className={`bg-gray-700 border-gray-600 text-white hover:bg-gray-600 ${buttonTextSize}`}
-              >
-                <Eye size={size === 'compact' ? 12 : 16} className="mr-1" />
-                View
-              </Button>
-              <Button
-                onClick={handleAddToCart}
-                size={buttonSize}
-                className={`bg-gold-400 hover:bg-gold-500 text-black font-semibold ${buttonTextSize}`}
-              >
-                <ShoppingCart size={size === 'compact' ? 12 : 16} className="mr-1" />
-                Add
-              </Button>
+      <div className="group relative">
+        <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer border border-gold-400/20 shadow-xl max-w-sm mx-auto">
+          <div
+            className={`relative bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden ${
+              isCompact ? 'h-32' : 'h-48'
+            }`}
+            onClick={() => setIsDetailModalOpen(true)}
+          >
+            <div className={`transition-transform duration-300 group-hover:scale-110 ${
+              isCompact ? 'text-4xl' : 'text-6xl'
+            }`}>
+              {image}
+            </div>
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="absolute top-3 right-3 z-10">
+              <span className="bg-gradient-to-r from-green-600 to-green-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg border border-green-400/30">
+                NEW
+              </span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className={`bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm ${
+            isCompact ? 'p-3' : 'p-4'
+          }`}>
+            <div className={`text-xs text-gold-400 font-semibold uppercase tracking-wider mb-2 flex items-center ${
+              isCompact ? 'mb-1' : 'mb-2'
+            }`}>
+              <span className="w-1.5 h-1.5 bg-gold-400 rounded-full mr-1.5"></span>
+              {category}
+            </div>
+            
+            <h3 className={`font-bold text-white mb-2 group-hover:text-gold-400 transition-colors duration-300 line-clamp-2 leading-tight ${
+              isCompact ? 'text-sm mb-1' : 'text-lg mb-2'
+            }`}>
+              {title}
+            </h3>
+            
+            <div className={`flex items-center justify-between border-t border-gray-700/50 pt-3 ${
+              isCompact ? 'pt-2' : 'pt-3'
+            }`}>
+              <div>
+                <span className={`font-bold text-transparent bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text ${
+                  isCompact ? 'text-lg' : 'text-xl'
+                }`}>
+                  {formatPrice(price)}
+                </span>
+              </div>
+              <div className="flex gap-1.5">
+                <Button
+                  onClick={() => setIsDetailModalOpen(true)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-1.5 rounded-full transition-all duration-200"
+                >
+                  <Eye size={14} />
+                </Button>
+                <Button
+                  onClick={handleAddToCart}
+                  className={`bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 shadow-lg border border-gold-300/30 text-xs ${
+                    isCompact ? 'px-2 py-1' : 'px-3 py-1.5'
+                  }`}
+                >
+                  <ShoppingCart size={12} className="mr-1" />
+                  Add
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <ProductDetailModal
         isOpen={isDetailModalOpen}
