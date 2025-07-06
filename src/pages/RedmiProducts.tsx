@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
@@ -11,120 +10,22 @@ import { supabase } from "@/integrations/supabase/client";
 
 const RedmiProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
-=======
-
-import React, { useState, useEffect } from 'react';
-import FloatingNavbar from '@/components/FloatingNavbar';
-import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import ProductCard from '@/components/ProductCard';
-import AdminPhoneButton from '@/components/AdminPhoneButton';
-import DatabaseProductCard from '@/components/DatabaseProductCard';
-import ProductDetailModal from '@/components/ProductDetailModal';
-import AdminProductEditModal from '@/components/AdminProductEditModal';
-import { supabase } from '@/integrations/supabase/client';
-
-interface DatabaseProduct {
-  id: string;
-  name: string;
-  price: number;
-  images: string[] | null;
-  category: string;
-  subcategory?: string;
-  description?: string;
-}
-
-interface ModalProduct {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: "headphone" | "gadget" | "cover";
-  description?: string;
-}
-
-const RedmiProducts = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
-  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
   const [loading, setLoading] = useState(true);
 
   const fetchDatabaseProducts = async () => {
     try {
       const { data, error } = await supabase
-<<<<<<< HEAD
         .from("products")
         .select("*")
         .or("subcategory.ilike.%redmi%,category.ilike.%redmi%")
         .order("created_at", { ascending: false });
-=======
-        .from('products')
-        .select('*')
-        .or('subcategory.ilike.%redmi%,name.ilike.%redmi%')
-        .order('created_at', { ascending: false });
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
 
       if (error) throw error;
       setDatabaseProducts(data || []);
     } catch (error) {
-<<<<<<< HEAD
       console.error("Error fetching database products:", error);
     } finally {
       setLoading(false);
-=======
-      console.error('Error fetching database products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDatabaseProducts();
-  }, []);
-
-  const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description
-    });
-  };
-
-  const handleEditProduct = (product: DatabaseProduct) => {
-    setEditingProduct(product);
-  };
-
-  const redmiProducts = [
-    {
-      title: "Redmi Note 13 Pro",
-      price: "Rs. 65,000",
-      image: "🔴",
-      category: "Redmi"
-    },
-    {
-      title: "Redmi 13C",
-      price: "Rs. 30,000",
-      image: "🔴",
-      category: "Redmi"
-    },
-    {
-      title: "Redmi K70",
-      price: "Rs. 85,000",
-      image: "🔴",
-      category: "Redmi"
-    },
-    {
-      title: "Redmi A3",
-      price: "Rs. 18,000",
-      image: "🔴",
-      category: "Redmi"
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
     }
   };
 
@@ -156,16 +57,11 @@ const RedmiProducts = () => {
               Discover our premium Redmi smartphone collection
             </p>
           </div>
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
           {loading ? (
             <div className="text-center">
               <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto">
                 <div className="text-8xl mb-6">⏳</div>
-<<<<<<< HEAD
                 <p className="text-xl text-gray-400">
                   Loading Redmi products...
                 </p>
@@ -173,24 +69,6 @@ const RedmiProducts = () => {
             </div>
           ) : databaseProducts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-=======
-                <p className="text-xl text-gray-400">Loading products...</p>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-              {redmiProducts.map((product, index) => (
-                <ProductCard
-                  key={index}
-                  title={product.title}
-                  price={product.price}
-                  image={product.image}
-                  category={product.category}
-                  size="compact"
-                />
-              ))}
-              
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
               {databaseProducts.map((product) => (
                 <DatabaseProductCard
                   key={product.id}
@@ -201,16 +79,10 @@ const RedmiProducts = () => {
                   category={product.category}
                   subcategory={product.subcategory}
                   description={product.description}
-<<<<<<< HEAD
-=======
-                  onClick={() => handleProductClick(product)}
-                  onEdit={() => handleEditProduct(product)}
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
                   onUpdate={fetchDatabaseProducts}
                 />
               ))}
             </div>
-<<<<<<< HEAD
           ) : (
             <div className="text-center">
               <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto">
@@ -228,35 +100,10 @@ const RedmiProducts = () => {
         </div>
       </section>
 
-      <AdminPhoneButton category="Redmi" />
-=======
-          )}
-        </div>
-      </section>
-      
-      <AdminPhoneButton category="Redmi" onProductAdded={fetchDatabaseProducts} />
-      
-      {selectedProduct && (
-        <ProductDetailModal
-          isOpen={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          product={selectedProduct}
-        />
-      )}
-      
-      {editingProduct && (
-        <AdminProductEditModal
-          isOpen={!!editingProduct}
-          onClose={() => setEditingProduct(null)}
-          product={{
-            ...editingProduct,
-            category: editingProduct.category as "headphone" | "gadget" | "cover"
-          }}
-          onUpdate={fetchDatabaseProducts}
-        />
-      )}
-      
->>>>>>> 3a38c33dbe4e6090a077693b63d81b9dc2dae21f
+      <AdminPhoneButton
+        category="Redmi"
+        onProductAdded={fetchDatabaseProducts}
+      />
       <Footer />
     </div>
   );
