@@ -39,8 +39,9 @@ const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, sub
       <AdminProductModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        category={category}
-        subcategory={subcategory}
+        defaultCategory={category}
+        defaultSubcategory={subcategory}
+        onProductAdded={onProductAdded}
       />
     </>
   );
