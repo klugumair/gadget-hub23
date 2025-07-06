@@ -19,6 +19,7 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ModalProduct {
@@ -28,6 +29,7 @@ interface ModalProduct {
   images: string[];
   category: "headphone" | "gadget" | "cover";
   description?: string;
+  additional_notes?: string;
 }
 
 const RealmeProducts = () => {
