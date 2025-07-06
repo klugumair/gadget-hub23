@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -85,17 +84,6 @@ const IPhoneProducts = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {iPhoneProducts.map((product, index) => (
-              <ProductCard
-                key={index}
-                title={product.title}
-                price={product.price}
-                image={product.image}
-                category={product.category}
-                size="compact"
-              />
-            ))}
-            
             {databaseProducts.map((product) => (
               <DatabaseProductCard
                 key={product.id}
@@ -104,7 +92,6 @@ const IPhoneProducts = () => {
                 price={product.price}
                 images={product.images || []}
                 category={product.category}
-                subcategory={product.subcategory}
                 description={product.description}
                 onUpdate={fetchDatabaseProducts}
               />

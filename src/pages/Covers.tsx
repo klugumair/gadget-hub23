@@ -60,7 +60,6 @@ const Covers = () => {
                   price={product.price}
                   images={product.images || []}
                   category={product.category}
-                  subcategory={product.subcategory}
                   description={product.description}
                   onUpdate={fetchProducts}
                 />
@@ -76,7 +75,7 @@ const Covers = () => {
         </div>
       </section>
       
-      <AdminFloatingButton category="cover" />
+      <AdminFloatingButton category="cover" onProductAdded={fetchProducts} />
       <Footer />
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -66,7 +65,6 @@ const SamsungProducts = () => {
                   price={product.price}
                   images={product.images || []}
                   category={product.category}
-                  subcategory={product.subcategory}
                   description={product.description}
                   onUpdate={fetchDatabaseProducts}
                 />

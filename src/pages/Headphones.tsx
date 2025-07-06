@@ -20,9 +20,18 @@ interface Product {
   description?: string;
 }
 
+interface ModalProduct {
+  id: string;
+  title: string;
+  price: number;
+  images: string[];
+  category: "headphone" | "gadget" | "cover";
+  description?: string;
+}
+
 const Headphones = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +62,7 @@ const Headphones = () => {
       title: product.name,
       price: product.price,
       images: product.images || [],
-      category: product.category,
+      category: "headphone",
       description: product.description
     });
   };

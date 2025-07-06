@@ -13,10 +13,12 @@ interface DatabaseProductCardProps {
   price: number;
   images: string[];
   category: string;
+  subcategory?: string;
   description?: string;
-  onClick: () => void;
+  onClick?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onUpdate?: () => void;
 }
 
 const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({ 
@@ -24,11 +26,13 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
   title, 
   price, 
   images, 
-  category, 
+  category,
+  subcategory,
   description, 
   onClick,
   onEdit,
-  onDelete
+  onDelete,
+  onUpdate
 }) => {
   const { toast } = useToast();
   const { addToCart } = useCart();
@@ -109,6 +113,8 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
 
       if (onDelete) {
         onDelete();
+      } else if (onUpdate) {
+        onUpdate();
       }
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -117,6 +123,12 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
         description: "Failed to delete product",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick();
     }
   };
 
@@ -139,7 +151,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
 
   return (
     <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer">
-      <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center" onClick={onClick}>
+      <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center" onClick={handleCardClick}>
         {displayImage ? (
           <img 
             src={displayImage} 
@@ -181,7 +193,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
       
       <div className="p-6">
         <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-          {category}
+          {subcategory || category}
         </div>
         <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors line-clamp-2">
           {title}
@@ -192,14 +204,16 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-gold-400">Rs. {price.toLocaleString()}</span>
           <div className="flex gap-2">
-            <Button 
-              onClick={onClick}
-              variant="ghost"
-              size="sm"
-              className="text-gold-400 hover:text-gold-300"
-            >
-              <Eye size={16} />
-            </Button>
+            {onClick && (
+              <Button 
+                onClick={handleCardClick}
+                variant="ghost"
+                size="sm"
+                className="text-gold-400 hover:text-gold-300"
+              >
+                <Eye size={16} />
+              </Button>
+            )}
             <Button 
               onClick={handleAddToCart}
               className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
