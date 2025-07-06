@@ -91,25 +91,12 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         const publicUrl = urlData.publicUrl;
         console.log('Generated public URL:', publicUrl);
         
-        // Test if the image is accessible
-        try {
-          const response = await fetch(publicUrl, { method: 'HEAD' });
-          if (!response.ok) {
-            console.error('Image not accessible:', publicUrl, response.status);
-          } else {
-            console.log('Image verified accessible:', publicUrl);
-          }
-        } catch (e) {
-          console.error('Error verifying image accessibility:', e);
-        }
-        
         return publicUrl;
       });
 
       const uploadedUrls = await Promise.all(uploadPromises);
       console.log('All uploads completed:', uploadedUrls);
 
-      // Directly update the images state with new URLs
       setImages(prevImages => {
         const newImages = [...prevImages, ...uploadedUrls];
         console.log('Updated images array:', newImages);
@@ -158,7 +145,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
 
       const updateData = {
         name: formData.name.trim(),
-        price: Number(formData.price),
+        price: formData.price,
         category: formData.category,
         subcategory: formData.subcategory.trim() || null,
         description: formData.description.trim() || null,
@@ -261,7 +248,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                 id="price"
                 type="number"
                 min="0"
-                step="0.01"
+                step="any"
                 value={formData.price}
                 onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
                 className="bg-gray-800 border-gray-600 text-white"
@@ -291,7 +278,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
                 value={formData.subcategory}
                 onChange={(e) => setFormData(prev => ({ ...prev, subcategory: e.target.value }))}
                 className="bg-gray-800 border-gray-600 text-white"
-                placeholder="e.g., Samsung, iPhone, etc."
+                placeholder="e.g., Samsung, iPhone, Sony, etc."
               />
             </div>
 

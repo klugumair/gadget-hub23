@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
@@ -44,50 +45,43 @@ const Headphones = () => {
       title: "Ronin R-810 Wireless",
       price: "Rs. 2,800",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-810-wireless"
+      category: "Ronin"
     },
     {
       title: "Ronin R-750 Gaming",
       price: "Rs. 2,200",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-750-gaming"
+      category: "Ronin"
     },
     {
       title: "Ronin R-650 Bass",
       price: "Rs. 1,800",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-650-bass"
+      category: "Ronin"
     },
     {
       title: "Ronin R-500 Sport",
       price: "Rs. 1,500",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-500-sport"
+      category: "Ronin"
     },
     {
       title: "Ronin R-400 Classic",
       price: "Rs. 1,200",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-400-classic"
+      category: "Ronin"
     },
     {
       title: "Ronin R-300 Compact",
       price: "Rs. 900",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-300-compact"
+      category: "Ronin"
     },
     {
       title: "Ronin R-200 Essential",
       price: "Rs. 750",
       image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-200-essential"
+      category: "Ronin"
     }
   ];
 
@@ -96,61 +90,67 @@ const Headphones = () => {
       title: "Audionic Blue Beat BB-10",
       price: "Rs. 4,500",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/blue-beat-bb-10"
+      category: "Audionic"
     },
     {
       title: "Audionic Pace P-5 Pro",
       price: "Rs. 3,200",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/pace-p-5-pro"
+      category: "Audionic"
     },
     {
       title: "Audionic Max M-8 Wireless",
       price: "Rs. 2,900",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/max-m-8-wireless"
+      category: "Audionic"
     },
     {
       title: "Audionic Solo S-15 Gaming",
       price: "Rs. 2,100",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/solo-s-15-gaming"
+      category: "Audionic"
     },
     {
       title: "Audionic Thunder T-20",
       price: "Rs. 3,800",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/thunder-t-20"
+      category: "Audionic"
     },
     {
       title: "Audionic Wave W-12",
       price: "Rs. 2,500",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/wave-w-12"
+      category: "Audionic"
     },
     {
       title: "Audionic Fusion F-18",
       price: "Rs. 1,900",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/fusion-f-18"
+      category: "Audionic"
     },
     {
       title: "Audionic Echo E-25",
       price: "Rs. 1,600",
       image: "🎧",
-      category: "Audionic",
-      link: "/headphones/audionic/echo-e-25"
+      category: "Audionic"
     }
   ];
 
   const moreHeadphones = [
+    {
+      title: "Sony WH-1000XM5",
+      price: "Rs. 116,999",
+      image: "🎧",
+      category: "Premium",
+      link: "/headphones/sony/wh-1000xm5"
+    },
+    {
+      title: "Sennheiser Momentum 4",
+      price: "Rs. 101,999",
+      image: "🎧",
+      category: "Premium",
+      link: "/headphones/sennheiser/momentum-4"
+    },
     {
       title: "JBL Tune 760NC",
       price: "Rs. 8,999",
@@ -184,18 +184,6 @@ const Headphones = () => {
     {
       title: "Bose QuietComfort 35 II",
       price: "Rs. 29,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Beats Studio3 Wireless",
-      price: "Rs. 24,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Plantronics BackBeat Pro 2",
-      price: "Rs. 14,999",
       image: "🎧",
       category: "More Headphones"
     }
@@ -266,7 +254,15 @@ const Headphones = () => {
           <BrandHeader title="Audionic" />
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
             {audionicProducts.map((product, index) => (
-              <div key={`audionic-${index}`}>
+              <ProductCard key={`audionic-${index}`} {...product} />
+            ))}
+          </div>
+
+          {/* More Headphones Section */}
+          <BrandHeader title="Premium & More" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {moreHeadphones.map((product, index) => (
+              <div key={`more-${index}`}>
                 {product.link ? (
                   <Link to={product.link} className="block">
                     <ProductCard {...product} />
@@ -275,14 +271,6 @@ const Headphones = () => {
                   <ProductCard {...product} />
                 )}
               </div>
-            ))}
-          </div>
-
-          {/* More Headphones Section */}
-          <BrandHeader title="More Headphones" />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {moreHeadphones.map((product, index) => (
-              <ProductCard key={`more-${index}`} {...product} />
             ))}
           </div>
         </div>
