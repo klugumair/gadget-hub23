@@ -48,14 +48,17 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   
   try {
     if (product.additional_notes) {
+      console.log('Parsing additional_notes:', product.additional_notes);
       const parsedData = JSON.parse(product.additional_notes);
+      console.log('Parsed data:', parsedData);
       if (parsedData.variants && Array.isArray(parsedData.variants)) {
         variants = parsedData.variants;
         hasVariants = variants.length > 0;
+        console.log('Found variants:', variants);
       }
     }
   } catch (error) {
-    console.log('No variants data found');
+    console.log('Error parsing variants data:', error);
   }
 
   const currentVariant = hasVariants ? variants[selectedVariantIndex] : null;

@@ -108,11 +108,12 @@ const AdminPhoneProductModal: React.FC<AdminPhoneProductModalProps> = ({
       // Get the base price (lowest variant price)
       const basePrice = Math.min(...variants.map(v => v.price));
 
-      // Create a single product with variants stored in additional_notes as JSON structure
+      // Create variants data structure
       const variantsData = {
-        variants: variants,
-        base_price: basePrice
+        variants: variants
       };
+
+      console.log('Storing variants data:', variantsData);
 
       const { error } = await supabase
         .from('products')
