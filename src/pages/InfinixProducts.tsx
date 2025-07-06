@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
 import DatabaseProductCard from '@/components/DatabaseProductCard';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,33 +34,6 @@ const InfinixProducts = () => {
     fetchDatabaseProducts();
   }, []);
 
-  const infinixProducts = [
-    {
-      title: "Infinix Note 40 Pro",
-      price: "Rs. 85,000",
-      image: "📲",
-      category: "Infinix"
-    },
-    {
-      title: "Infinix Hot 50 Pro",
-      price: "Rs. 45,000",
-      image: "📲",
-      category: "Infinix"
-    },
-    {
-      title: "Infinix Zero 40",
-      price: "Rs. 95,000",
-      image: "📲",
-      category: "Infinix"
-    },
-    {
-      title: "Infinix Smart 8",
-      price: "Rs. 25,000",
-      image: "📲",
-      category: "Infinix"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -84,32 +56,30 @@ const InfinixProducts = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {infinixProducts.map((product, index) => (
-              <ProductCard
-                key={index}
-                title={product.title}
-                price={product.price}
-                image={product.image}
-                category={product.category}
-                size="compact"
-              />
-            ))}
-            
-            {databaseProducts.map((product) => (
-              <DatabaseProductCard
-                key={product.id}
-                id={product.id}
-                title={product.name}
-                price={product.price}
-                images={product.images || []}
-                category={product.category}
-                subcategory={product.subcategory}
-                description={product.description}
-                onUpdate={fetchDatabaseProducts}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center text-white">Loading products...</div>
+          ) : databaseProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {databaseProducts.map((product) => (
+                <DatabaseProductCard
+                  key={product.id}
+                  id={product.id}
+                  title={product.name}
+                  price={product.price}
+                  images={product.images || []}
+                  category={product.category}
+                  subcategory={product.subcategory}
+                  description={product.description}
+                  onUpdate={fetchDatabaseProducts}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400">
+              <p className="text-xl">No Infinix products available at the moment.</p>
+              <p className="text-sm mt-2">Check back later for new arrivals!</p>
+            </div>
+          )}
         </div>
       </section>
       

@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
 import DatabaseProductCard from '@/components/DatabaseProductCard';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,33 +34,6 @@ const HonorProducts = () => {
     fetchDatabaseProducts();
   }, []);
 
-  const honorProducts = [
-    {
-      title: "Honor Magic 6 Pro",
-      price: "Rs. 125,000",
-      image: "🏆",
-      category: "Honor"
-    },
-    {
-      title: "Honor X9b",
-      price: "Rs. 65,000",
-      image: "🏆",
-      category: "Honor"
-    },
-    {
-      title: "Honor 200 Pro",
-      price: "Rs. 95,000",
-      image: "🏆",
-      category: "Honor"
-    },
-    {
-      title: "Honor Play 8T",
-      price: "Rs. 35,000",
-      image: "🏆",
-      category: "Honor"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -84,32 +56,30 @@ const HonorProducts = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {honorProducts.map((product, index) => (
-              <ProductCard
-                key={index}
-                title={product.title}
-                price={product.price}
-                image={product.image}
-                category={product.category}
-                size="compact"
-              />
-            ))}
-            
-            {databaseProducts.map((product) => (
-              <DatabaseProductCard
-                key={product.id}
-                id={product.id}
-                title={product.name}
-                price={product.price}
-                images={product.images || []}
-                category={product.category}
-                subcategory={product.subcategory}
-                description={product.description}
-                onUpdate={fetchDatabaseProducts}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center text-white">Loading products...</div>
+          ) : databaseProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {databaseProducts.map((product) => (
+                <DatabaseProductCard
+                  key={product.id}
+                  id={product.id}
+                  title={product.name}
+                  price={product.price}
+                  images={product.images || []}
+                  category={product.category}
+                  subcategory={product.subcategory}
+                  description={product.description}
+                  onUpdate={fetchDatabaseProducts}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400">
+              <p className="text-xl">No Honor products available at the moment.</p>
+              <p className="text-sm mt-2">Check back later for new arrivals!</p>
+            </div>
+          )}
         </div>
       </section>
       

@@ -81,7 +81,14 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    if (!isDatabase || !onDelete) return;
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Only administrators can delete products",
+        variant: "destructive",
+      });
+      return;
+    }
     
     try {
       const { error } = await supabase
@@ -97,7 +104,9 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
         className: "bg-red-500 text-white font-semibold",
       });
 
-      onDelete();
+      if (onDelete) {
+        onDelete();
+      }
     } catch (error) {
       console.error('Error deleting product:', error);
       toast({
@@ -127,7 +136,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
             USED
           </span>
         </div>
-        {isAdmin && isDatabase && (
+        {isAdmin && (
           <div className="absolute top-4 left-4">
             <Button
               onClick={handleDelete}
@@ -142,7 +151,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       </div>
       <div className="p-6">
         <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
-          Used Samsung
+          Used Phone
         </div>
         <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors">
           {title}

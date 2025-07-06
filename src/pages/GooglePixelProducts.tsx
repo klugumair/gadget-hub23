@@ -5,73 +5,9 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
 import DatabaseProductCard from '@/components/DatabaseProductCard';
 import { supabase } from '@/integrations/supabase/client';
-
-const googlePixelProducts = [
-  {
-    title: 'Pixel 6 (8GB/128GB, PTA approved)',
-    price: '₨ 105,000 – ₨ 110,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 6 Pro (12GB/128GB, PTA approved)',
-    price: '₨ 120,000 – ₨ 125,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 6a (6GB/128GB, PTA approved)',
-    price: '₨ 88,000 – ₨ 95,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 (8GB/128GB, Non-PTA)',
-    price: '₨ 129,999 – ₨ 130,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 (8GB/128GB, Import)',
-    price: '₨ 144,999 – ₨ 165,923',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 (8GB/256GB, Import)',
-    price: '₨ 169,999',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 Pro (12GB/128GB, Not PTA)',
-    price: '₨ 90,000 – ₨ 120,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 Pro (12GB/256GB, PTA approved (CPID))',
-    price: '₨ 94,999 – ₨ 99,000',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 Pro (12GB/256GB, Retail (import))',
-    price: '₨ 161,999',
-    image: '🔍',
-    category: 'Google Pixel'
-  },
-  {
-    title: 'Pixel 7 Pro (12GB/512GB, Retail import)',
-    price: '₨ 144,999 – ₨ 209,999',
-    image: '🔍',
-    category: 'Google Pixel'
-  }
-];
 
 const GooglePixelProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
@@ -117,32 +53,31 @@ const GooglePixelProducts = () => {
               Browse our collection of brand new Google Pixel smartphones
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {googlePixelProducts.map((product, idx) => (
-              <ProductCard
-                key={idx}
-                title={product.title}
-                price={product.price}
-                image={product.image}
-                category={product.category}
-                size="compact"
-              />
-            ))}
-            
-            {databaseProducts.map((product) => (
-              <DatabaseProductCard
-                key={product.id}
-                id={product.id}
-                title={product.name}
-                price={product.price}
-                images={product.images || []}
-                category={product.category}
-                subcategory={product.subcategory}
-                description={product.description}
-                onUpdate={fetchDatabaseProducts}
-              />
-            ))}
-          </div>
+          
+          {loading ? (
+            <div className="text-center text-white">Loading products...</div>
+          ) : databaseProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {databaseProducts.map((product) => (
+                <DatabaseProductCard
+                  key={product.id}
+                  id={product.id}
+                  title={product.name}
+                  price={product.price}
+                  images={product.images || []}
+                  category={product.category}
+                  subcategory={product.subcategory}
+                  description={product.description}
+                  onUpdate={fetchDatabaseProducts}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400">
+              <p className="text-xl">No Google Pixel products available at the moment.</p>
+              <p className="text-sm mt-2">Check back later for new arrivals!</p>
+            </div>
+          )}
         </div>
       </section>
       <AdminPhoneButton category="Google Pixel" />

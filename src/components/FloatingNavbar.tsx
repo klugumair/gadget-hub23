@@ -1,32 +1,20 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, User, Menu, X, Phone, Search } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
+import { ShoppingCart, Search, User, LogOut, Settings, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
-import AuthModal from './AuthModal';
 import SearchModal from './SearchModal';
 
 const FloatingNavbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const { getTotalItems } = useCart();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { items } = useCart();
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -38,12 +26,7 @@ const FloatingNavbar = () => {
             .eq('id', user.id)
             .single();
           
-          if (error) {
-            console.error('Error fetching profile:', error);
-            return;
-          }
-          
-          if (data?.avatar_url) {
+          if (data && data.avatar_url) {
             setProfilePicture(data.avatar_url);
           }
         } catch (error) {
@@ -55,278 +38,220 @@ const FloatingNavbar = () => {
     fetchProfilePicture();
   }, [user]);
 
-  const navItems = [
-    { name: 'Phones', path: '/phones' },
-    { name: 'Headphones', path: '/headphones' },
-    { name: 'Covers', path: '/covers' },
-  ];
-
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
-
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
-  };
-
-  const handleAuthClick = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
-  };
-
   const handleSignOut = async () => {
     await signOut();
-    setIsMenuOpen(false);
+    navigate('/');
   };
+
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <>
-      <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-        scrolled ? 'glass-morphism backdrop-blur-xl shadow-2xl' : 'glass-morphism backdrop-blur-md'
-      } rounded-full px-6 py-3 border border-gold-400/20`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="text-xl font-bold">
-              <span className="text-shimmer">GadgetHub</span>
+      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/30 rounded-2xl px-6 py-4 shadow-2xl">
+        <div className="flex items-center justify-between w-full">
+          {/* Logo - moved more to the left */}
+          <div className="flex items-center">
+            <Link to="/" className="text-2xl font-bold text-shimmer hover:scale-105 transition-transform">
+              GadgetHub
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`relative px-4 py-2 rounded-full transition-all duration-300 ${
-                  isActive(item.path)
-                    ? 'text-gold-400 bg-gold-400/10'
-                    : 'text-white hover:text-gold-400 hover:bg-white/5'
-                }`}
-              >
-                {item.name}
-                {isActive(item.path) && (
-                  <div className="absolute inset-0 rounded-full border border-gold-400/30 animate-pulse" />
-                )}
-              </Link>
-            ))}
-            
-            {/* Contact Button */}
-            <Button
-              onClick={scrollToContact}
-              variant="ghost"
-              className="text-white hover:text-gold-400 hover:bg-white/5 rounded-full px-4 py-2"
-            >
-              <Phone size={16} className="mr-2" />
-              Contact
-            </Button>
+          <div className="hidden lg:flex items-center space-x-8">
+            <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium">
+              Phones
+            </Link>
+            <Link to="/headphones" className="text-white hover:text-gold-400 transition-colors font-medium">
+              Headphones
+            </Link>
+            <Link to="/covers" className="text-white hover:text-gold-400 transition-colors font-medium">
+              Covers & Cases
+            </Link>
+            <div className="h-6 w-px bg-gold-400/30"></div>
+            <Link to="/phones/new" className="text-white hover:text-gold-400 transition-colors font-medium text-sm">
+              New Phones
+            </Link>
+            <Link to="/phones/used" className="text-white hover:text-gold-400 transition-colors font-medium text-sm">
+              Used Phones
+            </Link>
           </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3">
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
             {/* Search Button */}
             <Button
-              onClick={() => setIsSearchModalOpen(true)}
+              onClick={() => setIsSearchOpen(true)}
               variant="ghost"
-              size="icon"
-              className="text-white hover:text-gold-400 rounded-full"
+              size="sm"
+              className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10"
             >
               <Search size={20} />
             </Button>
 
-            <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
+            {/* Cart Button */}
+            <Link to="/cart">
+              <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 relative">
                 <ShoppingCart size={20} />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {getTotalItems()}
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
                   </span>
                 )}
               </Button>
             </Link>
-            
-            {/* Auth Section */}
+
+            {/* User Authentication */}
             {user ? (
               <div className="flex items-center space-x-3">
-                <Link to="/profile" className="flex items-center space-x-2 px-3 py-2 rounded-full hover:bg-white/5 transition-colors">
-                  <div className="relative">
+                {/* Profile Picture */}
+                <Link to="/profile">
+                  <div className="w-12 h-12 rounded-full border-2 border-gold-400 overflow-hidden hover:border-gold-300 transition-colors cursor-pointer">
                     {profilePicture ? (
                       <img 
                         src={profilePicture} 
                         alt="Profile" 
-                        className="w-10 h-10 rounded-full object-cover border-2 border-gold-400/30"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
-                        <User size={20} className="text-gold-400" />
+                      <div className="w-full h-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                        <User size={24} className="text-black" />
                       </div>
                     )}
                   </div>
-                  <span className="text-white text-sm font-medium">
-                    {user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
-                  </span>
                 </Link>
-                <Button
-                  onClick={handleSignOut}
-                  variant="ghost"
-                  className="text-white hover:text-gold-400 hover:bg-white/5 rounded-full px-4 py-2"
-                >
-                  Sign Out
-                </Button>
+
+                {/* User Menu */}
+                <div className="hidden md:flex items-center space-x-2">
+                  <Link to="/profile">
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10">
+                      <Settings size={16} className="mr-2" />
+                      Profile
+                    </Button>
+                  </Link>
+                  <Button 
+                    onClick={handleSignOut}
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Button
-                  onClick={() => handleAuthClick('login')}
-                  variant="ghost"
-                  className="text-white hover:text-gold-400 hover:bg-white/5 rounded-full px-4 py-2"
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => handleAuthClick('signup')}
-                  className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold rounded-full px-4 py-2"
-                >
-                  Sign Up
-                </Button>
+              <div className="hidden md:flex items-center space-x-2">
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10">
+                    <User size={16} className="mr-2" />
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/profile">
+                  <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold">
+                    Sign Up
+                  </Button>
+                </Link>
               </div>
             )}
-          </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden text-white hover:text-gold-400 rounded-full"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
+            {/* Mobile Menu Button */}
+            <Button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              variant="ghost"
+              size="sm"
+              className="lg:hidden text-gold-400 hover:text-gold-300"
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </Button>
+          </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 p-4 glass-morphism rounded-2xl border border-gold-400/20">
-            <div className="flex flex-col space-y-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                    isActive(item.path)
-                      ? 'text-gold-400 bg-gold-400/10'
-                      : 'text-white hover:text-gold-400 hover:bg-white/5'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              
-              <Button
-                onClick={scrollToContact}
-                variant="ghost"
-                className="text-white hover:text-gold-400 hover:bg-white/5 rounded-lg px-4 py-2 justify-start"
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden mt-4 pt-4 border-t border-gold-400/30">
+            <div className="flex flex-col space-y-3">
+              <Link 
+                to="/phones" 
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Phone size={16} className="mr-2" />
-                Contact
-              </Button>
-              
-              <Button
-                onClick={() => {
-                  setIsSearchModalOpen(true);
-                  setIsMenuOpen(false);
-                }}
-                variant="ghost"
-                className="text-white hover:text-gold-400 hover:bg-white/5 rounded-lg px-4 py-2 justify-start"
+                Phones
+              </Link>
+              <Link 
+                to="/headphones" 
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                <Search size={16} className="mr-2" />
-                Search
-              </Button>
+                Headphones
+              </Link>
+              <Link 
+                to="/covers" 
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Covers & Cases
+              </Link>
+              <div className="h-px bg-gold-400/30 my-2"></div>
+              <Link 
+                to="/phones/new" 
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2 text-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                New Phones
+              </Link>
+              <Link 
+                to="/phones/used" 
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2 text-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Used Phones
+              </Link>
               
-              <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
-                <Link to="/cart" className="relative flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
-                    <ShoppingCart size={20} />
-                    {getTotalItems() > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                        {getTotalItems()}
-                      </span>
-                    )}
-                  </Button>
-                  <span className="text-white">Cart</span>
-                </Link>
-                
-                {user ? (
-                  <>
-                    <Link to="/profile" className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
-                      <div className="relative">
-                        {profilePicture ? (
-                          <img 
-                            src={profilePicture} 
-                            alt="Profile" 
-                            className="w-10 h-10 rounded-full object-cover border-2 border-gold-400/30"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
-                            <User size={20} className="text-gold-400" />
-                          </div>
-                        )}
-                      </div>
-                      <span className="text-white">
-                        {user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Profile'}
-                      </span>
-                    </Link>
-                    <Button
-                      onClick={handleSignOut}
-                      variant="ghost"
-                      className="text-white hover:text-gold-400 hover:bg-white/5 rounded-lg px-4 py-2 justify-start"
-                    >
-                      Sign Out
+              {user ? (
+                <div className="flex flex-col space-y-2 pt-4 border-t border-gold-400/30">
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start">
+                      <Settings size={16} className="mr-2" />
+                      Profile
                     </Button>
-                  </>
-                ) : (
-                  <div className="flex flex-col space-y-2">
-                    <Button
-                      onClick={() => {
-                        handleAuthClick('login');
-                        setIsMenuOpen(false);
-                      }}
-                      variant="ghost"
-                      className="text-white hover:text-gold-400 hover:bg-white/5 rounded-lg px-4 py-2 justify-start"
-                    >
+                  </Link>
+                  <Button 
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-red-400 hover:text-red-300 w-full justify-start"
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2 pt-4 border-t border-gold-400/30">
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start">
+                      <User size={16} className="mr-2" />
                       Login
                     </Button>
-                    <Button
-                      onClick={() => {
-                        handleAuthClick('signup');
-                        setIsMenuOpen(false);
-                      }}
-                      className="bg-gradient-gold hover:bg-gold-500 text-black font-semibold rounded-lg px-4 py-2"
-                    >
+                  </Link>
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold w-full">
                       Sign Up
                     </Button>
-                  </div>
-                )}
-              </div>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}
       </nav>
 
-      <AuthModal 
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialMode={authMode}
-      />
-
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
       />
     </>
   );
