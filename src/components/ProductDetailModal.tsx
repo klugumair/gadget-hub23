@@ -48,22 +48,41 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   
   try {
     if (product.additional_notes) {
-      console.log('Parsing additional_notes:', product.additional_notes);
-      const parsedData = JSON.parse(product.additional_notes);
+      console.log('Raw additional_notes:', product.additional_notes);
+      
+      // Try to parse as JSON
+      let parsedData;
+      if (typeof product.additional_notes === 'string') {
+        parsedData = JSON.parse(product.additional_notes);
+      } else {
+        parsedData = product.additional_notes;
+      }
+      
       console.log('Parsed data:', parsedData);
-      if (parsedData.variants && Array.isArray(parsedData.variants)) {
+      
+      if (parsedData && parsedData.variants && Array.isArray(parsedData.variants)) {
         variants = parsedData.variants;
         hasVariants = variants.length > 0;
         console.log('Found variants:', variants);
+      } else if (Array.isArray(parsedData)) {
+        // Handle case where variants are stored as direct array
+        variants = parsedData;
+        hasVariants = variants.length > 0;
+        console.log('Found variants as direct array:', variants);
       }
     }
   } catch (error) {
     console.log('Error parsing variants data:', error);
+    console.log('Raw data that failed to parse:', product.additional_notes);
   }
 
   const currentVariant = hasVariants ? variants[selectedVariantIndex] : null;
   const displayPrice = currentVariant ? currentVariant.price : product.price;
   const variantLabel = currentVariant ? `${currentVariant.ram} RAM - ${currentVariant.storage}` : '';
+
+  console.log('Current variant:', currentVariant);
+  console.log('Display price:', displayPrice);
+  console.log('Has variants:', hasVariants);
 
   const handleAddToCart = () => {
     const productTitle = hasVariants && currentVariant 

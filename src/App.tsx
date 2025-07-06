@@ -52,6 +52,7 @@ const RoninR920Pro = lazy(() => import("./pages/RoninR920Pro"));
 const SonyWH1000XM5 = lazy(() => import("./pages/SonyWH1000XM5"));
 const SennheiserMomentum4 = lazy(() => import("./pages/SennheiserMomentum4"));
 const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 const Profile = lazy(() => import("./pages/Profile"));
 const SellSamsungPhone = lazy(() => import("./pages/SellSamsungPhone"));
 const SellIPhonePhone = lazy(() => import("./pages/SellIPhonePhone"));
@@ -125,6 +126,7 @@ function App() {
                   <Route path="/headphones/sony-wh-1000xm5" element={<SonyWH1000XM5 />} />
                   <Route path="/headphones/sennheiser-momentum-4" element={<SennheiserMomentum4 />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
                   <Route path="/sell-iphone-phone" element={<SellIPhonePhone />} />

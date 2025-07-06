@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, User, LogOut, Settings, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Settings, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,7 +10,7 @@ import InlineSearchBar from './InlineSearchBar';
 
 const FloatingNavbar = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { cartItems } = useCart();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -37,11 +37,6 @@ const FloatingNavbar = () => {
     fetchProfilePicture();
   }, [user]);
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
-
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -63,7 +58,7 @@ const FloatingNavbar = () => {
             Headphones
           </Link>
           <Link to="/covers" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
-            Covers & Cases
+            Covers
           </Link>
           
           {/* Inline Search Bar */}
@@ -120,15 +115,6 @@ const FloatingNavbar = () => {
                     Profile
                   </Button>
                 </Link>
-                <Button 
-                  onClick={handleSignOut}
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-red-400 hover:text-red-300 hover:bg-red-400/10 px-4 py-2 rounded-full"
-                >
-                  <LogOut size={18} className="mr-2" />
-                  Sign Out
-                </Button>
               </div>
             </div>
           ) : (
@@ -182,7 +168,7 @@ const FloatingNavbar = () => {
               className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Covers & Cases
+              Covers
             </Link>
             
             {user ? (
@@ -193,18 +179,6 @@ const FloatingNavbar = () => {
                     Profile
                   </Button>
                 </Link>
-                <Button 
-                  onClick={() => {
-                    handleSignOut();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-red-400 hover:text-red-300 w-full justify-start py-3 rounded-full"
-                >
-                  <LogOut size={18} className="mr-3" />
-                  Sign Out
-                </Button>
               </div>
             ) : (
               <div className="flex flex-col space-y-3 pt-6 border-t border-gold-400/30">
