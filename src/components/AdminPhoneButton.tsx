@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AdminProductModal from './AdminProductModal';
+import AdminPhoneProductModal from './AdminPhoneProductModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { isAdmin } from '@/utils/adminUtils';
 
@@ -50,11 +50,10 @@ const AdminPhoneButton: React.FC<AdminPhoneButtonProps> = ({ category, onProduct
         </Button>
       </div>
 
-      <AdminProductModal
+      <AdminPhoneProductModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onProductAdded={handleProductAdded}
-        defaultCategory="gadget"
         defaultSubcategory={category}
       />
     </>

@@ -1,15 +1,39 @@
+
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import DatabaseProductCard from "@/components/DatabaseProductCard";
 import AdminPhoneButton from "@/components/AdminPhoneButton";
+import DatabaseProductCard from "@/components/DatabaseProductCard";
+import ProductDetailModal from "@/components/ProductDetailModal";
+import AdminProductEditModal from "@/components/AdminProductEditModal";
 import { supabase } from "@/integrations/supabase/client";
 
+interface DatabaseProduct {
+  id: string;
+  name: string;
+  price: number;
+  images: string[] | null;
+  category: string;
+  subcategory?: string;
+  description?: string;
+}
+
+interface ModalProduct {
+  id: string;
+  title: string;
+  price: number;
+  images: string[];
+  category: "headphone" | "gadget" | "cover";
+  description?: string;
+}
+
 const OppoProducts = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchDatabaseProducts = async () => {
@@ -32,6 +56,21 @@ const OppoProducts = () => {
   useEffect(() => {
     fetchDatabaseProducts();
   }, []);
+
+  const handleProductClick = (product: DatabaseProduct) => {
+    setSelectedProduct({
+      id: product.id,
+      title: product.name,
+      price: product.price,
+      images: product.images || [],
+      category: "gadget",
+      description: product.description,
+    });
+  };
+
+  const handleEditProduct = (product: DatabaseProduct) => {
+    setEditingProduct(product);
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -79,6 +118,8 @@ const OppoProducts = () => {
                   category={product.category}
                   subcategory={product.subcategory}
                   description={product.description}
+                  onClick={() => handleProductClick(product)}
+                  onEdit={() => handleEditProduct(product)}
                   onUpdate={fetchDatabaseProducts}
                 />
               ))}
@@ -91,8 +132,8 @@ const OppoProducts = () => {
                   No Oppo Products Available
                 </h3>
                 <p className="text-xl text-gray-400">
-                  We're working on bringing you amazing Oppo devices. Check back
-                  soon!
+                  We're working on bringing you amazing Oppo devices. Check
+                  back soon!
                 </p>
               </div>
             </div>
@@ -104,6 +145,30 @@ const OppoProducts = () => {
         category="Oppo"
         onProductAdded={fetchDatabaseProducts}
       />
+
+      {selectedProduct && (
+        <ProductDetailModal
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          product={selectedProduct}
+        />
+      )}
+
+      {editingProduct && (
+        <AdminProductEditModal
+          isOpen={!!editingProduct}
+          onClose={() => setEditingProduct(null)}
+          product={{
+            ...editingProduct,
+            category: editingProduct.category as
+              | "headphone"
+              | "gadget"
+              | "cover",
+          }}
+          onUpdate={fetchDatabaseProducts}
+        />
+      )}
+
       <Footer />
     </div>
   );

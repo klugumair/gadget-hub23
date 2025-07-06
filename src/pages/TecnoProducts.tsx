@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
@@ -30,15 +31,9 @@ interface ModalProduct {
 }
 
 const TecnoProducts = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>(
-    [],
-  );
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(
-    null,
-  );
-  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(
-    null,
-  );
+  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchDatabaseProducts = async () => {
