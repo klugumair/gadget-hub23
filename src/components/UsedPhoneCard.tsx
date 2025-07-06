@@ -117,26 +117,50 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
     }
   };
 
+  const getDisplayImage = () => {
+    if (images && images.length > 0) {
+      const imageUrl = images[0];
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      } else if (imageUrl.startsWith('phone-images/')) {
+        return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/${imageUrl}`;
+      } else {
+        return imageUrl;
+      }
+    }
+    return null;
+  };
+
+  const displayImage = getDisplayImage();
+
   return (
     <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer">
       <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center" onClick={onClick}>
-        {images && images.length > 0 ? (
+        {displayImage ? (
           <img 
-            src={images[0]} 
+            src={displayImage} 
             alt={title}
-            className="max-w-full max-h-full object-contain"
-            loading="eager"
+            className="w-full h-full object-contain p-4"
+            loading="lazy"
+            onError={(e) => {
+              console.error('Image failed to load:', displayImage);
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
           />
         ) : (
           <span className="text-6xl">📱</span>
         )}
+        
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+        
         <div className="absolute top-4 right-4">
           <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
             USED
           </span>
         </div>
-        {isAdmin && (
+        
+        {isAdmin && isDatabase && (
           <div className="absolute top-4 left-4">
             <Button
               onClick={handleDelete}
@@ -153,7 +177,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
         <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
           Used Phone
         </div>
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors">
+        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors line-clamp-2">
           {title}
         </h3>
         <div className="space-y-1 text-sm text-gray-400 mb-4">

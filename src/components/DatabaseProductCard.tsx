@@ -1,11 +1,11 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart, Eye, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
-import ProductDetailModal from './ProductDetailModal';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DatabaseProductCardProps {
   id: string;
@@ -13,33 +13,58 @@ interface DatabaseProductCardProps {
   price: number;
   images: string[];
   category: string;
-  subcategory?: string;
   description?: string;
-  onUpdate: () => void;
+  onClick: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
-  id,
-  title,
-  price,
-  images,
-  category,
-  subcategory,
-  description,
-  onUpdate
+const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({ 
+  id, 
+  title, 
+  price, 
+  images, 
+  category, 
+  description, 
+  onClick,
+  onEdit,
+  onDelete
 }) => {
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [imageError, setImageError] = useState<{[key: string]: boolean}>({});
-  const [imageLoaded, setImageLoaded] = useState<{[key: string]: boolean}>({});
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = React.useState(false);
 
-  const handleAddToCart = () => {
+  React.useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', user.id)
+            .single();
+          
+          if (data && data.email === 'admin@gadgethub.com') {
+            setIsAdmin(true);
+          }
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+        }
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
     addToCart({
       title,
       price,
-      image: getDisplayImage() || '📦',
-      category: subcategory || category
+      image: images && images.length > 0 ? images[0] : '🎧',
+      category
     });
 
     toast({
@@ -49,115 +74,143 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     });
   };
 
-  const handleImageError = (imageUrl: string) => {
-    console.log('Image failed to load:', imageUrl, 'for product:', title);
-    setImageError(prev => ({ ...prev, [imageUrl]: true }));
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit();
+    }
   };
 
-  const handleImageLoad = (imageUrl: string) => {
-    console.log('Image loaded successfully:', imageUrl, 'for product:', title);
-    setImageLoaded(prev => ({ ...prev, [imageUrl]: true }));
-    setImageError(prev => ({ ...prev, [imageUrl]: false }));
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Only administrators can delete products",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Product Deleted!",
+        description: `${title} has been removed`,
+        className: "bg-red-500 text-white font-semibold",
+      });
+
+      if (onDelete) {
+        onDelete();
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
+    }
   };
 
   const getDisplayImage = () => {
-    if (!images || images.length === 0) {
-      console.log('No images available for product:', title);
-      return null;
-    }
-
-    // Find the first image that hasn't failed to load
-    for (const image of images) {
-      if (!imageError[image]) {
-        console.log('Using image:', image, 'for product:', title);
-        return image;
+    if (images && images.length > 0) {
+      const imageUrl = images[0];
+      // Check if it's a full URL or needs to be constructed
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      } else if (imageUrl.startsWith('gadgethub/')) {
+        return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/${imageUrl}`;
+      } else {
+        return imageUrl;
       }
     }
-
-    console.log('All images failed to load for product:', title);
     return null;
   };
 
   const displayImage = getDisplayImage();
 
   return (
-    <>
-      <Card className="glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/40 transition-all duration-300 group hover:scale-105">
-        <CardContent className="p-4">
-          <div className="relative">
-            <div 
-              className="aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center text-4xl cursor-pointer overflow-hidden"
-              onClick={() => setIsDetailModalOpen(true)}
+    <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer">
+      <div className="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center" onClick={onClick}>
+        {displayImage ? (
+          <img 
+            src={displayImage} 
+            alt={title}
+            className="w-full h-full object-contain p-4"
+            loading="lazy"
+            onError={(e) => {
+              console.error('Image failed to load:', displayImage);
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        ) : null}
+        <span className={`text-6xl ${displayImage ? 'hidden' : ''}`}>🎧</span>
+        
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+        
+        {isAdmin && (
+          <div className="absolute top-2 right-2 flex gap-1">
+            <Button
+              onClick={handleEdit}
+              variant="ghost"
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 h-8 w-8"
             >
-              {displayImage ? (
-                <img 
-                  src={displayImage} 
-                  alt={title}
-                  className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300"
-                  onError={() => handleImageError(displayImage)}
-                  onLoad={() => handleImageLoad(displayImage)}
-                  style={{ 
-                    display: imageError[displayImage] ? 'none' : 'block' 
-                  }}
-                />
-              ) : null}
-              
-              {(!displayImage || imageError[displayImage || '']) && (
-                <div className="flex flex-col items-center justify-center text-gray-500">
-                  <span className="text-2xl mb-2">📦</span>
-                  <span className="text-xs">No Image</span>
-                </div>
-              )}
-            </div>
+              <Edit size={12} />
+            </Button>
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              size="sm"
+              className="bg-red-600 hover:bg-red-700 text-white p-2 h-8 w-8"
+            >
+              <Trash2 size={12} />
+            </Button>
           </div>
-          
-          <div className="text-center space-y-3">
-            <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">
-              {title}
-            </h3>
-            <p className="text-gold-400 font-bold text-lg">
-              Rs. {price.toLocaleString()}
-            </p>
-            {subcategory && (
-              <p className="text-gray-400 text-xs mt-1">{subcategory}</p>
-            )}
-            
-            <div className="flex justify-center space-x-2 mt-3">
-              <Button
-                onClick={() => setIsDetailModalOpen(true)}
-                variant="outline"
-                size="sm"
-                className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 text-xs px-2 py-1"
-              >
-                <Eye size={12} className="mr-1" />
-                View
-              </Button>
-              <Button
-                onClick={handleAddToCart}
-                size="sm"
-                className="bg-gold-400 hover:bg-gold-500 text-black font-semibold text-xs px-2 py-1"
-              >
-                <ShoppingCart size={12} className="mr-1" />
-                Add
-              </Button>
-            </div>
+        )}
+      </div>
+      
+      <div className="p-6">
+        <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">
+          {category}
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-gold-400 transition-colors line-clamp-2">
+          {title}
+        </h3>
+        {description && (
+          <p className="text-gray-400 text-sm mb-4 line-clamp-2">{description}</p>
+        )}
+        <div className="flex items-center justify-between">
+          <span className="text-2xl font-bold text-gold-400">Rs. {price.toLocaleString()}</span>
+          <div className="flex gap-2">
+            <Button 
+              onClick={onClick}
+              variant="ghost"
+              size="sm"
+              className="text-gold-400 hover:text-gold-300"
+            >
+              <Eye size={16} />
+            </Button>
+            <Button 
+              onClick={handleAddToCart}
+              className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
+            >
+              <ShoppingCart size={16} className="mr-2" />
+              Add to Cart
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      <ProductDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => setIsDetailModalOpen(false)}
-        product={{
-          id,
-          title,
-          price,
-          images,
-          category: subcategory || category,
-          description: description || 'No description available'
-        }}
-      />
-    </>
+        </div>
+      </div>
+    </div>
   );
 };
 

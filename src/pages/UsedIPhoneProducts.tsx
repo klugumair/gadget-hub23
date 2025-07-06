@@ -71,7 +71,6 @@ const UsedIPhoneProducts = () => {
               Quality pre-owned iPhone devices at great prices
             </p>
             
-            {/* Sell Your Phone Section */}
             <div className="mb-16">
               <div className="glass-morphism rounded-2xl p-8 max-w-2xl mx-auto">
                 <h2 className="text-4xl font-bold text-white mb-4">
@@ -83,14 +82,13 @@ const UsedIPhoneProducts = () => {
                 <Link to="/sell-iphone">
                   <Button className="premium-gradient text-black font-semibold text-lg px-8 py-3 rounded-full hover:scale-105 transition-transform">
                     <Upload size={20} className="mr-2" />
-                    Sell Your iPhone
+                    Sell Your Phone
                   </Button>
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* Available Used Phones Section */}
           <div className="mb-16">
             <h2 className="text-4xl font-bold text-center text-white mb-8">
               <span className="text-shimmer">Available Used iPhones</span>
@@ -117,6 +115,8 @@ const UsedIPhoneProducts = () => {
                     images={phone.phone_images || []}
                     usage_duration={phone.usage_duration}
                     onClick={() => setSelectedPhone(phone)}
+                    onDelete={fetchApprovedPhones}
+                    isDatabase={true}
                   />
                 ))}
               </div>
