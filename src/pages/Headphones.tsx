@@ -151,7 +151,7 @@ const Headphones = () => {
             ...editingProduct,
             category: editingProduct.category as "headphone" | "gadget" | "cover"
           }}
-          onProductUpdated={fetchProducts}
+          onUpdate={fetchProducts}
         />
       )}
       
