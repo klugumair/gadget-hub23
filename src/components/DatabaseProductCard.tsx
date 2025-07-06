@@ -2,12 +2,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, ShoppingCart, Eye } from 'lucide-react';
-import { useAdminCheck } from '@/hooks/useAdminCheck';
-import { supabase } from '@/integrations/supabase/client';
+import { ShoppingCart, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
-import AdminProductEditModal from './AdminProductEditModal';
 import ProductDetailModal from './ProductDetailModal';
 
 interface DatabaseProductCardProps {
@@ -31,41 +28,11 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
   description,
   onUpdate
 }) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [imageError, setImageError] = useState<{[key: string]: boolean}>({});
   const [imageLoaded, setImageLoaded] = useState<{[key: string]: boolean}>({});
-  const { isAdmin } = useAdminCheck();
   const { toast } = useToast();
   const { addToCart } = useCart();
-
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
-
-    try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Product Deleted! ✅",
-        description: `${title} has been deleted successfully`,
-        className: "bg-gradient-gold text-black font-semibold",
-      });
-
-      onUpdate();
-    } catch (error) {
-      console.error('Error deleting product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to delete product. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleAddToCart = () => {
     addToCart({
@@ -80,11 +47,6 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
       description: `${title} has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
-  };
-
-  const handleEditClick = () => {
-    console.log('Edit button clicked for product:', id, title);
-    setIsEditModalOpen(true);
   };
 
   const handleImageError = (imageUrl: string) => {
@@ -147,27 +109,6 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
                 </div>
               )}
             </div>
-            
-            {isAdmin && (
-              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleEditClick}
-                  className="w-8 h-8 p-0 bg-blue-500/80 border-blue-400 hover:bg-blue-500"
-                >
-                  <Edit size={14} />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleDelete}
-                  className="w-8 h-8 p-0 bg-red-500/80 border-red-400 hover:bg-red-500"
-                >
-                  <Trash2 size={14} />
-                </Button>
-              </div>
-            )}
           </div>
           
           <div className="text-center space-y-3">
@@ -203,24 +144,6 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      <AdminProductEditModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        product={{
-          id,
-          name: title,
-          price,
-          category: category as 'gadget' | 'headphone' | 'cover',
-          subcategory,
-          description,
-          images
-        }}
-        onUpdate={() => {
-          onUpdate();
-          setIsEditModalOpen(false);
-        }}
-      />
 
       <ProductDetailModal
         isOpen={isDetailModalOpen}

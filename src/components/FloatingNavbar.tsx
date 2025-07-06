@@ -2,17 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, User, Menu, X, Phone } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Phone, Search } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import AuthModal from './AuthModal';
+import SearchModal from './SearchModal';
 
 const FloatingNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const { getTotalItems } = useCart();
   const { user, signOut } = useAuth();
@@ -54,7 +56,6 @@ const FloatingNavbar = () => {
   }, [user]);
 
   const navItems = [
-    { name: 'Home', path: '/' },
     { name: 'Phones', path: '/phones' },
     { name: 'Headphones', path: '/headphones' },
     { name: 'Covers', path: '/covers' },
@@ -127,6 +128,16 @@ const FloatingNavbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* Search Button */}
+            <Button
+              onClick={() => setIsSearchModalOpen(true)}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:text-gold-400 rounded-full"
+            >
+              <Search size={20} />
+            </Button>
+
             <Link to="/cart" className="relative">
               <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
                 <ShoppingCart size={20} />
@@ -150,9 +161,9 @@ const FloatingNavbar = () => {
                         className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
                       />
                     ) : (
-                      <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
-                        <User size={20} />
-                      </Button>
+                      <div className="w-8 h-8 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
+                        <User size={16} className="text-gold-400" />
+                      </div>
                     )}
                   </div>
                   <span className="text-white text-sm font-medium">
@@ -225,6 +236,18 @@ const FloatingNavbar = () => {
                 Contact
               </Button>
               
+              <Button
+                onClick={() => {
+                  setIsSearchModalOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                variant="ghost"
+                className="text-white hover:text-gold-400 hover:bg-white/5 rounded-lg px-4 py-2 justify-start"
+              >
+                <Search size={16} className="mr-2" />
+                Search
+              </Button>
+              
               <div className="flex flex-col space-y-4 pt-4 border-t border-white/10">
                 <Link to="/cart" className="relative flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
@@ -249,9 +272,9 @@ const FloatingNavbar = () => {
                             className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
                           />
                         ) : (
-                          <Button variant="ghost" size="icon" className="text-white hover:text-gold-400 rounded-full">
-                            <User size={20} />
-                          </Button>
+                          <div className="w-8 h-8 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
+                            <User size={16} className="text-gold-400" />
+                          </div>
                         )}
                       </div>
                       <span className="text-white">
@@ -299,6 +322,11 @@ const FloatingNavbar = () => {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         initialMode={authMode}
+      />
+
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
       />
     </>
   );

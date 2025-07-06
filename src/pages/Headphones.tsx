@@ -2,25 +2,20 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, ArrowLeft, Eye, Edit } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
-import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useState } from 'react';
 import ProductDetailModal from '@/components/ProductDetailModal';
-import AdminProductEditModal from '@/components/AdminProductEditModal';
 
 const Headphones = () => {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState<any>(null);
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const { isAdmin } = useAdminCheck();
 
   const headphones = [
     {
@@ -95,19 +90,6 @@ const Headphones = () => {
     setIsDetailModalOpen(true);
   };
 
-  const handleEditProduct = (headphone: any) => {
-    setProductToEdit({
-      id: `static-${headphone.title.replace(/\s+/g, '-').toLowerCase()}`,
-      name: headphone.title,
-      price: headphone.price,
-      category: 'headphone' as const,
-      subcategory: headphone.category,
-      description: headphone.description,
-      images: [headphone.image]
-    });
-    setIsEditModalOpen(true);
-  };
-
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -137,22 +119,6 @@ const Headphones = () => {
                   <div className="relative">
                     <div className="aspect-square bg-gray-800 rounded-lg mb-6 flex items-center justify-center text-6xl cursor-pointer">
                       {headphone.image}
-                      
-                      {isAdmin && (
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditProduct(headphone);
-                            }}
-                            className="w-8 h-8 p-0 bg-blue-500/80 border-blue-400 hover:bg-blue-500"
-                          >
-                            <Edit size={14} />
-                          </Button>
-                        </div>
-                      )}
                     </div>
                   </div>
                   
@@ -210,20 +176,6 @@ const Headphones = () => {
           category: selectedProduct.category,
           description: selectedProduct.description
         } : null}
-      />
-
-      <AdminProductEditModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        product={productToEdit}
-        onUpdate={() => {
-          toast({
-            title: "Note",
-            description: "Static products cannot be permanently edited. Use the admin panel to add real products.",
-            className: "bg-yellow-500 text-black font-semibold",
-          });
-          setIsEditModalOpen(false);
-        }}
       />
     </div>
   );

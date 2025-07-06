@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Eye, Edit } from 'lucide-react';
+import { ShoppingCart, Eye } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
-import { useAdminCheck } from '@/hooks/useAdminCheck';
 import ProductDetailModal from './ProductDetailModal';
-import AdminProductEditModal from './AdminProductEditModal';
 
 interface ProductCardProps {
   title: string;
@@ -27,10 +25,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   description 
 }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const { isAdmin } = useAdminCheck();
 
   const handleAddToCart = () => {
     const priceValue = typeof price === 'string' ? 
@@ -48,11 +44,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       description: `${title} has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
-  };
-
-  const handleEditClick = () => {
-    console.log('Edit button clicked for static product:', title);
-    setIsEditModalOpen(true);
   };
 
   const formatPrice = (priceValue: string | number) => {
@@ -87,22 +78,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <CardContent className={size === 'compact' ? 'p-4' : 'p-6'}>
           <div className={imageClasses} onClick={() => setIsDetailModalOpen(true)}>
             {image}
-            
-            {isAdmin && (
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditClick();
-                  }}
-                  className="w-8 h-8 p-0 bg-blue-500/80 border-blue-400 hover:bg-blue-500"
-                >
-                  <Edit size={14} />
-                </Button>
-              </div>
-            )}
           </div>
           
           <div className="text-center space-y-3">
@@ -147,28 +122,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           images: [image],
           category,
           description: description || `${title} - ${category} device with premium features and quality.`
-        }}
-      />
-
-      <AdminProductEditModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        product={{
-          id: `static-${title.replace(/\s+/g, '-').toLowerCase()}`,
-          name: title,
-          price: typeof price === 'string' ? parseFloat(price.replace(/[^0-9.-]+/g, "")) : price,
-          category: 'gadget',
-          subcategory: category,
-          description: description || `${title} - ${category} device with premium features and quality.`,
-          images: [image]
-        }}
-        onUpdate={() => {
-          toast({
-            title: "Note",
-            description: "Static products cannot be permanently edited. Use the admin panel to add real products.",
-            className: "bg-yellow-500 text-black font-semibold",
-          });
-          setIsEditModalOpen(false);
         }}
       />
     </>
