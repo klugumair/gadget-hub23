@@ -19,6 +19,7 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ModalProduct {
@@ -28,6 +29,7 @@ interface ModalProduct {
   images: string[];
   category: "headphone" | "gadget" | "cover";
   description?: string;
+  additional_notes?: string;
 }
 
 const GooglePixelProducts = () => {
@@ -41,7 +43,7 @@ const GooglePixelProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .or("subcategory.ilike.%pixel%,subcategory.ilike.%google%")
+        .or("subcategory.ilike.%google%,subcategory.ilike.%pixel%")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -65,6 +67,7 @@ const GooglePixelProducts = () => {
       images: product.images || [],
       category: "gadget",
       description: product.description,
+      additional_notes: product.additional_notes,
     });
   };
 
@@ -93,7 +96,7 @@ const GooglePixelProducts = () => {
               <span className="text-shimmer">Google Pixel Collection</span>
             </h1>
             <p className="text-xl text-gray-400 mb-12">
-              Browse our collection of brand new Google Pixel smartphones
+              Discover our premium Google Pixel smartphone collection
             </p>
           </div>
 
@@ -127,13 +130,12 @@ const GooglePixelProducts = () => {
           ) : (
             <div className="text-center">
               <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto">
-                <div className="text-8xl mb-6">🔍</div>
+                <div className="text-8xl mb-6">🤖</div>
                 <h3 className="text-3xl font-bold text-white mb-4">
                   No Google Pixel Products Available
                 </h3>
                 <p className="text-xl text-gray-400">
-                  We're working on bringing you amazing Google Pixel devices. Check
-                  back soon!
+                  We're working on bringing you amazing Google Pixel devices. Check back soon!
                 </p>
               </div>
             </div>

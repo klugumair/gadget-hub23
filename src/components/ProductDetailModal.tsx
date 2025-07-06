@@ -50,7 +50,6 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     if (product.additional_notes) {
       console.log('Raw additional_notes:', product.additional_notes);
       
-      // Try to parse as JSON
       let parsedData;
       if (typeof product.additional_notes === 'string') {
         parsedData = JSON.parse(product.additional_notes);
@@ -58,27 +57,35 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         parsedData = product.additional_notes;
       }
       
-      console.log('Parsed data:', parsedData);
+      console.log('Parsed variants data:', parsedData);
       
       if (parsedData && parsedData.variants && Array.isArray(parsedData.variants)) {
-        variants = parsedData.variants;
+        variants = parsedData.variants.filter(variant => 
+          variant && variant.ram && variant.storage && variant.price
+        );
         hasVariants = variants.length > 0;
-        console.log('Found variants:', variants);
-      } else if (Array.isArray(parsedData)) {
-        // Handle case where variants are stored as direct array
-        variants = parsedData;
-        hasVariants = variants.length > 0;
-        console.log('Found variants as direct array:', variants);
+        console.log('Final variants:', variants);
       }
     }
   } catch (error) {
     console.log('Error parsing variants data:', error);
-    console.log('Raw data that failed to parse:', product.additional_notes);
+    hasVariants = false;
   }
 
-  const currentVariant = hasVariants ? variants[selectedVariantIndex] : null;
+  // If no variants found, create a default one from the base product
+  if (!hasVariants) {
+    variants = [{
+      ram: 'Standard',
+      storage: 'Standard',
+      price: product.price
+    }];
+  }
+
+  const currentVariant = variants[selectedVariantIndex];
   const displayPrice = currentVariant ? currentVariant.price : product.price;
-  const variantLabel = currentVariant ? `${currentVariant.ram} RAM - ${currentVariant.storage}` : '';
+  const variantLabel = hasVariants && currentVariant 
+    ? `${currentVariant.ram} RAM - ${currentVariant.storage}` 
+    : '';
 
   console.log('Current variant:', currentVariant);
   console.log('Display price:', displayPrice);
@@ -106,7 +113,6 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const getDisplayImage = (imageUrl: string) => {
     if (!imageUrl) return null;
     
-    // Handle different image URL formats
     if (imageUrl.startsWith("http")) {
       return imageUrl;
     } else if (imageUrl.startsWith("gadgethub/") || imageUrl.startsWith("phone-images/")) {
@@ -114,10 +120,8 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     } else if (imageUrl.includes("supabase")) {
       return imageUrl;
     } else if (imageUrl.includes('/')) {
-      // If it's a relative path with folder, construct the full URL
       return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/gadgethub/${imageUrl}`;
     } else {
-      // Single character emoji or icon
       return null;
     }
   };
@@ -225,14 +229,14 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <h3 className="text-white text-xl font-semibold mt-2">
                 {product.title}
               </h3>
-              {hasVariants && currentVariant && (
+              {hasVariants && currentVariant && variantLabel && (
                 <p className="text-gold-400 text-sm mt-1">
                   {variantLabel}
                 </p>
               )}
             </div>
 
-            {hasVariants && variants.length > 0 && (
+            {hasVariants && variants.length > 1 && (
               <div>
                 <h4 className="text-gold-400 font-semibold mb-3">Available Variants</h4>
                 <div className="space-y-2">

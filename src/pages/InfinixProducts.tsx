@@ -65,6 +65,7 @@ const InfinixProducts = () => {
       images: product.images || [],
       category: "gadget",
       description: product.description,
+      additional_notes: product.additional_notes,
     });
   };
 

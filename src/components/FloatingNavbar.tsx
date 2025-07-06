@@ -50,7 +50,7 @@ const FloatingNavbar = () => {
         </div>
 
         {/* Desktop Navigation - Extended with Search Bar */}
-        <div className="hidden lg:flex items-center space-x-8">
+        <div className="hidden lg:flex items-center space-x-6">
           <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
             Phones
           </Link>
@@ -61,8 +61,10 @@ const FloatingNavbar = () => {
             Covers
           </Link>
           
-          {/* Inline Search Bar */}
-          <InlineSearchBar />
+          {/* Inline Search Bar - moved slightly to the left */}
+          <div className="mx-4">
+            <InlineSearchBar />
+          </div>
           
           <div className="h-8 w-px bg-gold-400/30"></div>
           <span className="text-gray-400 text-sm font-medium">Premium Collection</span>
@@ -70,7 +72,7 @@ const FloatingNavbar = () => {
 
         {/* Right Side Actions */}
         <div className="flex items-center space-x-4">
-          {/* Mobile Search - You can add this later if needed */}
+          {/* Mobile Search */}
           <div className="lg:hidden">
             <InlineSearchBar />
           </div>

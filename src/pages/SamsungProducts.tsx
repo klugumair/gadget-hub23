@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
@@ -18,6 +19,7 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ModalProduct {
@@ -27,18 +29,13 @@ interface ModalProduct {
   images: string[];
   category: "headphone" | "gadget" | "cover";
   description?: string;
+  additional_notes?: string;
 }
 
 const SamsungProducts = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>(
-    [],
-  );
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(
-    null,
-  );
-  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(
-    null,
-  );
+  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchDatabaseProducts = async () => {
@@ -70,6 +67,7 @@ const SamsungProducts = () => {
       images: product.images || [],
       category: "gadget",
       description: product.description,
+      additional_notes: product.additional_notes,
     });
   };
 
