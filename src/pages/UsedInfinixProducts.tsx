@@ -71,7 +71,6 @@ const UsedInfinixProducts = () => {
               Quality pre-owned Infinix devices at great prices
             </p>
             
-            {/* Sell Your Phone Section */}
             <div className="mb-16">
               <div className="glass-morphism rounded-2xl p-8 max-w-2xl mx-auto">
                 <h2 className="text-4xl font-bold text-white mb-4">
@@ -90,7 +89,6 @@ const UsedInfinixProducts = () => {
             </div>
           </div>
 
-          {/* Available Used Phones Section */}
           <div className="mb-16">
             <h2 className="text-4xl font-bold text-center text-white mb-8">
               <span className="text-shimmer">Available Used Infinix Phones</span>
@@ -117,6 +115,8 @@ const UsedInfinixProducts = () => {
                     images={phone.phone_images || []}
                     usage_duration={phone.usage_duration}
                     onClick={() => setSelectedPhone(phone)}
+                    onDelete={fetchApprovedPhones}
+                    isDatabase={true}
                   />
                 ))}
               </div>

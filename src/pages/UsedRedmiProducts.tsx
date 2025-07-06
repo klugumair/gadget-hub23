@@ -115,6 +115,8 @@ const UsedRedmiProducts = () => {
                     images={phone.phone_images || []}
                     usage_duration={phone.usage_duration}
                     onClick={() => setSelectedPhone(phone)}
+                    onDelete={fetchApprovedPhones}
+                    isDatabase={true}
                   />
                 ))}
               </div>

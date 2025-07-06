@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -31,6 +32,21 @@ import OppoProducts from "./pages/OppoProducts";
 import ItelProducts from "./pages/ItelProducts";
 import HuaweiProducts from "./pages/HuaweiProducts";
 import AdminPhoneSubmissions from "./pages/AdminPhoneSubmissions";
+
+// Used Phone Pages
+import UsedSamsungProducts from "./pages/UsedSamsungProducts";
+import UsedIPhoneProducts from "./pages/UsedIPhoneProducts";
+import UsedInfinixProducts from "./pages/UsedInfinixProducts";
+import UsedGooglePixelProducts from "./pages/UsedGooglePixelProducts";
+import UsedRealmeProducts from "./pages/UsedRealmeProducts";
+import UsedSparkXProducts from "./pages/UsedSparkXProducts";
+import UsedTecnoProducts from "./pages/UsedTecnoProducts";
+import UsedVivoProducts from "./pages/UsedVivoProducts";
+import UsedRedmiProducts from "./pages/UsedRedmiProducts";
+import UsedHonorProducts from "./pages/UsedHonorProducts";
+import UsedOppoProducts from "./pages/UsedOppoProducts";
+import UsedItelProducts from "./pages/UsedItelProducts";
+import UsedHuaweiProducts from "./pages/UsedHuaweiProducts";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +88,21 @@ function App() {
                 <Route path="/phones/new/oppo" element={<OppoProducts />} />
                 <Route path="/phones/new/itel" element={<ItelProducts />} />
                 <Route path="/phones/new/huawei" element={<HuaweiProducts />} />
+
+                {/* Used Phone Brand Routes */}
+                <Route path="/phones/used/samsung" element={<UsedSamsungProducts />} />
+                <Route path="/phones/used/iphone" element={<UsedIPhoneProducts />} />
+                <Route path="/phones/used/infinix" element={<UsedInfinixProducts />} />
+                <Route path="/phones/used/google-pixel" element={<UsedGooglePixelProducts />} />
+                <Route path="/phones/used/realme" element={<UsedRealmeProducts />} />
+                <Route path="/phones/used/sparkx" element={<UsedSparkXProducts />} />
+                <Route path="/phones/used/tecno" element={<UsedTecnoProducts />} />
+                <Route path="/phones/used/vivo" element={<UsedVivoProducts />} />
+                <Route path="/phones/used/redmi" element={<UsedRedmiProducts />} />
+                <Route path="/phones/used/honor" element={<UsedHonorProducts />} />
+                <Route path="/phones/used/oppo" element={<UsedOppoProducts />} />
+                <Route path="/phones/used/itel" element={<UsedItelProducts />} />
+                <Route path="/phones/used/huawei" element={<UsedHuaweiProducts />} />
               </Routes>
               <TawkToWidget />
             </BrowserRouter>
