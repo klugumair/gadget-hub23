@@ -30,35 +30,16 @@ interface ModalProduct {
 }
 
 const IPhoneProducts = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
+  const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>(
+    [],
+  );
+  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(
+    null,
+  );
+  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
-
-  const iPhoneProducts = [
-    {
-      title: "iPhone 16 Pro Max",
-      price: "Rs. 599,999",
-      image: "🍎",
-      category: "iPhone",
-    },
-    {
-      title: "iPhone 15 Pro",
-      price: "Rs. 499,999",
-      image: "🍎",
-      category: "iPhone",
-    },
-    {
-      title: "iPhone 14 Pro Max",
-      price: "Rs. 399,999",
-      image: "🍎",
-      category: "iPhone",
-    },
-    {
-      title: "iPhone 13 Pro",
-      price: "Rs. 299,999",
-      image: "🍎",
-      category: "iPhone",
-    },
-  ];
 
   const fetchDatabaseProducts = async () => {
     try {
