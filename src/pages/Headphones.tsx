@@ -147,7 +147,10 @@ const Headphones = () => {
         <AdminProductEditModal
           isOpen={!!editingProduct}
           onClose={() => setEditingProduct(null)}
-          product={editingProduct}
+          product={{
+            ...editingProduct,
+            category: editingProduct.category as "headphone" | "gadget" | "cover"
+          }}
           onProductUpdated={fetchProducts}
         />
       )}
