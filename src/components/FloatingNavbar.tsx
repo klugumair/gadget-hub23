@@ -1,232 +1,235 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ShoppingCart, User, Settings, Menu, X, Search } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { supabase } from '@/integrations/supabase/client';
+import AuthModal from './AuthModal';
+import SearchModal from './SearchModal';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart, Search, User, LogOut, Menu, X } from 'lucide-react';
 
 const FloatingNavbar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { cartItems } = useCart();
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { user, signOut } = useAuth();
+  const { items } = useCart();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const fetchProfilePicture = async () => {
-      if (user) {
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('avatar_url')
-            .eq('id', user.id)
-            .single();
-          
-          if (data && data.avatar_url) {
-            setProfilePicture(data.avatar_url);
-          }
-        } catch (error) {
-          console.error('Error fetching profile picture:', error);
-        }
-      }
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
     };
 
-    fetchProfilePicture();
-  }, [user]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-    }
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Phones', path: '/phones' },
+    { name: 'Covers', path: '/covers' },
+    { name: 'Headphones', path: '/headphones' },
+    { name: 'Services', path: '/repairing-service' },
+  ];
+
   return (
-    <nav className="fixed top-4 left-4 right-4 z-50 bg-black/60 backdrop-blur-lg border border-gold-400/20 rounded-3xl px-8 py-5 shadow-2xl">
-      <div className="flex items-center justify-between w-full">
-        {/* Logo - moved more to the left */}
-        <div className="flex items-center -ml-6">
-          <Link to="/" className="text-3xl font-bold text-shimmer hover:scale-105 transition-transform">
-            GadgetHub
-          </Link>
-        </div>
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-black/80 backdrop-blur-xl border-b border-gold-400/20 shadow-2xl' 
+          : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`flex items-center justify-between transition-all duration-300 ${
+            isScrolled ? 'h-16' : 'h-20'
+          }`}>
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-gold-400/25 transition-all duration-300 group-hover:scale-110">
+                <span className="text-black font-bold text-lg">GH</span>
+              </div>
+              <span className="text-2xl font-bold text-transparent bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text">
+                GadgetHub
+              </span>
+            </Link>
 
-        {/* Desktop Navigation - Extended with Search Bar */}
-        <div className="hidden lg:flex items-center space-x-6">
-          <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
-            Phones
-          </Link>
-          <Link to="/headphones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
-            Headphones
-          </Link>
-          <Link to="/covers" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
-            Covers
-          </Link>
-          
-          {/* Inline Search Bar - moved slightly to the left */}
-          <div className="mx-2">
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="bg-white/10 border border-gold-400/30 rounded-full px-4 py-2 pl-10 text-white placeholder:text-gray-400 focus:outline-none focus:border-gold-400 w-64"
-              />
-              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
-            </form>
-          </div>
-          
-          <div className="h-8 w-px bg-gold-400/30"></div>
-          <span className="text-gray-400 text-sm font-medium">Premium Collection</span>
-        </div>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 ${
+                    location.pathname === item.path
+                      ? 'bg-gradient-to-r from-gold-400/20 to-gold-300/20 text-gold-400 border border-gold-400/30 shadow-lg'
+                      : 'text-gray-300 hover:text-gold-400 hover:bg-gold-400/10'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
 
-        {/* Right Side Actions */}
-        <div className="flex items-center space-x-4">
-          {/* Mobile Search */}
-          <div className="lg:hidden">
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="bg-white/10 border border-gold-400/30 rounded-full px-3 py-2 pl-9 text-white placeholder:text-gray-400 focus:outline-none focus:border-gold-400 w-32 sm:w-48"
-              />
-              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
-            </form>
-          </div>
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-3">
+              {/* Search Button */}
+              <Button
+                onClick={() => setShowSearchModal(true)}
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex items-center space-x-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 backdrop-blur-sm shadow-lg hover:shadow-gold-400/25"
+              >
+                <Search size={16} />
+                <span className="text-sm">Search</span>
+              </Button>
 
-          {/* Cart Button */}
-          <Link to="/cart">
-            <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 relative p-3 rounded-full">
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                  {totalItems}
-                </span>
+              {/* Mobile Search */}
+              <Button
+                onClick={() => setShowSearchModal(true)}
+                variant="ghost"
+                size="sm"
+                className="md:hidden p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300"
+              >
+                <Search size={18} />
+              </Button>
+
+              {/* Cart */}
+              <Link to="/cart" className="relative group">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 group-hover:scale-110"
+                >
+                  <ShoppingCart size={18} />
+                </Button>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg border border-red-400/30 animate-pulse">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+
+              {/* User Actions */}
+              {user ? (
+                <div className="hidden md:flex items-center space-x-2">
+                  <Link to="/profile">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 hover:scale-110"
+                    >
+                      <User size={18} />
+                    </Button>
+                  </Link>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="ghost"
+                    size="sm"
+                    className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-red-400/50 hover:bg-red-400/10 text-gray-300 hover:text-red-400 transition-all duration-300 hover:scale-110"
+                  >
+                    <LogOut size={18} />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="hidden md:flex bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg border border-gold-300/30"
+                >
+                  Sign In
+                </Button>
               )}
-            </Button>
-          </Link>
 
-          {/* User Authentication */}
-          {user ? (
-            <div className="flex items-center space-x-4">
-              {/* Profile Picture - Larger and Circular */}
-              <Link to="/profile">
-                <div className="w-12 h-12 rounded-full border-2 border-gold-400 overflow-hidden hover:border-gold-300 transition-colors cursor-pointer shadow-lg">
-                  {profilePicture ? (
-                    <img 
-                      src={profilePicture} 
-                      alt="Profile" 
-                      className="w-full h-full object-cover"
-                    />
+              {/* Mobile Menu Button */}
+              <Button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                variant="ghost"
+                size="sm"
+                className="md:hidden p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300"
+              >
+                {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-gold-400/20 shadow-2xl rounded-b-3xl">
+              <div className="px-4 py-6 space-y-4">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-2xl text-base font-medium transition-all duration-300 ${
+                      location.pathname === item.path
+                        ? 'bg-gradient-to-r from-gold-400/20 to-gold-300/20 text-gold-400 border border-gold-400/30'
+                        : 'text-gray-300 hover:text-gold-400 hover:bg-gold-400/10'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                
+                <div className="border-t border-gray-700/50 pt-4 space-y-3">
+                  {user ? (
+                    <>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-all duration-300"
+                      >
+                        <User size={18} />
+                        <span>Profile</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setIsMenuOpen(false);
+                        }}
+                        className="flex items-center space-x-3 px-4 py-3 rounded-2xl text-gray-300 hover:text-red-400 hover:bg-red-400/10 transition-all duration-300 w-full text-left"
+                      >
+                        <LogOut size={18} />
+                        <span>Sign Out</span>
+                      </button>
+                    </>
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                      <User size={24} className="text-black" />
-                    </div>
+                    <button
+                      onClick={() => {
+                        setShowAuthModal(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-black font-semibold px-4 py-3 rounded-2xl transition-all duration-300 shadow-lg"
+                    >
+                      Sign In
+                    </button>
                   )}
                 </div>
-              </Link>
-
-              {/* User Menu */}
-              <div className="hidden md:flex items-center space-x-3">
-                <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 px-4 py-2 rounded-full">
-                    <Settings size={18} className="mr-2" />
-                    Profile
-                  </Button>
-                </Link>
               </div>
-            </div>
-          ) : (
-            <div className="hidden md:flex items-center space-x-3">
-              <Link to="/profile">
-                <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 px-4 py-2 rounded-full">
-                  <User size={18} className="mr-2" />
-                  Login
-                </Button>
-              </Link>
-              <Link to="/profile">
-                <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-6 py-2 rounded-full">
-                  Sign Up
-                </Button>
-              </Link>
             </div>
           )}
-
-          {/* Mobile Menu Button */}
-          <Button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            variant="ghost"
-            size="sm"
-            className="lg:hidden text-gold-400 hover:text-gold-300 p-3 rounded-full"
-          >
-            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </Button>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden mt-6 pt-6 border-t border-gold-400/30">
-          <div className="flex flex-col space-y-4">
-            <Link 
-              to="/phones" 
-              className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Phones
-            </Link>
-            <Link 
-              to="/headphones" 
-              className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Headphones
-            </Link>
-            <Link 
-              to="/covers" 
-              className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Covers
-            </Link>
-            
-            {user ? (
-              <div className="flex flex-col space-y-3 pt-6 border-t border-gold-400/30">
-                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start py-3 rounded-full">
-                    <Settings size={18} className="mr-3" />
-                    Profile
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="flex flex-col space-y-3 pt-6 border-t border-gold-400/30">
-                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start py-3 rounded-full">
-                    <User size={18} className="mr-3" />
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold w-full py-3 rounded-full">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </nav>
+      {/* Modals */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
+      <SearchModal 
+        isOpen={showSearchModal} 
+        onClose={() => setShowSearchModal(false)} 
+      />
+    </>
   );
 };
 
