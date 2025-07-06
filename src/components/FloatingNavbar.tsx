@@ -11,7 +11,7 @@ import SearchModal from './SearchModal';
 const FloatingNavbar = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { items } = useCart();
+  const { cartItems } = useCart();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,37 +43,39 @@ const FloatingNavbar = () => {
     navigate('/');
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <>
-      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/30 rounded-2xl px-6 py-4 shadow-2xl">
+      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/30 rounded-2xl px-8 py-5 shadow-2xl">
         <div className="flex items-center justify-between w-full">
           {/* Logo - moved more to the left */}
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-shimmer hover:scale-105 transition-transform">
+          <div className="flex items-center -ml-4">
+            <Link to="/" className="text-3xl font-bold text-shimmer hover:scale-105 transition-transform">
               GadgetHub
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium">
+          {/* Desktop Navigation - Extended */}
+          <div className="hidden lg:flex items-center space-x-10">
+            <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
               Phones
             </Link>
-            <Link to="/headphones" className="text-white hover:text-gold-400 transition-colors font-medium">
+            <Link to="/headphones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
               Headphones
             </Link>
-            <Link to="/covers" className="text-white hover:text-gold-400 transition-colors font-medium">
+            <Link to="/covers" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
               Covers & Cases
             </Link>
-            <div className="h-6 w-px bg-gold-400/30"></div>
-            <Link to="/phones/new" className="text-white hover:text-gold-400 transition-colors font-medium text-sm">
+            <div className="h-8 w-px bg-gold-400/30"></div>
+            <Link to="/phones/new" className="text-white hover:text-gold-400 transition-colors font-medium">
               New Phones
             </Link>
-            <Link to="/phones/used" className="text-white hover:text-gold-400 transition-colors font-medium text-sm">
+            <Link to="/phones/used" className="text-white hover:text-gold-400 transition-colors font-medium">
               Used Phones
             </Link>
+            <div className="h-8 w-px bg-gold-400/30"></div>
+            <span className="text-gray-400 text-sm">Premium Collection</span>
           </div>
 
           {/* Right Side Actions */}
@@ -83,17 +85,17 @@ const FloatingNavbar = () => {
               onClick={() => setIsSearchOpen(true)}
               variant="ghost"
               size="sm"
-              className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10"
+              className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-3"
             >
-              <Search size={20} />
+              <Search size={22} />
             </Button>
 
             {/* Cart Button */}
             <Link to="/cart">
-              <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 relative">
-                <ShoppingCart size={20} />
+              <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 relative p-3">
+                <ShoppingCart size={22} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-gold-400 text-black text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
                     {totalItems}
                   </span>
                 )}
@@ -102,10 +104,10 @@ const FloatingNavbar = () => {
 
             {/* User Authentication */}
             {user ? (
-              <div className="flex items-center space-x-3">
-                {/* Profile Picture */}
+              <div className="flex items-center space-x-4">
+                {/* Profile Picture - Larger and Circular */}
                 <Link to="/profile">
-                  <div className="w-12 h-12 rounded-full border-2 border-gold-400 overflow-hidden hover:border-gold-300 transition-colors cursor-pointer">
+                  <div className="w-14 h-14 rounded-full border-2 border-gold-400 overflow-hidden hover:border-gold-300 transition-colors cursor-pointer shadow-lg">
                     {profilePicture ? (
                       <img 
                         src={profilePicture} 
@@ -114,17 +116,17 @@ const FloatingNavbar = () => {
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                        <User size={24} className="text-black" />
+                        <User size={28} className="text-black" />
                       </div>
                     )}
                   </div>
                 </Link>
 
                 {/* User Menu */}
-                <div className="hidden md:flex items-center space-x-2">
+                <div className="hidden md:flex items-center space-x-3">
                   <Link to="/profile">
-                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10">
-                      <Settings size={16} className="mr-2" />
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 px-4 py-2">
+                      <Settings size={18} className="mr-2" />
                       Profile
                     </Button>
                   </Link>
@@ -132,23 +134,23 @@ const FloatingNavbar = () => {
                     onClick={handleSignOut}
                     variant="ghost" 
                     size="sm" 
-                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-400/10 px-4 py-2"
                   >
-                    <LogOut size={16} className="mr-2" />
+                    <LogOut size={18} className="mr-2" />
                     Sign Out
                   </Button>
                 </div>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-3">
                 <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10">
-                    <User size={16} className="mr-2" />
+                  <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 px-4 py-2">
+                    <User size={18} className="mr-2" />
                     Login
                   </Button>
                 </Link>
                 <Link to="/profile">
-                  <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold">
+                  <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold px-6 py-2">
                     Sign Up
                   </Button>
                 </Link>
@@ -160,59 +162,59 @@ const FloatingNavbar = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               variant="ghost"
               size="sm"
-              className="lg:hidden text-gold-400 hover:text-gold-300"
+              className="lg:hidden text-gold-400 hover:text-gold-300 p-3"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </Button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pt-4 border-t border-gold-400/30">
-            <div className="flex flex-col space-y-3">
+          <div className="lg:hidden mt-6 pt-6 border-t border-gold-400/30">
+            <div className="flex flex-col space-y-4">
               <Link 
                 to="/phones" 
-                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Phones
               </Link>
               <Link 
                 to="/headphones" 
-                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Headphones
               </Link>
               <Link 
                 to="/covers" 
-                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
+                className="text-white hover:text-gold-400 transition-colors font-medium py-3 text-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Covers & Cases
               </Link>
-              <div className="h-px bg-gold-400/30 my-2"></div>
+              <div className="h-px bg-gold-400/30 my-3"></div>
               <Link 
                 to="/phones/new" 
-                className="text-white hover:text-gold-400 transition-colors font-medium py-2 text-sm"
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 New Phones
               </Link>
               <Link 
                 to="/phones/used" 
-                className="text-white hover:text-gold-400 transition-colors font-medium py-2 text-sm"
+                className="text-white hover:text-gold-400 transition-colors font-medium py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Used Phones
               </Link>
               
               {user ? (
-                <div className="flex flex-col space-y-2 pt-4 border-t border-gold-400/30">
+                <div className="flex flex-col space-y-3 pt-6 border-t border-gold-400/30">
                   <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start">
-                      <Settings size={16} className="mr-2" />
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start py-3">
+                      <Settings size={18} className="mr-3" />
                       Profile
                     </Button>
                   </Link>
@@ -223,22 +225,22 @@ const FloatingNavbar = () => {
                     }}
                     variant="ghost" 
                     size="sm" 
-                    className="text-red-400 hover:text-red-300 w-full justify-start"
+                    className="text-red-400 hover:text-red-300 w-full justify-start py-3"
                   >
-                    <LogOut size={16} className="mr-2" />
+                    <LogOut size={18} className="mr-3" />
                     Sign Out
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col space-y-2 pt-4 border-t border-gold-400/30">
+                <div className="flex flex-col space-y-3 pt-6 border-t border-gold-400/30">
                   <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start">
-                      <User size={16} className="mr-2" />
+                    <Button variant="ghost" size="sm" className="text-gold-400 hover:text-gold-300 w-full justify-start py-3">
+                      <User size={18} className="mr-3" />
                       Login
                     </Button>
                   </Link>
                   <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold w-full">
+                    <Button size="sm" className="bg-gold-400 hover:bg-gold-500 text-black font-semibold w-full py-3">
                       Sign Up
                     </Button>
                   </Link>
