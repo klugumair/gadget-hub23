@@ -12,7 +12,7 @@ const FloatingNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { items } = useCart();
+  const { cartItems } = useCart();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,7 +32,7 @@ const FloatingNavbar = () => {
     navigate('/');
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -46,8 +46,8 @@ const FloatingNavbar = () => {
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-black/80 backdrop-blur-xl border-b border-gold-400/20 shadow-2xl' 
-          : 'bg-transparent'
+          ? 'bg-black/80 backdrop-blur-xl border-b border-gold-400/20 shadow-2xl rounded-b-3xl' 
+          : 'bg-transparent rounded-b-3xl'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`flex items-center justify-between transition-all duration-300 ${
@@ -82,6 +82,22 @@ const FloatingNavbar = () => {
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-3">
+              {/* Cart */}
+              <Link to="/cart" className="relative group">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 group-hover:scale-110"
+                >
+                  <ShoppingCart size={18} />
+                </Button>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg border border-red-400/30 animate-pulse">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+
               {/* Search Button */}
               <Button
                 onClick={() => setShowSearchModal(true)}
@@ -102,22 +118,6 @@ const FloatingNavbar = () => {
               >
                 <Search size={18} />
               </Button>
-
-              {/* Cart */}
-              <Link to="/cart" className="relative group">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="p-2 rounded-full bg-gray-800/50 border border-gray-700/50 hover:border-gold-400/50 hover:bg-gold-400/10 text-gray-300 hover:text-gold-400 transition-all duration-300 group-hover:scale-110"
-                >
-                  <ShoppingCart size={18} />
-                </Button>
-                {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg border border-red-400/30 animate-pulse">
-                    {totalItems}
-                  </span>
-                )}
-              </Link>
 
               {/* User Actions */}
               {user ? (
