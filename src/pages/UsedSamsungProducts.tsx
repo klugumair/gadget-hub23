@@ -50,6 +50,10 @@ const UsedSamsungProducts = () => {
     }
   };
 
+  const handlePhoneDelete = () => {
+    fetchApprovedPhones(); // Refresh the list after deletion
+  };
+
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -117,6 +121,7 @@ const UsedSamsungProducts = () => {
                     images={phone.phone_images || []}
                     usage_duration={phone.usage_duration}
                     onClick={() => setSelectedPhone(phone)}
+                    onDelete={handlePhoneDelete}
                   />
                 ))}
               </div>
