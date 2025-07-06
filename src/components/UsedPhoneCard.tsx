@@ -110,12 +110,16 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
   const getDisplayImage = () => {
     if (images && images.length > 0) {
       const imageUrl = images[0];
+      // Handle different image URL formats
       if (imageUrl.startsWith("http")) {
         return imageUrl;
       } else if (imageUrl.startsWith("phone-images/")) {
         return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/${imageUrl}`;
-      } else {
+      } else if (imageUrl.includes("supabase")) {
         return imageUrl;
+      } else {
+        // If it's a relative path, construct the full URL
+        return `https://sxolgseprhoremnjbual.supabase.co/storage/v1/object/public/phone-images/${imageUrl}`;
       }
     }
     return null;
