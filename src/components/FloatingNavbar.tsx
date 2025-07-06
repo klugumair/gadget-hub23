@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, User, Settings, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Settings, Menu, X, Search } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
-import InlineSearchBar from './InlineSearchBar';
 
 const FloatingNavbar = () => {
   const navigate = useNavigate();
@@ -14,6 +13,7 @@ const FloatingNavbar = () => {
   const { cartItems } = useCart();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -39,6 +39,14 @@ const FloatingNavbar = () => {
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
+
   return (
     <nav className="fixed top-4 left-4 right-4 z-50 bg-black/60 backdrop-blur-lg border border-gold-400/20 rounded-3xl px-8 py-5 shadow-2xl">
       <div className="flex items-center justify-between w-full">
@@ -62,8 +70,17 @@ const FloatingNavbar = () => {
           </Link>
           
           {/* Inline Search Bar - moved slightly to the left */}
-          <div className="mx-4">
-            <InlineSearchBar />
+          <div className="mx-2">
+            <form onSubmit={handleSearch} className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="bg-white/10 border border-gold-400/30 rounded-full px-4 py-2 pl-10 text-white placeholder:text-gray-400 focus:outline-none focus:border-gold-400 w-64"
+              />
+              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
+            </form>
           </div>
           
           <div className="h-8 w-px bg-gold-400/30"></div>
@@ -74,7 +91,16 @@ const FloatingNavbar = () => {
         <div className="flex items-center space-x-4">
           {/* Mobile Search */}
           <div className="lg:hidden">
-            <InlineSearchBar />
+            <form onSubmit={handleSearch} className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="bg-white/10 border border-gold-400/30 rounded-full px-3 py-2 pl-9 text-white placeholder:text-gray-400 focus:outline-none focus:border-gold-400 w-32 sm:w-48"
+              />
+              <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
+            </form>
           </div>
 
           {/* Cart Button */}

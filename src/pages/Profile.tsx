@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Camera, LogOut, Mail, User as UserIcon, Phone } from 'lucide-react';
+import { Camera, LogOut, Mail, User as UserIcon, Phone, Settings, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import AuthModal from '@/components/AuthModal';
+import { isAdmin } from '@/utils/adminUtils';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -22,10 +23,12 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchProfile();
+      setIsAdminUser(isAdmin(user.email || ''));
     } else {
       setShowAuthModal(true);
     }
@@ -139,7 +142,7 @@ const Profile = () => {
       <FloatingNavbar />
       
       <section className="py-32">
-        <div className="container mx-auto px-6 max-w-2xl">
+        <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold mb-4">
               <span className="text-shimmer">Profile Settings</span>
@@ -149,102 +152,133 @@ const Profile = () => {
             </p>
           </div>
 
-          <Card className="glass-morphism border-gold-400/30">
-            <CardHeader>
-              <CardTitle className="text-gold-400 text-2xl">Account Information</CardTitle>
-              <CardDescription className="text-gray-400">
-                Update your profile details below
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Avatar Section */}
-              <div className="flex flex-col items-center space-y-4">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full border-2 border-gold-400 overflow-hidden">
-                    {avatarUrl ? (
-                      <img 
-                        src={avatarUrl} 
-                        alt="Avatar" 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                        <UserIcon size={32} className="text-black" />
-                      </div>
-                    )}
+          <div className="grid gap-8">
+            {/* Main Profile Card */}
+            <Card className="glass-morphism border-gold-400/30">
+              <CardHeader>
+                <CardTitle className="text-gold-400 text-2xl">Account Information</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Update your profile details below
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Avatar Section */}
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full border-2 border-gold-400 overflow-hidden">
+                      {avatarUrl ? (
+                        <img 
+                          src={avatarUrl} 
+                          alt="Avatar" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                          <UserIcon size={32} className="text-black" />
+                        </div>
+                      )}
+                    </div>
+                    <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-gold-400 rounded-full p-2 cursor-pointer hover:bg-gold-500 transition-colors">
+                      <Camera size={16} className="text-black" />
+                    </label>
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={uploadAvatar}
+                      disabled={uploading}
+                      className="hidden"
+                    />
                   </div>
-                  <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-gold-400 rounded-full p-2 cursor-pointer hover:bg-gold-500 transition-colors">
-                    <Camera size={16} className="text-black" />
-                  </label>
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={uploadAvatar}
-                    disabled={uploading}
-                    className="hidden"
-                  />
-                </div>
-                {uploading && (
-                  <p className="text-gold-400 text-sm">Uploading...</p>
-                )}
-              </div>
-
-              {/* Form Fields */}
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="email" className="text-gold-400 flex items-center">
-                    <Mail size={16} className="mr-2" />
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-black/30 border-gold-400/30 text-white"
-                    disabled
-                  />
-                  <p className="text-gray-400 text-sm mt-1">Email cannot be changed</p>
+                  {uploading && (
+                    <p className="text-gold-400 text-sm">Uploading...</p>
+                  )}
                 </div>
 
-                <div>
-                  <Label htmlFor="fullName" className="text-gold-400 flex items-center">
-                    <UserIcon size={16} className="mr-2" />
-                    Full Name
-                  </Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="bg-black/30 border-gold-400/30 text-white"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-              </div>
+                {/* Form Fields */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="email" className="text-gold-400 flex items-center">
+                      <Mail size={16} className="mr-2" />
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-black/30 border-gold-400/30 text-white"
+                      disabled
+                    />
+                    <p className="text-gray-400 text-sm mt-1">Email cannot be changed</p>
+                  </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col space-y-4 pt-6">
-                <Button
-                  onClick={updateProfile}
-                  disabled={loading}
-                  className="bg-gold-400 hover:bg-gold-500 text-black font-semibold"
-                >
-                  {loading ? 'Updating...' : 'Update Profile'}
-                </Button>
-                
-                <Button
-                  onClick={handleSignOut}
-                  variant="outline"
-                  className="border-red-400 text-red-400 hover:bg-red-400/10 hover:text-red-300"
-                >
-                  <LogOut size={18} className="mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  <div>
+                    <Label htmlFor="fullName" className="text-gold-400 flex items-center">
+                      <UserIcon size={16} className="mr-2" />
+                      Full Name
+                    </Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="bg-black/30 border-gold-400/30 text-white"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col space-y-4 pt-6">
+                  <Button
+                    onClick={updateProfile}
+                    disabled={loading}
+                    className="bg-gold-400 hover:bg-gold-500 text-black font-semibold"
+                  >
+                    {loading ? 'Updating...' : 'Update Profile'}
+                  </Button>
+                  
+                  <Button
+                    onClick={handleSignOut}
+                    variant="outline"
+                    className="border-red-400 text-red-400 hover:bg-red-400/10 hover:text-red-300"
+                  >
+                    <LogOut size={18} className="mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Admin Panel */}
+            {isAdminUser && (
+              <Card className="glass-morphism border-gold-400/30">
+                <CardHeader>
+                  <CardTitle className="text-gold-400 text-2xl flex items-center">
+                    <Settings size={24} className="mr-2" />
+                    Admin Panel
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Administrator tools and features
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button
+                    onClick={() => navigate('/admin/phone-submissions')}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
+                  >
+                    <FileText size={18} className="mr-2" />
+                    View Phone Submissions
+                  </Button>
+                  
+                  <p className="text-gray-400 text-sm">
+                    Review and manage phone submissions from users
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </section>
       
