@@ -82,6 +82,11 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     });
   };
 
+  const handleEditClick = () => {
+    console.log('Edit button clicked for product:', id, title);
+    setIsEditModalOpen(true);
+  };
+
   const handleImageError = (imageUrl: string) => {
     console.log('Image failed to load:', imageUrl, 'for product:', title);
     setImageError(prev => ({ ...prev, [imageUrl]: true }));
@@ -148,7 +153,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setIsEditModalOpen(true)}
+                  onClick={handleEditClick}
                   className="w-8 h-8 p-0 bg-blue-500/80 border-blue-400 hover:bg-blue-500"
                 >
                   <Edit size={14} />

@@ -1,3 +1,4 @@
+
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -62,6 +63,7 @@ const SellHonorPhone = lazy(() => import("./pages/SellHonorPhone"));
 const SellOppoPhone = lazy(() => import("./pages/SellOppoPhone"));
 const SellItelPhone = lazy(() => import("./pages/SellItelPhone"));
 const SellHuaweiPhone = lazy(() => import("./pages/SellHuaweiPhone"));
+const AdminPhoneSubmissions = lazy(() => import("./pages/AdminPhoneSubmissions"));
 
 const queryClient = new QueryClient();
 
@@ -130,6 +132,7 @@ function App() {
                   <Route path="/sell-oppo-phone" element={<SellOppoPhone />} />
                   <Route path="/sell-itel-phone" element={<SellItelPhone />} />
                   <Route path="/sell-huawei-phone" element={<SellHuaweiPhone />} />
+                  <Route path="/admin/phone-submissions" element={<AdminPhoneSubmissions />} />
                 </Routes>
               </Suspense>
               <Toaster />
