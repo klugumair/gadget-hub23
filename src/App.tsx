@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -50,6 +49,19 @@ const IPhone12ProMax = lazy(() => import("./pages/IPhone12ProMax"));
 const IPhone13 = lazy(() => import("./pages/IPhone13"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Profile = lazy(() => import("./pages/Profile"));
+const SellSamsungPhone = lazy(() => import("./pages/SellSamsungPhone"));
+const SellIPhonePhone = lazy(() => import("./pages/SellIPhonePhone"));
+const SellGooglePixelPhone = lazy(() => import("./pages/SellGooglePixelPhone"));
+const SellInfinixPhone = lazy(() => import("./pages/SellInfinixPhone"));
+const SellRealmePhone = lazy(() => import("./pages/SellRealmePhone"));
+const SellSparkXPhone = lazy(() => import("./pages/SellSparkXPhone"));
+const SellTecnoPhone = lazy(() => import("./pages/SellTecnoPhone"));
+const SellVivoPhone = lazy(() => import("./pages/SellVivoPhone"));
+const SellRedmiPhone = lazy(() => import("./pages/SellRedmiPhone"));
+const SellHonorPhone = lazy(() => import("./pages/SellHonorPhone"));
+const SellOppoPhone = lazy(() => import("./pages/SellOppoPhone"));
+const SellItelPhone = lazy(() => import("./pages/SellItelPhone"));
+const SellHuaweiPhone = lazy(() => import("./pages/SellHuaweiPhone"));
 
 const queryClient = new QueryClient();
 
@@ -105,6 +117,19 @@ function App() {
                   <Route path="/phones/new/iphone/iphone-13" element={<IPhone13 />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
+                  <Route path="/sell-iphone-phone" element={<SellIPhonePhone />} />
+                  <Route path="/sell-google-pixel-phone" element={<SellGooglePixelPhone />} />
+                  <Route path="/sell-infinix-phone" element={<SellInfinixPhone />} />
+                  <Route path="/sell-realme-phone" element={<SellRealmePhone />} />
+                  <Route path="/sell-sparkx-phone" element={<SellSparkXPhone />} />
+                  <Route path="/sell-tecno-phone" element={<SellTecnoPhone />} />
+                  <Route path="/sell-vivo-phone" element={<SellVivoPhone />} />
+                  <Route path="/sell-redmi-phone" element={<SellRedmiPhone />} />
+                  <Route path="/sell-honor-phone" element={<SellHonorPhone />} />
+                  <Route path="/sell-oppo-phone" element={<SellOppoPhone />} />
+                  <Route path="/sell-itel-phone" element={<SellItelPhone />} />
+                  <Route path="/sell-huawei-phone" element={<SellHuaweiPhone />} />
                 </Routes>
               </Suspense>
               <Toaster />
