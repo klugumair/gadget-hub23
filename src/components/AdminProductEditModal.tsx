@@ -143,9 +143,17 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         images: images
       });
 
+      if (!formData.name.trim()) {
+        throw new Error('Product name is required');
+      }
+
+      if (formData.price <= 0) {
+        throw new Error('Price must be greater than 0');
+      }
+
       const updateData = {
         name: formData.name.trim(),
-        price: formData.price,
+        price: Number(formData.price),
         category: formData.category,
         subcategory: formData.subcategory.trim() || null,
         description: formData.description.trim() || null,
@@ -153,31 +161,33 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         updated_at: new Date().toISOString()
       };
 
-      let error;
+      let result;
       
-      if (product) {
-        console.log('Updating product:', product.id);
-        const { error: updateError } = await supabase
+      if (product && !product.id.startsWith('static-')) {
+        console.log('Updating existing product:', product.id);
+        result = await supabase
           .from('products')
           .update(updateData)
-          .eq('id', product.id);
-        error = updateError;
+          .eq('id', product.id)
+          .select();
       } else {
         console.log('Creating new product');
-        const { error: insertError } = await supabase
+        result = await supabase
           .from('products')
-          .insert([updateData]);
-        error = insertError;
+          .insert([updateData])
+          .select();
       }
 
-      if (error) {
-        console.error('Database error:', error);
-        throw error;
+      console.log('Database operation result:', result);
+
+      if (result.error) {
+        console.error('Database error:', result.error);
+        throw new Error(result.error.message || 'Failed to save product');
       }
 
       toast({
-        title: product ? "Product Updated Successfully! ✅" : "Product Created Successfully! ✅",
-        description: `${formData.name} has been ${product ? 'updated' : 'created'}`,
+        title: product && !product.id.startsWith('static-') ? "Product Updated Successfully! ✅" : "Product Created Successfully! ✅",
+        description: `${formData.name} has been ${product && !product.id.startsWith('static-') ? 'updated' : 'created'}`,
         className: "bg-gradient-gold text-black font-semibold",
       });
 
@@ -187,7 +197,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       console.error('Error saving product:', error);
       toast({
         title: "Error",
-        description: `Failed to ${product ? 'update' : 'create'} product. Please try again.`,
+        description: error instanceof Error ? error.message : `Failed to ${product && !product.id.startsWith('static-') ? 'update' : 'create'} product. Please try again.`,
         variant: "destructive",
       });
     } finally {
@@ -224,7 +234,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gray-900 border-gray-700">
         <DialogHeader>
           <DialogTitle className="text-white">
-            {product ? 'Edit Product' : 'Add New Product'}
+            {product && !product.id.startsWith('static-') ? 'Edit Product' : 'Add New Product'}
           </DialogTitle>
         </DialogHeader>
 
@@ -369,7 +379,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
               disabled={saving || uploading || !formData.name.trim()} 
               className="bg-gold-400 hover:bg-gold-500 text-black"
             >
-              {saving ? 'Saving...' : (product ? 'Update Product' : 'Create Product')}
+              {saving ? 'Saving...' : (product && !product.id.startsWith('static-') ? 'Update Product' : 'Create Product')}
             </Button>
           </div>
         </form>

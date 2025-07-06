@@ -1,201 +1,112 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart, ArrowLeft, Eye, Edit } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import Footer from '@/components/Footer';
-import ProductCard from '@/components/ProductCard';
-import DatabaseProductCard from '@/components/DatabaseProductCard';
-import { Link } from 'react-router-dom';
-import AdminFloatingButton from '@/components/AdminFloatingButton';
-import { supabase } from '@/integrations/supabase/client';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { useState } from 'react';
+import ProductDetailModal from '@/components/ProductDetailModal';
+import AdminProductEditModal from '@/components/AdminProductEditModal';
 
 const Headphones = () => {
-  const [databaseProducts, setDatabaseProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<any>(null);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  const { isAdmin } = useAdminCheck();
 
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('category', 'headphone')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setDatabaseProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
+  const headphones = [
+    {
+      id: 1,
+      title: "Ronin R920 Pro",
+      price: 25000,
+      originalPrice: 35000,
+      image: "🎧",
+      category: "Gaming Headphones",
+      description: "Professional gaming headphones with surround sound and RGB lighting.",
+      link: "/headphones/ronin-r920-pro"
+    },
+    {
+      id: 2,
+      title: "Sony WH-1000XM5",
+      price: 85000,
+      originalPrice: 95000,
+      image: "🎧",
+      category: "Noise Cancelling",
+      description: "Industry-leading noise cancellation with premium sound quality.",
+      link: "/headphones/sony-wh-1000xm5"
+    },
+    {
+      id: 3,
+      title: "Sennheiser Momentum 4",
+      price: 75000,
+      originalPrice: 85000,
+      image: "🎧",
+      category: "Audiophile",
+      description: "Audiophile-grade wireless headphones with exceptional clarity.",
+      link: "/headphones/sennheiser-momentum-4"
+    },
+    {
+      id: 4,
+      title: "AirPods Max Gold",
+      price: 135000,
+      originalPrice: 150000,
+      image: "🎧",
+      category: "Premium Wireless",
+      description: "Apple's premium over-ear headphones with spatial audio.",
+      link: "/headphones/airpods-max-gold"
+    },
+    {
+      id: 5,
+      title: "Audionic Blue Beat BB10",
+      price: 8500,
+      originalPrice: 12000,
+      image: "🎧",
+      category: "Budget Wireless",
+      description: "Affordable wireless headphones with great battery life.",
+      link: "/headphones/audionic-blue-beat-bb10"
     }
+  ];
+
+  const handleAddToCart = (headphone: any) => {
+    addToCart({
+      title: headphone.title,
+      price: headphone.price,
+      image: headphone.image,
+      category: headphone.category
+    });
+
+    toast({
+      title: "Added to Cart! 🛒",
+      description: `${headphone.title} has been added to your cart`,
+      className: "bg-gradient-gold text-black font-semibold",
+    });
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  const handleViewDetails = (headphone: any) => {
+    setSelectedProduct(headphone);
+    setIsDetailModalOpen(true);
+  };
 
-  const roninProducts = [
-    {
-      title: "Ronin R-920 Pro",
-      price: "Rs. 3,500",
-      image: "🎧",
-      category: "Ronin",
-      link: "/headphones/ronin/r-920-pro"
-    },
-    {
-      title: "Ronin R-810 Wireless",
-      price: "Rs. 2,800",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-750 Gaming",
-      price: "Rs. 2,200",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-650 Bass",
-      price: "Rs. 1,800",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-500 Sport",
-      price: "Rs. 1,500",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-400 Classic",
-      price: "Rs. 1,200",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-300 Compact",
-      price: "Rs. 900",
-      image: "🎧",
-      category: "Ronin"
-    },
-    {
-      title: "Ronin R-200 Essential",
-      price: "Rs. 750",
-      image: "🎧",
-      category: "Ronin"
-    }
-  ];
-
-  const audionicProducts = [
-    {
-      title: "Audionic Blue Beat BB-10",
-      price: "Rs. 4,500",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Pace P-5 Pro",
-      price: "Rs. 3,200",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Max M-8 Wireless",
-      price: "Rs. 2,900",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Solo S-15 Gaming",
-      price: "Rs. 2,100",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Thunder T-20",
-      price: "Rs. 3,800",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Wave W-12",
-      price: "Rs. 2,500",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Fusion F-18",
-      price: "Rs. 1,900",
-      image: "🎧",
-      category: "Audionic"
-    },
-    {
-      title: "Audionic Echo E-25",
-      price: "Rs. 1,600",
-      image: "🎧",
-      category: "Audionic"
-    }
-  ];
-
-  const moreHeadphones = [
-    {
-      title: "Sony WH-1000XM5",
-      price: "Rs. 116,999",
-      image: "🎧",
-      category: "Premium",
-      link: "/headphones/sony/wh-1000xm5"
-    },
-    {
-      title: "Sennheiser Momentum 4",
-      price: "Rs. 101,999",
-      image: "🎧",
-      category: "Premium",
-      link: "/headphones/sennheiser/momentum-4"
-    },
-    {
-      title: "JBL Tune 760NC",
-      price: "Rs. 8,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Boat Rockerz 450",
-      price: "Rs. 1,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Skullcandy Hesh 3",
-      price: "Rs. 6,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Marshall Major IV",
-      price: "Rs. 12,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Audio-Technica ATH-M40x",
-      price: "Rs. 8,999",
-      image: "🎧",
-      category: "More Headphones"
-    },
-    {
-      title: "Bose QuietComfort 35 II",
-      price: "Rs. 29,999",
-      image: "🎧",
-      category: "More Headphones"
-    }
-  ];
-
-  const BrandHeader = ({ title }: { title: string }) => (
-    <div className="flex justify-center mb-12">
-      <div className="bg-gradient-gold text-black px-12 py-4 rounded-full font-bold text-2xl shadow-lg">
-        {title}
-      </div>
-    </div>
-  );
+  const handleEditProduct = (headphone: any) => {
+    setProductToEdit({
+      id: `static-${headphone.title.replace(/\s+/g, '-').toLowerCase()}`,
+      name: headphone.title,
+      price: headphone.price,
+      category: 'headphone' as const,
+      subcategory: headphone.category,
+      description: headphone.description,
+      images: [headphone.image]
+    });
+    setIsEditModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -203,81 +114,117 @@ const Headphones = () => {
       
       <section className="py-32">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h1 className="text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              <span className="text-shimmer">Premium Audio</span>
+          <div className="text-center mb-12">
+            <Link to="/" className="inline-block mb-8">
+              <Button variant="ghost" className="text-gold-400 hover:text-gold-300">
+                <ArrowLeft size={20} className="mr-2" />
+                Back to Home
+              </Button>
+            </Link>
+            
+            <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+              <span className="text-shimmer">Premium Headphones</span>
             </h1>
-            <p className="text-2xl text-gray-300 mb-8">
-              Discover our collection of high-quality headphones
+            <p className="text-xl text-gray-400 mb-12">
+              Discover our curated collection of high-quality headphones
             </p>
           </div>
-
-          {/* Database Products Section */}
-          {!loading && databaseProducts.length > 0 && (
-            <>
-              <BrandHeader title="Latest Additions" />
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-                {databaseProducts.map((product) => (
-                  <DatabaseProductCard
-                    key={product.id}
-                    id={product.id}
-                    title={product.name}
-                    price={product.price}
-                    images={product.images || []}
-                    category={product.category}
-                    subcategory={product.subcategory}
-                    description={product.description}
-                    onUpdate={fetchProducts}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* Ronin Section */}
-          <BrandHeader title="Ronin" />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {roninProducts.map((product, index) => (
-              <div key={`ronin-${index}`}>
-                {product.link ? (
-                  <Link to={product.link} className="block">
-                    <ProductCard {...product} />
-                  </Link>
-                ) : (
-                  <ProductCard {...product} />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Audionic Section */}
-          <BrandHeader title="Audionic" />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {audionicProducts.map((product, index) => (
-              <ProductCard key={`audionic-${index}`} {...product} />
-            ))}
-          </div>
-
-          {/* More Headphones Section */}
-          <BrandHeader title="Premium & More" />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {moreHeadphones.map((product, index) => (
-              <div key={`more-${index}`}>
-                {product.link ? (
-                  <Link to={product.link} className="block">
-                    <ProductCard {...product} />
-                  </Link>
-                ) : (
-                  <ProductCard {...product} />
-                )}
-              </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {headphones.map((headphone) => (
+              <Card key={headphone.id} className="glass-morphism border-gold-400/20 overflow-hidden hover:border-gold-400/50 transition-all duration-300 hover:scale-105 group">
+                <CardContent className="p-6">
+                  <div className="relative">
+                    <div className="aspect-square bg-gray-800 rounded-lg mb-6 flex items-center justify-center text-6xl cursor-pointer">
+                      {headphone.image}
+                      
+                      {isAdmin && (
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditProduct(headphone);
+                            }}
+                            className="w-8 h-8 p-0 bg-blue-500/80 border-blue-400 hover:bg-blue-500"
+                          >
+                            <Edit size={14} />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="text-center space-y-3">
+                    <h3 className="text-white font-semibold text-lg mb-3 line-clamp-2">
+                      {headphone.title}
+                    </h3>
+                    <div className="space-y-1">
+                      <p className="text-gold-400 font-bold text-xl">
+                        Rs. {headphone.price.toLocaleString()}
+                      </p>
+                      {headphone.originalPrice && (
+                        <p className="text-gray-500 line-through text-sm">
+                          Rs. {headphone.originalPrice.toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                    <p className="text-gray-400 text-xs mt-1">{headphone.category}</p>
+                    
+                    <div className="flex justify-center space-x-2 mt-4">
+                      <Button
+                        onClick={() => handleViewDetails(headphone)}
+                        variant="outline"
+                        className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600 text-sm px-4 py-2"
+                      >
+                        <Eye size={16} className="mr-2" />
+                        View
+                      </Button>
+                      <Button
+                        onClick={() => handleAddToCart(headphone)}
+                        className="bg-gold-400 hover:bg-gold-500 text-black font-semibold text-sm px-4 py-2"
+                      >
+                        <ShoppingCart size={16} className="mr-2" />
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
-      
-      <AdminFloatingButton category="headphone" />
+
       <Footer />
+
+      <ProductDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        product={selectedProduct ? {
+          id: selectedProduct.id.toString(),
+          title: selectedProduct.title,
+          price: selectedProduct.price,
+          images: [selectedProduct.image],
+          category: selectedProduct.category,
+          description: selectedProduct.description
+        } : null}
+      />
+
+      <AdminProductEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={productToEdit}
+        onUpdate={() => {
+          toast({
+            title: "Note",
+            description: "Static products cannot be permanently edited. Use the admin panel to add real products.",
+            className: "bg-yellow-500 text-black font-semibold",
+          });
+          setIsEditModalOpen(false);
+        }}
+      />
     </div>
   );
 };
