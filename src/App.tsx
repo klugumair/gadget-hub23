@@ -67,6 +67,7 @@ const SellOppoPhone = lazy(() => import("./pages/SellOppoPhone"));
 const SellItelPhone = lazy(() => import("./pages/SellItelPhone"));
 const SellHuaweiPhone = lazy(() => import("./pages/SellHuaweiPhone"));
 const AdminPhoneSubmissions = lazy(() => import("./pages/AdminPhoneSubmissions"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -139,6 +140,7 @@ function App() {
                   <Route path="/sell-itel-phone" element={<SellItelPhone />} />
                   <Route path="/sell-huawei-phone" element={<SellHuaweiPhone />} />
                   <Route path="/admin/phone-submissions" element={<AdminPhoneSubmissions />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
               <Toaster />
