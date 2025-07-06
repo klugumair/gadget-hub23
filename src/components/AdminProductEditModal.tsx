@@ -50,7 +50,7 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
     if (!files || files.length === 0) return;
 
     setUploading(true);
-    console.log('Starting image upload process...');
+    console.log('Starting image upload process...', files.length, 'files');
 
     try {
       const uploadPromises = Array.from(files).map(async (file) => {
@@ -69,6 +69,17 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         const filePath = `products/${fileName}`;
 
         console.log('Uploading to path:', filePath);
+
+        // First check if bucket exists, if not create it
+        const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+        console.log('Available buckets:', buckets);
+
+        if (bucketError) {
+          console.error('Error listing buckets:', bucketError);
+        }
+
+        const bucketExists = buckets?.some(bucket => bucket.name === 'gadgethub');
+        console.log('Gadgethub bucket exists:', bucketExists);
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('gadgethub')
@@ -161,6 +172,8 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
         updated_at: new Date().toISOString()
       };
 
+      console.log('Final update data:', updateData);
+
       let result;
       
       if (product && !product.id.startsWith('static-')) {
@@ -183,6 +196,10 @@ const AdminProductEditModal: React.FC<AdminProductEditModalProps> = ({
       if (result.error) {
         console.error('Database error:', result.error);
         throw new Error(result.error.message || 'Failed to save product');
+      }
+
+      if (!result.data || result.data.length === 0) {
+        throw new Error('No data returned from database operation');
       }
 
       toast({
