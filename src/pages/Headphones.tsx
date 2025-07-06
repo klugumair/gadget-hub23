@@ -11,7 +11,7 @@ import ProductDetailModal from '@/components/ProductDetailModal';
 import AdminProductEditModal from '@/components/AdminProductEditModal';
 import { supabase } from '@/integrations/supabase/client';
 
-interface Product {
+interface DatabaseProduct {
   id: string;
   name: string;
   price: number;
@@ -30,9 +30,9 @@ interface ModalProduct {
 }
 
 const Headphones = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<DatabaseProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const Headphones = () => {
     }
   };
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: DatabaseProduct) => {
     setSelectedProduct({
       id: product.id,
       title: product.name,
@@ -67,7 +67,7 @@ const Headphones = () => {
     });
   };
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = (product: DatabaseProduct) => {
     setEditingProduct(product);
   };
 
@@ -113,7 +113,7 @@ const Headphones = () => {
                   description={product.description}
                   onClick={() => handleProductClick(product)}
                   onEdit={() => handleEditProduct(product)}
-                  onDelete={fetchProducts}
+                  onUpdate={fetchProducts}
                 />
               ))}
             </div>

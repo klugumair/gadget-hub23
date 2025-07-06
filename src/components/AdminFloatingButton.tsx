@@ -8,11 +8,19 @@ import AdminProductModal from './AdminProductModal';
 interface AdminFloatingButtonProps {
   category: 'gadget' | 'headphone' | 'cover';
   subcategory?: string;
+  onProductAdded?: () => void;
 }
 
-const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, subcategory }) => {
+const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, subcategory, onProductAdded }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAdmin, loading } = useAdminCheck();
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    if (onProductAdded) {
+      onProductAdded();
+    }
+  };
 
   if (loading || !isAdmin) {
     return null;
@@ -30,7 +38,7 @@ const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, sub
 
       <AdminProductModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleModalClose}
         category={category}
         subcategory={subcategory}
       />
