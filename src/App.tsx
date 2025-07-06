@@ -121,9 +121,9 @@ function App() {
                   <Route path="/phones/new/iphone/iphone-12-pro" element={<IPhone12Pro />} />
                   <Route path="/phones/new/iphone/iphone-12-pro-max" element={<IPhone12ProMax />} />
                   <Route path="/phones/new/iphone/iphone-13" element={<IPhone13 />} />
-                  <Route path="/headphones/ronin/r-920-pro" element={<RoninR920Pro />} />
-                  <Route path="/headphones/sony/wh-1000xm5" element={<SonyWH1000XM5 />} />
-                  <Route path="/headphones/sennheiser/momentum-4" element={<SennheiserMomentum4 />} />
+                  <Route path="/headphones/ronin-r920-pro" element={<RoninR920Pro />} />
+                  <Route path="/headphones/sony-wh-1000xm5" element={<SonyWH1000XM5 />} />
+                  <Route path="/headphones/sennheiser-momentum-4" element={<SennheiserMomentum4 />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />

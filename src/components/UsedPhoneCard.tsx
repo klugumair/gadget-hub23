@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart, Eye, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UsedPhoneCardProps {
   id: string;
@@ -15,6 +17,8 @@ interface UsedPhoneCardProps {
   images: string[];
   usage_duration: string;
   onClick: () => void;
+  onDelete?: () => void;
+  isDatabase?: boolean;
 }
 
 const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({ 
@@ -26,10 +30,36 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
   ram, 
   images, 
   usage_duration,
-  onClick 
+  onClick,
+  onDelete,
+  isDatabase = false
 }) => {
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', user.id)
+            .single();
+          
+          if (data && data.email === 'admin@gadgethub.com') {
+            setIsAdmin(true);
+          }
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+        }
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,6 +76,36 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       description: `${title} has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!isDatabase || !onDelete) return;
+    
+    try {
+      const { error } = await supabase
+        .from('phone_submissions')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Product Deleted!",
+        description: `${title} has been removed`,
+        className: "bg-red-500 text-white font-semibold",
+      });
+
+      onDelete();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete product",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -67,6 +127,18 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
             USED
           </span>
         </div>
+        {isAdmin && isDatabase && (
+          <div className="absolute top-4 left-4">
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              size="sm"
+              className="bg-red-600 hover:bg-red-700 text-white p-2 h-8 w-8"
+            >
+              <Trash2 size={12} />
+            </Button>
+          </div>
+        )}
       </div>
       <div className="p-6">
         <div className="text-sm text-gold-400 font-medium uppercase tracking-wider mb-2">

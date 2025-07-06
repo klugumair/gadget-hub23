@@ -158,11 +158,11 @@ const FloatingNavbar = () => {
                       <img 
                         src={profilePicture} 
                         alt="Profile" 
-                        className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
+                        className="w-10 h-10 rounded-full object-cover border-2 border-gold-400/30"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
-                        <User size={16} className="text-gold-400" />
+                      <div className="w-10 h-10 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
+                        <User size={20} className="text-gold-400" />
                       </div>
                     )}
                   </div>
@@ -269,11 +269,11 @@ const FloatingNavbar = () => {
                           <img 
                             src={profilePicture} 
                             alt="Profile" 
-                            className="w-8 h-8 rounded-full object-cover border-2 border-gold-400/30"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-gold-400/30"
                           />
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
-                            <User size={16} className="text-gold-400" />
+                          <div className="w-10 h-10 rounded-full bg-gold-400/20 border-2 border-gold-400/30 flex items-center justify-center">
+                            <User size={20} className="text-gold-400" />
                           </div>
                         )}
                       </div>

@@ -5,7 +5,6 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import ProductCard from '@/components/ProductCard';
 import AdminPhoneButton from '@/components/AdminPhoneButton';
 import DatabaseProductCard from '@/components/DatabaseProductCard';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,33 +34,6 @@ const VivoProducts = () => {
     fetchDatabaseProducts();
   }, []);
 
-  const vivoProducts = [
-    {
-      title: "Vivo V40 Pro",
-      price: "Rs. 95,000",
-      image: "💙",
-      category: "Vivo"
-    },
-    {
-      title: "Vivo Y200",
-      price: "Rs. 45,000",
-      image: "💙",
-      category: "Vivo"
-    },
-    {
-      title: "Vivo X100",
-      price: "Rs. 125,000",
-      image: "💙",
-      category: "Vivo"
-    },
-    {
-      title: "Vivo T3 5G",
-      price: "Rs. 65,000",
-      image: "💙",
-      category: "Vivo"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -84,32 +56,30 @@ const VivoProducts = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {vivoProducts.map((product, index) => (
-              <ProductCard
-                key={index}
-                title={product.title}
-                price={product.price}
-                image={product.image}
-                category={product.category}
-                size="compact"
-              />
-            ))}
-            
-            {databaseProducts.map((product) => (
-              <DatabaseProductCard
-                key={product.id}
-                id={product.id}
-                title={product.name}
-                price={product.price}
-                images={product.images || []}
-                category={product.category}
-                subcategory={product.subcategory}
-                description={product.description}
-                onUpdate={fetchDatabaseProducts}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center text-white">Loading products...</div>
+          ) : databaseProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {databaseProducts.map((product) => (
+                <DatabaseProductCard
+                  key={product.id}
+                  id={product.id}
+                  title={product.name}
+                  price={product.price}
+                  images={product.images || []}
+                  category={product.category}
+                  subcategory={product.subcategory}
+                  description={product.description}
+                  onUpdate={fetchDatabaseProducts}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400">
+              <p className="text-xl">No Vivo products available at the moment.</p>
+              <p className="text-sm mt-2">Check back later for new arrivals!</p>
+            </div>
+          )}
         </div>
       </section>
       

@@ -11,7 +11,7 @@ const usedGooglePixelProducts = [
   {
     id: '1',
     title: 'Pixel 6 (8GB/128GB, PTA approved)',
-    price: 107500, // Average of the range
+    price: 107500,
     image: '🔍',
     condition: 'Like New',
     storage: '128GB',
@@ -121,6 +121,11 @@ const usedGooglePixelProducts = [
 ];
 
 const UsedGooglePixelProducts = () => {
+  const refreshProducts = () => {
+    // This would be used for database products
+    console.log('Products refreshed');
+  };
+
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
@@ -153,6 +158,8 @@ const UsedGooglePixelProducts = () => {
                 images={[product.image]}
                 usage_duration={product.usage_duration}
                 onClick={() => {}}
+                onDelete={refreshProducts}
+                isDatabase={false}
               />
             ))}
           </div>
