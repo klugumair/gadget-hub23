@@ -105,30 +105,34 @@ const AdminPhoneProductModal: React.FC<AdminPhoneProductModalProps> = ({
       // Upload images first
       const imageUrls = await uploadImages();
 
-      // Create a product for each variant
-      for (const variant of variants) {
-        const productName = `${formData.name} (${variant.ram} RAM - ${variant.storage})`;
-        
-        const { error } = await supabase
-          .from('products')
-          .insert({
-            name: productName,
-            price: variant.price,
-            category: 'gadget',
-            subcategory: defaultSubcategory,
-            description: formData.description || null,
-            additional_notes: formData.additional_notes || null,
-            images: imageUrls
-          });
+      // Get the base price (lowest variant price)
+      const basePrice = Math.min(...variants.map(v => v.price));
 
-        if (error) {
-          throw error;
-        }
+      // Create a single product with variants stored in additional_notes as JSON structure
+      const variantsData = {
+        variants: variants,
+        base_price: basePrice
+      };
+
+      const { error } = await supabase
+        .from('products')
+        .insert({
+          name: formData.name,
+          price: basePrice,
+          category: 'gadget',
+          subcategory: defaultSubcategory,
+          description: formData.description || null,
+          additional_notes: JSON.stringify(variantsData),
+          images: imageUrls
+        });
+
+      if (error) {
+        throw error;
       }
 
       toast({
-        title: "Products Added! ✅",
-        description: `${variants.length} variant(s) of ${formData.name} have been added successfully`,
+        title: "Product Added! ✅",
+        description: `${formData.name} with ${variants.length} variant(s) has been added successfully`,
         className: "bg-gradient-gold text-black font-semibold",
       });
 
@@ -148,10 +152,10 @@ const AdminPhoneProductModal: React.FC<AdminPhoneProductModalProps> = ({
       }
 
     } catch (error) {
-      console.error('Error adding products:', error);
+      console.error('Error adding product:', error);
       toast({
         title: "Error",
-        description: "Failed to add products. Please try again.",
+        description: "Failed to add product. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -272,19 +276,6 @@ const AdminPhoneProductModal: React.FC<AdminPhoneProductModalProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="additional_notes" className="text-white">Additional Notes</Label>
-              <textarea
-                id="additional_notes"
-                name="additional_notes"
-                value={formData.additional_notes}
-                onChange={handleInputChange}
-                rows={2}
-                className="mt-2 w-full bg-white/10 border border-gold-400/30 text-white placeholder:text-gray-400 rounded-md px-3 py-2 resize-none"
-                placeholder="Any additional notes"
-              />
-            </div>
-
-            <div>
               <Label className="text-white">Product Images</Label>
               <div className="mt-2">
                 <input
@@ -341,7 +332,7 @@ const AdminPhoneProductModal: React.FC<AdminPhoneProductModalProps> = ({
                 className="flex-1 bg-gradient-gold hover:bg-gold-500 text-black font-semibold"
                 disabled={loading}
               >
-                {loading ? 'Adding...' : `Add ${variants.length} Variant${variants.length > 1 ? 's' : ''}`}
+                {loading ? 'Adding...' : `Add Product`}
               </Button>
             </div>
           </form>

@@ -6,6 +6,12 @@ import { ShoppingCart, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 
+interface Variant {
+  ram: string;
+  storage: string;
+  price: number;
+}
+
 interface Product {
   id: string;
   title: string;
@@ -13,6 +19,7 @@ interface Product {
   images: string[];
   category: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ProductDetailModalProps {
@@ -29,22 +36,47 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
 
   if (!product) {
     return null;
   }
 
+  // Parse variants from additional_notes if available
+  let variants: Variant[] = [];
+  let hasVariants = false;
+  
+  try {
+    if (product.additional_notes) {
+      const parsedData = JSON.parse(product.additional_notes);
+      if (parsedData.variants && Array.isArray(parsedData.variants)) {
+        variants = parsedData.variants;
+        hasVariants = variants.length > 0;
+      }
+    }
+  } catch (error) {
+    console.log('No variants data found');
+  }
+
+  const currentVariant = hasVariants ? variants[selectedVariantIndex] : null;
+  const displayPrice = currentVariant ? currentVariant.price : product.price;
+  const variantLabel = currentVariant ? `${currentVariant.ram} RAM - ${currentVariant.storage}` : '';
+
   const handleAddToCart = () => {
+    const productTitle = hasVariants && currentVariant 
+      ? `${product.title} (${currentVariant.ram} RAM - ${currentVariant.storage})`
+      : product.title;
+
     addToCart({
-      title: product.title,
-      price: product.price,
+      title: productTitle,
+      price: displayPrice,
       image: product.images[0] || '🎧',
       category: product.category
     });
 
     toast({
       title: "Added to Cart! 🛒",
-      description: `${product.title} has been added to your cart`,
+      description: `${productTitle} has been added to your cart`,
       className: "bg-gradient-gold text-black font-semibold",
     });
   };
@@ -171,7 +203,36 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <h3 className="text-white text-xl font-semibold mt-2">
                 {product.title}
               </h3>
+              {hasVariants && currentVariant && (
+                <p className="text-gold-400 text-sm mt-1">
+                  {variantLabel}
+                </p>
+              )}
             </div>
+
+            {hasVariants && variants.length > 0 && (
+              <div>
+                <h4 className="text-gold-400 font-semibold mb-3">Available Variants</h4>
+                <div className="space-y-2">
+                  {variants.map((variant, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedVariantIndex(index)}
+                      className={`w-full p-3 rounded-lg border-2 transition-colors text-left ${
+                        selectedVariantIndex === index
+                          ? 'border-gold-400 bg-gold-400/10 text-gold-400'
+                          : 'border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gold-400/50'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{variant.ram} RAM - {variant.storage}</span>
+                        <span className="text-gold-400 font-bold">Rs. {variant.price.toLocaleString()}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {product.description && (
               <div>
@@ -182,7 +243,7 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             
             <div className="pt-4">
               <p className="text-gold-400 text-3xl font-bold mb-6">
-                Rs. {product.price.toLocaleString()}
+                Rs. {displayPrice.toLocaleString()}
               </p>
               
               <Button

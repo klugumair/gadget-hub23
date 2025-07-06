@@ -56,7 +56,7 @@ const FloatingNavbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation - Extended */}
+          {/* Desktop Navigation - Extended with Search Icon */}
           <div className="hidden lg:flex items-center space-x-12">
             <Link to="/phones" className="text-white hover:text-gold-400 transition-colors font-medium text-lg">
               Phones
@@ -68,17 +68,28 @@ const FloatingNavbar = () => {
               Covers & Cases
             </Link>
             <div className="h-8 w-px bg-gold-400/30"></div>
-            <span className="text-gray-400 text-sm font-medium">Premium Collection</span>
-          </div>
-
-          {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Search Button */}
+            
+            {/* Search Button moved to left of Premium Collection */}
             <Button
               onClick={() => setIsSearchOpen(true)}
               variant="ghost"
               size="sm"
               className="text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-3 rounded-full"
+            >
+              <Search size={22} />
+            </Button>
+            
+            <span className="text-gray-400 text-sm font-medium">Premium Collection</span>
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            {/* Search Button for mobile */}
+            <Button
+              onClick={() => setIsSearchOpen(true)}
+              variant="ghost"
+              size="sm"
+              className="lg:hidden text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 p-3 rounded-full"
             >
               <Search size={22} />
             </Button>
