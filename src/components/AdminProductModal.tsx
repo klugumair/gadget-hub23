@@ -10,22 +10,24 @@ import { supabase } from '@/integrations/supabase/client';
 interface AdminProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  category: 'gadget' | 'headphone' | 'cover';
-  subcategory?: string;
+  onProductAdded?: () => void | Promise<void>;
+  defaultCategory: 'gadget' | 'headphone' | 'cover';
+  defaultSubcategory?: string;
 }
 
 const AdminProductModal: React.FC<AdminProductModalProps> = ({ 
   isOpen, 
   onClose, 
-  category,
-  subcategory 
+  onProductAdded,
+  defaultCategory,
+  defaultSubcategory 
 }) => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
     additional_notes: '',
-    subcategory: subcategory || ''
+    subcategory: defaultSubcategory || ''
   });
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
@@ -88,7 +90,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
         .insert({
           name: formData.name,
           price: parseFloat(formData.price),
-          category,
+          category: defaultCategory,
           subcategory: formData.subcategory || null,
           description: formData.description || null,
           additional_notes: formData.additional_notes || null,
@@ -111,10 +113,15 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
         price: '',
         description: '',
         additional_notes: '',
-        subcategory: subcategory || ''
+        subcategory: defaultSubcategory || ''
       });
       setImages([]);
       onClose();
+
+      // Call the onProductAdded callback if provided
+      if (onProductAdded) {
+        await onProductAdded();
+      }
 
     } catch (error) {
       console.error('Error adding product:', error);
@@ -135,7 +142,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
       <div className="glass-morphism rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Add New {category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+            <h2 className="text-2xl font-bold text-white">Add New {defaultCategory.charAt(0).toUpperCase() + defaultCategory.slice(1)}</h2>
             <Button
               variant="ghost"
               onClick={onClose}
@@ -174,7 +181,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
               />
             </div>
 
-            {!subcategory && (
+            {!defaultSubcategory && (
               <div>
                 <Label htmlFor="subcategory" className="text-white">Subcategory</Label>
                 <Input
