@@ -131,11 +131,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <ProductDetailModal
-        isOpen={isDetailModalOpen}
+        open={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
         product={{
           id: `static-${title.replace(/\s+/g, '-').toLowerCase()}`,
-          title,
+          name: title,
           price: typeof price === 'string' ? parseFloat(price.replace(/[^0-9.-]+/g, "")) : price,
           images: [image],
           category,

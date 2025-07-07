@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -31,7 +30,7 @@ interface ModalProduct {
 
 const Chargers = () => {
   const [products, setProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<DatabaseProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,14 +56,7 @@ const Chargers = () => {
   };
 
   const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description
-    });
+    setSelectedProduct(product);
   };
 
   const handleEditProduct = (product: DatabaseProduct) => {
@@ -137,9 +129,16 @@ const Chargers = () => {
       
       {selectedProduct && (
         <ProductDetailModal
-          isOpen={!!selectedProduct}
+          open={!!selectedProduct}
           onClose={() => setSelectedProduct(null)}
-          product={selectedProduct}
+          product={{
+            id: selectedProduct.id,
+            name: selectedProduct.name,
+            price: selectedProduct.price,
+            images: selectedProduct.images || [],
+            category: selectedProduct.category,
+            description: selectedProduct.description
+          }}
         />
       )}
       

@@ -18,14 +18,20 @@ interface ProductDetailModalProps {
     additional_notes?: string;
   } | null;
   onClose: () => void;
+  open?: boolean;
+  isOpen?: boolean;
 }
 
 const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   onClose,
+  open,
+  isOpen,
 }) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
+
+  const modalOpen = open || isOpen || !!product;
 
   if (!product) return null;
 
@@ -56,7 +62,7 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   };
 
   return (
-    <Dialog open={!!product} onOpenChange={onClose}>
+    <Dialog open={modalOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-black border-gold-400/30">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gold-400 mb-4">
