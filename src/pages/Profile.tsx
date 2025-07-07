@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [fullName, setFullName] = useState('');
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const Profile = () => {
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user?.id}-${Math.random()}.${fileExt}`;
+      const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
       const filePath = fileName;
 
       console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
@@ -95,6 +97,7 @@ const Profile = () => {
 
       console.log('Public URL:', publicUrl);
 
+      // Update the profile with the new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .upsert({
@@ -110,12 +113,16 @@ const Profile = () => {
         throw updateError;
       }
 
+      // Update local state
       setProfile({ ...profile, avatar_url: publicUrl });
+      
+      // Force a page reload to update the navigation bar avatar
+      window.location.reload();
       
       toast({
         title: "Avatar updated! ✅",
         description: "Your profile picture has been updated successfully",
-        className: "bg-gradient-gold text-black font-semibold",
+        className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
     } catch (error: any) {
@@ -132,6 +139,8 @@ const Profile = () => {
 
   const updateProfile = async () => {
     try {
+      setUpdating(true);
+      
       const { error } = await supabase
         .from('profiles')
         .upsert({
@@ -147,7 +156,7 @@ const Profile = () => {
       toast({
         title: "Profile updated! ✅",
         description: "Your profile has been updated successfully",
-        className: "bg-gradient-gold text-black font-semibold",
+        className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
       fetchProfile();
@@ -158,6 +167,8 @@ const Profile = () => {
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -247,10 +258,11 @@ const Profile = () => {
 
                 <Button
                   onClick={updateProfile}
+                  disabled={updating}
                   className="w-full bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-black font-semibold py-3 rounded-full transition-all duration-300 hover:scale-105"
                 >
                   <Upload size={20} className="mr-2" />
-                  Update Profile
+                  {updating ? 'Updating...' : 'Update Profile'}
                 </Button>
               </div>
             </div>

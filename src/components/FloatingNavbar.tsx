@@ -71,9 +71,9 @@ const FloatingNavbar = () => {
 
   return (
     <>
-      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/20 rounded-2xl shadow-2xl">
-        <div className="container mx-auto px-8 py-4">
-          <div className="flex items-center justify-between">
+      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/20 rounded-3xl shadow-2xl h-20">
+        <div className="container mx-auto px-8 py-4 h-full">
+          <div className="flex items-center justify-between h-full">
             {/* Logo and Navigation Links */}
             <div className="flex items-center space-x-8">
               <Link to="/" className="text-2xl font-bold text-gold-400">
@@ -109,7 +109,7 @@ const FloatingNavbar = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative flex-1 max-w-sm mx-8">
+            <div className="relative flex-1 max-w-xs mx-8">
               <div className="relative">
                 <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
                 <input
@@ -142,12 +142,8 @@ const FloatingNavbar = () => {
               )}
             </div>
 
-            {/* Right Side - Premium Collection, Cart, Profile */}
+            {/* Right Side - Cart, Profile */}
             <div className="flex items-center space-x-6">
-              <span className="hidden md:block text-sm text-gray-300 font-medium">
-                Premium<br />Collection
-              </span>
-              
               <Link 
                 to="/cart" 
                 className="relative p-2 text-gold-400 hover:text-gold-300 transition-colors"
@@ -164,7 +160,7 @@ const FloatingNavbar = () => {
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-black hover:from-gold-300 hover:to-gold-500 transition-all duration-300 border-2 border-gold-400/30"
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-black hover:from-gold-300 hover:to-gold-500 transition-all duration-300 border-2 border-gold-400/30"
                   >
                     {user.user_metadata?.avatar_url ? (
                       <img 
@@ -173,7 +169,7 @@ const FloatingNavbar = () => {
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <User size={20} />
+                      <User size={24} />
                     )}
                   </button>
                   

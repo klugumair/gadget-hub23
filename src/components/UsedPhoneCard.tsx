@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye, Trash2 } from "lucide-react";
@@ -66,7 +65,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
     toast({
       title: "Added to Cart! 🛒",
       description: `${title} has been added to your cart`,
-      className: "bg-gradient-gold text-black font-semibold",
+      className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
     });
   };
 
@@ -83,6 +82,10 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
     }
 
     if (isDeleting) return;
+
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+      return;
+    }
 
     try {
       setIsDeleting(true);
@@ -106,6 +109,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
         className: "bg-red-500 text-white font-semibold",
       });
 
+      // Call the onDelete callback to refresh the list
       if (onDelete) {
         onDelete();
       }
@@ -178,6 +182,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
                 variant="destructive"
                 size="sm"
                 className="bg-red-600 hover:bg-red-700 text-white p-1 h-7 w-7 rounded-full shadow-lg border border-red-400/30 transition-all duration-200 hover:scale-110"
+                title="Delete this product"
               >
                 {isDeleting ? (
                   <div className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />

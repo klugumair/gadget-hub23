@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -47,6 +48,21 @@ import UsedHonorProducts from "./pages/UsedHonorProducts";
 import UsedOppoProducts from "./pages/UsedOppoProducts";
 import UsedItelProducts from "./pages/UsedItelProducts";
 import UsedHuaweiProducts from "./pages/UsedHuaweiProducts";
+
+// Sell Phone Pages
+import SellSamsungPhone from "./pages/SellSamsungPhone";
+import SellIPhonePhone from "./pages/SellIPhonePhone";
+import SellInfinixPhone from "./pages/SellInfinixPhone";
+import SellGooglePixelPhone from "./pages/SellGooglePixelPhone";
+import SellRealmePhone from "./pages/SellRealmePhone";
+import SellSparkXPhone from "./pages/SellSparkXPhone";
+import SellTecnoPhone from "./pages/SellTecnoPhone";
+import SellVivoPhone from "./pages/SellVivoPhone";
+import SellRedmiPhone from "./pages/SellRedmiPhone";
+import SellHonorPhone from "./pages/SellHonorPhone";
+import SellOppoPhone from "./pages/SellOppoPhone";
+import SellItelPhone from "./pages/SellItelPhone";
+import SellHuaweiPhone from "./pages/SellHuaweiPhone";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +120,21 @@ function App() {
                 <Route path="/phones/used/oppo" element={<UsedOppoProducts />} />
                 <Route path="/phones/used/itel" element={<UsedItelProducts />} />
                 <Route path="/phones/used/huawei" element={<UsedHuaweiProducts />} />
+
+                {/* Sell Phone Routes */}
+                <Route path="/sell-samsung-phone" element={<SellSamsungPhone />} />
+                <Route path="/sell-iphone-phone" element={<SellIPhonePhone />} />
+                <Route path="/sell-infinix-phone" element={<SellInfinixPhone />} />
+                <Route path="/sell-google-pixel-phone" element={<SellGooglePixelPhone />} />
+                <Route path="/sell-realme-phone" element={<SellRealmePhone />} />
+                <Route path="/sell-sparkx-phone" element={<SellSparkXPhone />} />
+                <Route path="/sell-tecno-phone" element={<SellTecnoPhone />} />
+                <Route path="/sell-vivo-phone" element={<SellVivoPhone />} />
+                <Route path="/sell-redmi-phone" element={<SellRedmiPhone />} />
+                <Route path="/sell-honor-phone" element={<SellHonorPhone />} />
+                <Route path="/sell-oppo-phone" element={<SellOppoPhone />} />
+                <Route path="/sell-itel-phone" element={<SellItelPhone />} />
+                <Route path="/sell-huawei-phone" element={<SellHuaweiPhone />} />
               </Routes>
               <TawkToWidget />
             </BrowserRouter>
