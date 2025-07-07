@@ -6,7 +6,7 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import AdminProductModal from './AdminProductModal';
 
 interface AdminFloatingButtonProps {
-  category: 'gadget' | 'headphone' | 'cover';
+  category: 'gadget' | 'headphone' | 'cover' | 'charger';
   subcategory?: string;
   onProductAdded?: () => void;
 }

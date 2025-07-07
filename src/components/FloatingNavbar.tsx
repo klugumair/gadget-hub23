@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, User } from 'lucide-react';
@@ -14,14 +15,14 @@ const FloatingNavbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     setIsProfileOpen(false);
     navigate('/');
   };
