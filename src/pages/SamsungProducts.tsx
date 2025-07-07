@@ -22,19 +22,9 @@ interface DatabaseProduct {
   additional_notes?: string;
 }
 
-interface ModalProduct {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: "headphone" | "gadget" | "cover";
-  description?: string;
-  additional_notes?: string;
-}
-
 const SamsungProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<DatabaseProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +33,7 @@ const SamsungProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .or("subcategory.ilike.%samsung%,subcategory.ilike.%galaxy%")
+        .or("subcategory.ilike.%samsung%,category.ilike.%samsung%")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -60,15 +50,7 @@ const SamsungProducts = () => {
   }, []);
 
   const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description,
-      additional_notes: product.additional_notes,
-    });
+    setSelectedProduct(product);
   };
 
   const handleEditProduct = (product: DatabaseProduct) => {
@@ -78,6 +60,7 @@ const SamsungProducts = () => {
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
+
       <section className="py-32">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
@@ -90,11 +73,12 @@ const SamsungProducts = () => {
                 Back to New Phones
               </Button>
             </Link>
+
             <h1 className="text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-shimmer">New Samsung Phones</span>
+              <span className="text-shimmer">Samsung Collection</span>
             </h1>
             <p className="text-xl text-gray-400 mb-12">
-              Browse our collection of brand new Samsung smartphones
+              Discover our premium Samsung smartphone collection
             </p>
           </div>
 
@@ -141,6 +125,7 @@ const SamsungProducts = () => {
           )}
         </div>
       </section>
+
       <AdminPhoneButton
         category="Samsung"
         onProductAdded={fetchDatabaseProducts}

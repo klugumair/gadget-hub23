@@ -22,19 +22,9 @@ interface DatabaseProduct {
   additional_notes?: string;
 }
 
-interface ModalProduct {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: "headphone" | "gadget" | "cover";
-  description?: string;
-  additional_notes?: string;
-}
-
 const RedmiProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<DatabaseProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -60,15 +50,7 @@ const RedmiProducts = () => {
   }, []);
 
   const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description,
-      additional_notes: product.additional_notes,
-    });
+    setSelectedProduct(product);
   };
 
   const handleEditProduct = (product: DatabaseProduct) => {
@@ -130,7 +112,7 @@ const RedmiProducts = () => {
           ) : (
             <div className="text-center">
               <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto">
-                <div className="text-8xl mb-6">🔴</div>
+                <div className="text-8xl mb-6">📱</div>
                 <h3 className="text-3xl font-bold text-white mb-4">
                   No Redmi Products Available
                 </h3>

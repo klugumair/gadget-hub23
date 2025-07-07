@@ -22,19 +22,9 @@ interface DatabaseProduct {
   additional_notes?: string;
 }
 
-interface ModalProduct {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: "headphone" | "gadget" | "cover";
-  description?: string;
-  additional_notes?: string;
-}
-
 const SparkXProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<DatabaseProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +33,7 @@ const SparkXProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .or("subcategory.ilike.%spark%,subcategory.ilike.%sparkx%")
+        .or("subcategory.ilike.%spark%,category.ilike.%spark%")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -60,15 +50,7 @@ const SparkXProducts = () => {
   }, []);
 
   const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description,
-      additional_notes: product.additional_notes,
-    });
+    setSelectedProduct(product);
   };
 
   const handleEditProduct = (product: DatabaseProduct) => {
@@ -130,7 +112,7 @@ const SparkXProducts = () => {
           ) : (
             <div className="text-center">
               <div className="glass-morphism rounded-2xl p-12 max-w-md mx-auto">
-                <div className="text-8xl mb-6">✨</div>
+                <div className="text-8xl mb-6">📱</div>
                 <h3 className="text-3xl font-bold text-white mb-4">
                   No Spark X Products Available
                 </h3>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
@@ -19,20 +18,12 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
-}
-
-interface ModalProduct {
-  id: string;
-  title: string;
-  price: number;
-  images: string[];
-  category: "headphone" | "gadget" | "cover";
-  description?: string;
+  additional_notes?: string;
 }
 
 const TecnoProducts = () => {
   const [databaseProducts, setDatabaseProducts] = useState<DatabaseProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ModalProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<DatabaseProduct | null>(null);
   const [editingProduct, setEditingProduct] = useState<DatabaseProduct | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,14 +49,7 @@ const TecnoProducts = () => {
   }, []);
 
   const handleProductClick = (product: DatabaseProduct) => {
-    setSelectedProduct({
-      id: product.id,
-      title: product.name,
-      price: product.price,
-      images: product.images || [],
-      category: "gadget",
-      description: product.description,
-    });
+    setSelectedProduct(product);
   };
 
   const handleEditProduct = (product: DatabaseProduct) => {
