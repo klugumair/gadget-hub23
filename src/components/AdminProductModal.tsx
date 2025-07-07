@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +10,7 @@ interface AdminProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onProductAdded?: () => void | Promise<void>;
-  defaultCategory: 'gadget' | 'headphone' | 'cover';
+  defaultCategory: 'gadget' | 'headphone' | 'cover' | 'charger';
   defaultSubcategory?: string;
 }
 
