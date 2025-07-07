@@ -3,114 +3,39 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import FloatingNavbar from '@/components/FloatingNavbar';
 import HeroSection from '@/components/HeroSection';
-import ProductSection from '@/components/ProductSection';
 import Footer from '@/components/Footer';
 import TawkToWidget from '@/components/TawkToWidget';
+import AdminFloatingButton from '@/components/AdminFloatingButton';
 
 const Index = () => {
-  const phoneProducts = [
-    {
-      title: "iPhone 15 Pro Max",
-      price: "Rs. 4,72,000",
-      image: "📱",
-      category: "Premium Smartphone",
-      link: "/iphone-15-pro-max"
-    },
-    {
-      title: "Samsung Galaxy S24 Ultra",
-      price: "Rs. 5,41,999",
-      image: "📱",
-      category: "Flagship Android",
-      link: "/samsung-galaxy-s24-ultra"
-    },
-    {
-      title: "Google Pixel 8 Pro",
-      price: "Rs. 1,15,000",
-      image: "📱",
-      category: "AI Photography",
-      link: "/google-pixel-8-pro"
-    }
-  ];
-
-  const coverProducts = [
-    {
-      title: "Luxury Leather Case",
-      price: "Rs. 1,500",
-      image: "🛡️",
-      category: "Premium Protection",
-      link: "/luxury-leather-case"
-    },
-    {
-      title: "Carbon Fiber Shield",
-      price: "Rs. 2,000",
-      image: "🛡️",
-      category: "Ultra Durable",
-      link: "/carbon-fiber-shield"
-    },
-    {
-      title: "Crystal Clear Armor",
-      price: "Rs. 3,000",
-      image: "🛡️",
-      category: "Transparent Guard",
-      link: "/crystal-clear-armor"
-    }
-  ];
-
-  const headphoneProducts = [
-    {
-      title: "AirPods Max Gold",
-      price: "Rs. 1,59,999",
-      image: "🎧",
-      category: "Wireless Premium",
-      link: "/airpods-max-gold"
-    },
-    {
-      title: "Sony WH-1000XM5",
-      price: "Rs. 1,16,999",
-      image: "🎧",
-      category: "Noise Canceling",
-      link: "/sony-wh-1000xm5"
-    },
-    {
-      title: "Sennheiser Momentum 4",
-      price: "Rs. 1,01,999",
-      image: "🎧",
-      category: "Audiophile Grade",
-      link: "/sennheiser-momentum-4"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-black">
       <FloatingNavbar />
       <HeroSection />
       
-      <ProductSection
-        id="phones"
-        title="Premium Smartphones"
-        subtitle="Discover the latest flagship devices with cutting-edge technology and unparalleled performance."
-        buttonText="View All Phones"
-        buttonLink="/phones"
-        products={phoneProducts}
-      />
+      {/* Gadgets Section */}
+      <section id="gadgets" className="py-20 relative">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-4">
+              <span className="text-shimmer">Premium Gadgets</span>
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+              Discover our curated collection of premium gadgets and accessories
+            </p>
+            <div className="glass-morphism rounded-2xl p-8 max-w-2xl mx-auto">
+              <h3 className="text-3xl font-bold text-white mb-4">
+                <span className="text-shimmer">Add Your Gadgets</span>
+              </h3>
+              <p className="text-lg text-gray-300 mb-6">
+                Administrators can add new gadget products to showcase in our premium collection
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       
-      <ProductSection
-        id="covers"
-        title="Protective Covers"
-        subtitle="Shield your investment with our luxury cases designed for both protection and style."
-        buttonText="View All Covers"
-        buttonLink="/covers"
-        products={coverProducts}
-      />
-      
-      <ProductSection
-        id="headphones"
-        title="Premium Audio"
-        subtitle="Immerse yourself in crystal-clear sound with our collection of high-end headphones."
-        buttonText="View All Headphones"
-        buttonLink="/headphones"
-        products={headphoneProducts}
-      />
+      <AdminFloatingButton category="gadget" onProductAdded={() => window.location.reload()} />
       
       <Footer />
       <TawkToWidget />

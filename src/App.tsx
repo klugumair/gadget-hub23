@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -32,6 +31,7 @@ import OppoProducts from "./pages/OppoProducts";
 import ItelProducts from "./pages/ItelProducts";
 import HuaweiProducts from "./pages/HuaweiProducts";
 import AdminPhoneSubmissions from "./pages/AdminPhoneSubmissions";
+import Chargers from "./pages/Chargers";
 
 // Used Phone Pages
 import UsedSamsungProducts from "./pages/UsedSamsungProducts";
@@ -65,6 +65,7 @@ function App() {
                 <Route path="/phones" element={<Phones />} />
                 <Route path="/headphones" element={<Headphones />} />
                 <Route path="/covers" element={<Covers />} />
+                <Route path="/chargers" element={<Chargers />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 
