@@ -128,7 +128,8 @@ const Profile = () => {
       }
 
       // Update local state
-      setProfile({ ...profile, avatar_url: publicUrl });
+      const updatedProfile = { ...profile, avatar_url: publicUrl };
+      setProfile(updatedProfile);
       
       toast({
         title: "Avatar updated! ✅",
@@ -136,10 +137,8 @@ const Profile = () => {
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
-      // Force refresh the page to update navigation bar
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      // Reload the page to update navigation bar
+      window.location.reload();
 
     } catch (error: any) {
       console.error('Error uploading avatar:', error);

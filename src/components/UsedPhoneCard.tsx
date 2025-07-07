@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye, Trash2 } from "lucide-react";
@@ -92,21 +91,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       setIsDeleting(true);
       console.log("Attempting to delete phone submission with ID:", id);
       
-      // First, let's check if the record exists
-      const { data: existingRecord, error: checkError } = await supabase
-        .from("phone_submissions")
-        .select("id, model_name")
-        .eq("id", id)
-        .single();
-
-      if (checkError) {
-        console.error("Error checking record existence:", checkError);
-        throw new Error("Could not find the record to delete");
-      }
-
-      console.log("Found record to delete:", existingRecord);
-
-      // Now delete the record
+      // Delete from phone_submissions table (correct table for used phones)
       const { error: deleteError } = await supabase
         .from("phone_submissions")
         .delete()

@@ -1,26 +1,53 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthModal from './AuthModal';
 import { useCart } from '@/contexts/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const FloatingNavbar = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const { user, signOut } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  // Fetch user profile data including avatar
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (user?.id) {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', user.id)
+            .single();
+
+          if (data?.avatar_url) {
+            setUserAvatar(data.avatar_url);
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
+
   const handleLogout = async () => {
     await signOut();
     setIsProfileOpen(false);
+    setIsMobileMenuOpen(false);
     navigate('/');
   };
 
@@ -33,7 +60,6 @@ const FloatingNavbar = () => {
     }
 
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
       const { data, error } = await supabase
         .from('products')
         .select('id, name, price, category, subcategory')
@@ -69,12 +95,17 @@ const FloatingNavbar = () => {
     }
   };
 
+  const handleMobileNavClick = (path: string) => {
+    setIsMobileMenuOpen(false);
+    navigate(path);
+  };
+
   return (
     <>
       <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/20 rounded-3xl shadow-2xl h-20">
         <div className="container mx-auto px-8 py-4 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* Logo and Navigation Links */}
+            {/* Logo and Desktop Navigation Links */}
             <div className="flex items-center space-x-8">
               <Link to="/" className="text-2xl font-bold text-gold-400">
                 GadgetHub
@@ -108,8 +139,8 @@ const FloatingNavbar = () => {
               </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="relative flex-1 max-w-xs mx-8">
+            {/* Search Bar - Hidden on mobile */}
+            <div className="relative flex-1 max-w-xs mx-8 hidden md:block">
               <div className="relative">
                 <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
                 <input
@@ -142,7 +173,7 @@ const FloatingNavbar = () => {
               )}
             </div>
 
-            {/* Right Side - Cart, Profile */}
+            {/* Right Side - Cart, Profile, Mobile Menu */}
             <div className="flex items-center space-x-6">
               <Link 
                 to="/cart" 
@@ -156,15 +187,24 @@ const FloatingNavbar = () => {
                 )}
               </Link>
 
+              {/* Mobile Menu Button - Only visible on mobile */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden p-2 text-gold-400 hover:text-gold-300 transition-colors"
+              >
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+
+              {/* Desktop Profile/Auth - Hidden on mobile */}
               {user ? (
-                <div className="relative">
+                <div className="relative hidden md:block">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                     className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-black hover:from-gold-300 hover:to-gold-500 transition-all duration-300 border-2 border-gold-400/30"
                   >
-                    {user.user_metadata?.avatar_url ? (
+                    {userAvatar ? (
                       <img 
-                        src={user.user_metadata.avatar_url} 
+                        src={userAvatar} 
                         alt="Profile" 
                         className="w-full h-full rounded-full object-cover"
                       />
@@ -202,7 +242,7 @@ const FloatingNavbar = () => {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-3">
+                <div className="hidden md:flex items-center space-x-3">
                   <button 
                     onClick={() => setIsAuthModalOpen(true)}
                     className="text-white hover:text-gold-400 transition-colors font-medium"
@@ -220,6 +260,102 @@ const FloatingNavbar = () => {
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu - Only visible when opened */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 mt-2 mx-4 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl py-4 z-50">
+            <div className="space-y-2">
+              <button
+                onClick={() => handleMobileNavClick('/phones')}
+                className="block w-full text-left px-4 py-2 text-white hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+              >
+                Phones
+              </button>
+              <button
+                onClick={() => handleMobileNavClick('/headphones')}
+                className="block w-full text-left px-4 py-2 text-white hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+              >
+                Headphones
+              </button>
+              <button
+                onClick={() => handleMobileNavClick('/covers')}
+                className="block w-full text-left px-4 py-2 text-white hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+              >
+                Covers
+              </button>
+              <button
+                onClick={() => handleMobileNavClick('/chargers')}
+                className="block w-full text-left px-4 py-2 text-white hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+              >
+                Chargers
+              </button>
+              
+              {user ? (
+                <>
+                  <div className="border-t border-gray-700/50 my-2"></div>
+                  <div className="px-4 py-2">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
+                        {userAvatar ? (
+                          <img 
+                            src={userAvatar} 
+                            alt="Profile" 
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        ) : (
+                          <User size={20} className="text-black" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-gold-400 font-medium text-sm">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleMobileNavClick('/profile')}
+                    className="block w-full text-left px-4 py-2 text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+                  >
+                    Profile Settings
+                  </button>
+                  <button
+                    onClick={() => handleMobileNavClick('/admin/phone-submissions')}
+                    className="block w-full text-left px-4 py-2 text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+                  >
+                    Phone Submissions
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-gray-300 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="border-t border-gray-700/50 my-2"></div>
+                  <button 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-white hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsAuthModalOpen(true);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-gold-400 hover:text-gold-300 hover:bg-gold-400/10 transition-colors font-semibold"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
       {isAuthModalOpen && (
