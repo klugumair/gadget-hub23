@@ -73,16 +73,14 @@ const Index = () => {
                   <DatabaseProductCard
                     key={product.id}
                     id={product.id}
-                    name={product.name}
+                    title={product.name}
                     price={product.price}
                     category={product.category}
                     subcategory={product.subcategory}
                     description={product.description}
-                    additional_notes={product.additional_notes}
-                    images={product.images}
-                    created_at={product.created_at}
-                    updated_at={product.updated_at}
-                    onDelete={fetchGadgetProducts}
+                    images={product.images || []}
+                    onClick={() => {}}
+                    onUpdate={fetchGadgetProducts}
                   />
                 ))}
               </div>
