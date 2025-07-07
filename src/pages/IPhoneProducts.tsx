@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import FloatingNavbar from "@/components/FloatingNavbar";
 import Footer from "@/components/Footer";
@@ -18,6 +19,7 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ModalProduct {
@@ -27,6 +29,7 @@ interface ModalProduct {
   images: string[];
   category: "headphone" | "gadget" | "cover";
   description?: string;
+  additional_notes?: string;
 }
 
 const IPhoneProducts = () => {
@@ -70,6 +73,7 @@ const IPhoneProducts = () => {
       images: product.images || [],
       category: "gadget",
       description: product.description,
+      additional_notes: product.additional_notes,
     });
   };
 

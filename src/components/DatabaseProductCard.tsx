@@ -170,7 +170,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
     <div className="group relative">
       <div className="glass-morphism rounded-2xl overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer border border-gold-400/20 shadow-xl max-w-sm mx-auto">
         <div
-          className="relative h-36 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden"
+          className="relative h-44 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center overflow-hidden"
           onClick={onClick}
         >
           {displayImage ? (
@@ -229,8 +229,8 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
           )}
         </div>
 
-        <div className="p-3 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm">
-          <div className="text-xs text-gold-400 font-semibold uppercase tracking-wider mb-1 flex items-center">
+        <div className="p-4 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-sm">
+          <div className="text-xs text-gold-400 font-semibold uppercase tracking-wider mb-2 flex items-center">
             <span className="w-1 h-1 bg-gold-400 rounded-full mr-1"></span>
             {subcategory || category}
           </div>
@@ -239,7 +239,7 @@ const DatabaseProductCard: React.FC<DatabaseProductCardProps> = ({
             {title}
           </h3>
           
-          <div className="flex items-center justify-between border-t border-gray-700/50 pt-2">
+          <div className="flex items-center justify-between border-t border-gray-700/50 pt-3">
             <div>
               <span className="text-lg font-bold text-transparent bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text">
                 Rs. {price.toLocaleString()}

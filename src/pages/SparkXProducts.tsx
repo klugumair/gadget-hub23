@@ -19,6 +19,7 @@ interface DatabaseProduct {
   category: string;
   subcategory?: string;
   description?: string;
+  additional_notes?: string;
 }
 
 interface ModalProduct {
@@ -28,6 +29,7 @@ interface ModalProduct {
   images: string[];
   category: "headphone" | "gadget" | "cover";
   description?: string;
+  additional_notes?: string;
 }
 
 const SparkXProducts = () => {
@@ -65,6 +67,7 @@ const SparkXProducts = () => {
       images: product.images || [],
       category: "gadget",
       description: product.description,
+      additional_notes: product.additional_notes,
     });
   };
 
