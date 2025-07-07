@@ -1,18 +1,13 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthModal from './AuthModal';
 import { useCart } from '@/contexts/CartContext';
-
-interface NavLink {
-  to: string;
-  label: string;
-}
+import InlineSearchBar from './InlineSearchBar';
 
 const FloatingNavbar = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, signOut } = useAuth();
@@ -66,14 +61,7 @@ const FloatingNavbar = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <button
-                  onClick={() => setIsSearchOpen(true)}
-                  className="p-2 text-gold-400 hover:text-gold-300 transition-colors duration-300 hover:bg-gold-400/10 rounded-full"
-                >
-                  <Search size={20} />
-                </button>
-              </div>
+              <InlineSearchBar />
 
               <Link 
                 to="/cart" 
@@ -134,27 +122,6 @@ const FloatingNavbar = () => {
 
       {isAuthModalOpen && (
         <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-      )}
-
-      {isSearchOpen && (
-        <div className="fixed top-0 left-0 w-full h-screen bg-black/80 backdrop-blur-md z-50 flex items-center justify-center">
-          <div className="bg-black/90 border border-gold-400/30 rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4">
-            <h2 className="text-3xl font-bold text-white mb-6">Search</h2>
-            <input
-              type="text"
-              placeholder="Enter your search query"
-              className="w-full px-4 py-3 bg-gray-800 border border-gold-400/30 text-white rounded-xl focus:outline-none focus:border-gold-400 transition-colors duration-300"
-            />
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setIsSearchOpen(false)}
-                className="px-6 py-3 text-gray-300 hover:text-gold-400 transition-colors duration-300"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </>
   );

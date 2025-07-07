@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -77,33 +78,54 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.name.trim() || !formData.price.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in product name and price",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.log('Starting product submission...');
+      
       // Upload images first
       const imageUrls = await uploadImages();
+      console.log('Images uploaded:', imageUrls);
 
       // Insert product into the database
-      const { error } = await supabase
+      const productData = {
+        name: formData.name.trim(),
+        price: parseFloat(formData.price),
+        category: defaultCategory,
+        subcategory: formData.subcategory.trim() || null,
+        description: formData.description.trim() || null,
+        additional_notes: formData.additional_notes.trim() || null,
+        images: imageUrls
+      };
+
+      console.log('Inserting product data:', productData);
+
+      const { data, error } = await supabase
         .from('products')
-        .insert({
-          name: formData.name,
-          price: parseFloat(formData.price),
-          category: defaultCategory,
-          subcategory: formData.subcategory || null,
-          description: formData.description || null,
-          additional_notes: formData.additional_notes || null,
-          images: imageUrls
-        });
+        .insert(productData)
+        .select();
 
       if (error) {
+        console.error('Database error:', error);
         throw error;
       }
+
+      console.log('Product inserted successfully:', data);
 
       toast({
         title: "Product Added! ✅",
         description: `${formData.name} has been added successfully`,
-        className: "bg-gradient-gold text-black font-semibold",
+        className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
       // Reset form
@@ -138,7 +160,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="glass-morphism rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-black/90 backdrop-blur-md border border-gold-400/30 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">Add New {defaultCategory.charAt(0).toUpperCase() + defaultCategory.slice(1)}</h2>
@@ -274,7 +296,7 @@ const AdminProductModal: React.FC<AdminProductModalProps> = ({
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-gradient-gold hover:bg-gold-500 text-black font-semibold"
+                className="flex-1 bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-black font-semibold"
                 disabled={loading}
               >
                 {loading ? 'Adding...' : 'Add Product'}
