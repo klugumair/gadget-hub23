@@ -15,10 +15,10 @@ const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, sub
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isAdmin, loading } = useAdminCheck();
 
-  const handleModalClose = () => {
+  const handleProductAdded = async () => {
     setIsModalOpen(false);
     if (onProductAdded) {
-      onProductAdded();
+      await onProductAdded();
     }
   };
 
@@ -38,10 +38,10 @@ const AdminFloatingButton: React.FC<AdminFloatingButtonProps> = ({ category, sub
 
       <AdminProductModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
+        onClose={() => setIsModalOpen(false)}
         defaultCategory={category}
         defaultSubcategory={subcategory}
-        onProductAdded={onProductAdded}
+        onProductAdded={handleProductAdded}
       />
     </>
   );

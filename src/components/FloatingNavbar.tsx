@@ -71,37 +71,37 @@ const FloatingNavbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
-        <div className="container mx-auto px-6 py-3">
+      <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/20 rounded-2xl shadow-2xl">
+        <div className="container mx-auto px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo and Navigation Links */}
             <div className="flex items-center space-x-8">
-              <Link to="/" className="text-2xl font-bold text-yellow-400">
+              <Link to="/" className="text-2xl font-bold text-gold-400">
                 GadgetHub
               </Link>
               
               <div className="hidden md:flex items-center space-x-6">
                 <Link 
                   to="/phones" 
-                  className="text-white hover:text-yellow-400 transition-colors font-medium"
+                  className="text-white hover:text-gold-400 transition-colors font-medium"
                 >
                   Phones
                 </Link>
                 <Link 
                   to="/headphones" 
-                  className="text-white hover:text-yellow-400 transition-colors font-medium"
+                  className="text-white hover:text-gold-400 transition-colors font-medium"
                 >
                   Headphones
                 </Link>
                 <Link 
                   to="/covers" 
-                  className="text-white hover:text-yellow-400 transition-colors font-medium"
+                  className="text-white hover:text-gold-400 transition-colors font-medium"
                 >
                   Covers
                 </Link>
                 <Link 
                   to="/chargers" 
-                  className="text-white hover:text-yellow-400 transition-colors font-medium"
+                  className="text-white hover:text-gold-400 transition-colors font-medium"
                 >
                   Chargers
                 </Link>
@@ -109,32 +109,32 @@ const FloatingNavbar = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="relative flex-1 max-w-md mx-8">
+            <div className="relative flex-1 max-w-sm mx-8">
               <div className="relative">
-                <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gold-400" />
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-black/50 border border-gold-400/30 rounded-xl text-white placeholder:text-gray-400 focus:border-gold-400 focus:outline-none text-sm"
                 />
               </div>
 
               {showSearchResults && searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-600 rounded-lg shadow-xl z-50 max-h-80 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl z-50 max-h-80 overflow-y-auto">
                   {searchResults.map((result: any) => (
                     <button
                       key={result.id}
                       onClick={() => handleResultClick(result)}
-                      className="w-full px-4 py-3 text-left hover:bg-gray-800 transition-colors border-b border-gray-700 last:border-b-0"
+                      className="w-full px-4 py-3 text-left hover:bg-gold-400/10 transition-colors border-b border-gray-700/50 last:border-b-0"
                     >
                       <div className="flex justify-between items-center">
                         <div>
                           <p className="text-white font-medium">{result.name}</p>
                           <p className="text-gray-400 text-sm">{result.subcategory || result.category}</p>
                         </div>
-                        <p className="text-yellow-400 font-semibold">Rs. {result.price.toLocaleString()}</p>
+                        <p className="text-gold-400 font-semibold">Rs. {result.price.toLocaleString()}</p>
                       </div>
                     </button>
                   ))}
@@ -144,13 +144,13 @@ const FloatingNavbar = () => {
 
             {/* Right Side - Premium Collection, Cart, Profile */}
             <div className="flex items-center space-x-6">
-              <span className="hidden md:block text-sm text-gray-300">
+              <span className="hidden md:block text-sm text-gray-300 font-medium">
                 Premium<br />Collection
               </span>
               
               <Link 
                 to="/cart" 
-                className="relative p-2 text-white hover:text-yellow-400 transition-colors"
+                className="relative p-2 text-gold-400 hover:text-gold-300 transition-colors"
               >
                 <ShoppingCart size={20} />
                 {cartItemsCount > 0 && (
@@ -164,33 +164,41 @@ const FloatingNavbar = () => {
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="p-2 text-white hover:text-yellow-400 transition-colors"
+                    className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-black hover:from-gold-300 hover:to-gold-500 transition-all duration-300 border-2 border-gold-400/30"
                   >
-                    <User size={20} />
+                    {user.user_metadata?.avatar_url ? (
+                      <img 
+                        src={user.user_metadata.avatar_url} 
+                        alt="Profile" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <User size={20} />
+                    )}
                   </button>
                   
                   {isProfileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-gray-900 border border-gray-600 rounded-lg shadow-xl py-2 z-50">
-                      <div className="px-4 py-2 border-b border-gray-700">
-                        <p className="text-yellow-400 font-medium text-sm">{user.email}</p>
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-700/50">
+                        <p className="text-gold-400 font-medium text-sm">{user.email}</p>
                       </div>
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-gray-300 hover:text-yellow-400 hover:bg-gray-800 transition-colors"
+                        className="block px-4 py-2 text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
                         onClick={() => setIsProfileOpen(false)}
                       >
                         Profile Settings
                       </Link>
                       <Link
                         to="/admin/phone-submissions"
-                        className="block px-4 py-2 text-gray-300 hover:text-yellow-400 hover:bg-gray-800 transition-colors"
+                        className="block px-4 py-2 text-gray-300 hover:text-gold-400 hover:bg-gold-400/10 transition-colors"
                         onClick={() => setIsProfileOpen(false)}
                       >
                         Phone Submissions
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-gray-300 hover:text-red-400 hover:bg-gray-800 transition-colors"
+                        className="w-full text-left px-4 py-2 text-gray-300 hover:text-red-400 hover:bg-red-400/10 transition-colors"
                       >
                         Sign Out
                       </button>
@@ -198,13 +206,16 @@ const FloatingNavbar = () => {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <button className="text-white hover:text-yellow-400 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="text-white hover:text-gold-400 transition-colors font-medium"
+                  >
                     Login
                   </button>
                   <button
                     onClick={() => setIsAuthModalOpen(true)}
-                    className="px-4 py-2 bg-yellow-400 text-black font-semibold rounded-full hover:bg-yellow-500 transition-colors"
+                    className="px-4 py-2 bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-300 hover:to-gold-500 text-black font-semibold rounded-full transition-all duration-300"
                   >
                     Sign Up
                   </button>
