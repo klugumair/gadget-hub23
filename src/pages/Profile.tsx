@@ -79,7 +79,18 @@ const Profile = () => {
 
       console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
 
-      const { error: uploadError } = await supabase.storage
+      // First, remove the old avatar if it exists
+      if (profile?.avatar_url) {
+        const oldPath = profile.avatar_url.split('/').pop();
+        if (oldPath && oldPath !== fileName) {
+          await supabase.storage
+            .from('avatars')
+            .remove([oldPath]);
+        }
+      }
+
+      // Upload the new file
+      const { error: uploadError, data: uploadData } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { 
           upsert: true,
@@ -91,6 +102,9 @@ const Profile = () => {
         throw uploadError;
       }
 
+      console.log('Upload successful:', uploadData);
+
+      // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
@@ -116,14 +130,16 @@ const Profile = () => {
       // Update local state
       setProfile({ ...profile, avatar_url: publicUrl });
       
-      // Force a page reload to update the navigation bar avatar
-      window.location.reload();
-      
       toast({
         title: "Avatar updated! ✅",
         description: "Your profile picture has been updated successfully",
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
+
+      // Force refresh the page to update navigation bar
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
@@ -204,6 +220,10 @@ const Profile = () => {
                         src={profile.avatar_url}
                         alt="Avatar"
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          console.error("Failed to load avatar:", profile.avatar_url);
+                          e.currentTarget.style.display = "none";
+                        }}
                       />
                     ) : (
                       <User size={48} className="text-black" />

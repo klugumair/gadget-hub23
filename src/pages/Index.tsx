@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import TawkToWidget from '@/components/TawkToWidget';
 import AdminFloatingButton from '@/components/AdminFloatingButton';
 import DatabaseProductCard from '@/components/DatabaseProductCard';
+import ProductDetailModal from '@/components/ProductDetailModal';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Product {
@@ -24,6 +25,7 @@ interface Product {
 
 const Index = () => {
   const [gadgetProducts, setGadgetProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,13 +34,19 @@ const Index = () => {
 
   const fetchGadgetProducts = async () => {
     try {
+      console.log("Fetching gadget products...");
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .eq('category', 'gadget')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching products:", error);
+        throw error;
+      }
+      
+      console.log("Fetched gadget products:", data);
       setGadgetProducts(data || []);
     } catch (error) {
       console.error('Error fetching gadget products:', error);
@@ -48,7 +56,12 @@ const Index = () => {
   };
 
   const handleProductAdded = () => {
+    console.log("Product added, refreshing list...");
     fetchGadgetProducts();
+  };
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
   };
 
   return (
@@ -79,7 +92,7 @@ const Index = () => {
                     subcategory={product.subcategory}
                     description={product.description}
                     images={product.images || []}
-                    onClick={() => {}}
+                    onClick={() => handleProductClick(product)}
                     onUpdate={fetchGadgetProducts}
                   />
                 ))}
@@ -99,6 +112,13 @@ const Index = () => {
       </section>
       
       <AdminFloatingButton category="gadget" onProductAdded={handleProductAdded} />
+      
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
       
       <Footer />
       <TawkToWidget />

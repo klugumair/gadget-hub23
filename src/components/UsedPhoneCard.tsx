@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye, Trash2 } from "lucide-react";
@@ -83,7 +84,7 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
 
     if (isDeleting) return;
 
-    if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
       return;
     }
 
@@ -91,14 +92,29 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       setIsDeleting(true);
       console.log("Attempting to delete phone submission with ID:", id);
       
-      const { error } = await supabase
+      // First, let's check if the record exists
+      const { data: existingRecord, error: checkError } = await supabase
+        .from("phone_submissions")
+        .select("id, model_name")
+        .eq("id", id)
+        .single();
+
+      if (checkError) {
+        console.error("Error checking record existence:", checkError);
+        throw new Error("Could not find the record to delete");
+      }
+
+      console.log("Found record to delete:", existingRecord);
+
+      // Now delete the record
+      const { error: deleteError } = await supabase
         .from("phone_submissions")
         .delete()
         .eq("id", id);
 
-      if (error) {
-        console.error("Delete error:", error);
-        throw error;
+      if (deleteError) {
+        console.error("Delete error:", deleteError);
+        throw deleteError;
       }
 
       console.log("Phone submission deleted successfully");
@@ -113,11 +129,11 @@ const UsedPhoneCard: React.FC<UsedPhoneCardProps> = ({
       if (onDelete) {
         onDelete();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting product:", error);
       toast({
         title: "Delete Failed ❌",
-        description: "Failed to delete product. Please try again.",
+        description: error.message || "Failed to delete product. Please try again.",
         variant: "destructive",
       });
     } finally {
