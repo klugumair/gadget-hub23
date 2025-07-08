@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +27,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
+      console.log('Fetching profile for user:', user?.id);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -33,13 +35,16 @@ const Profile = () => {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
         throw error;
       }
 
       if (data) {
+        console.log('Profile found:', data);
         setProfile(data);
         setFullName(data.full_name || '');
       } else {
+        console.log('No profile found, creating new one');
         // Create profile if it doesn't exist
         const newProfile = {
           id: user?.id,
@@ -60,12 +65,13 @@ const Profile = () => {
             variant: "destructive",
           });
         } else {
+          console.log('Profile created successfully');
           setProfile(newProfile);
           setFullName('');
         }
       }
     } catch (error: any) {
-      console.error('Error fetching profile:', error);
+      console.error('Error in fetchProfile:', error);
       toast({
         title: "Error fetching profile",
         description: error.message || "Could not load your profile information",
@@ -79,29 +85,32 @@ const Profile = () => {
   const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
+      console.log('Starting avatar upload...');
       
       if (!event.target.files || event.target.files.length === 0) {
+        console.log('No file selected');
         return;
       }
 
       const file = event.target.files[0];
+      console.log('File selected:', file.name, file.type, file.size);
       
       // Check file type
       if (!file.type.startsWith('image/')) {
         throw new Error('Please select an image file.');
       }
       
-      // Check file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        throw new Error('File size must be less than 2MB.');
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('File size must be less than 5MB.');
       }
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
 
-      console.log('Uploading file:', fileName);
+      console.log('Uploading file as:', fileName);
 
-      // Upload the new file
+      // Upload the file to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
@@ -114,22 +123,24 @@ const Profile = () => {
         throw uploadError;
       }
 
+      console.log('File uploaded successfully');
+
       // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
 
-      const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
-      console.log('New avatar URL:', publicUrlWithCacheBust);
+      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+      console.log('Avatar URL generated:', avatarUrl);
 
       // Update the profile with the new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .upsert({
           id: user?.id,
-          avatar_url: publicUrlWithCacheBust,
           email: user?.email,
           full_name: fullName,
+          avatar_url: avatarUrl,
           updated_at: new Date().toISOString(),
         });
 
@@ -138,8 +149,10 @@ const Profile = () => {
         throw updateError;
       }
 
+      console.log('Profile updated with new avatar');
+
       // Update local state
-      setProfile(prev => ({ ...prev, avatar_url: publicUrlWithCacheBust }));
+      setProfile(prev => ({ ...prev, avatar_url: avatarUrl }));
       
       toast({
         title: "Avatar updated! ✅",
@@ -166,6 +179,7 @@ const Profile = () => {
   const updateProfile = async () => {
     try {
       setUpdating(true);
+      console.log('Updating profile with name:', fullName);
       
       const { error } = await supabase
         .from('profiles')
@@ -181,6 +195,8 @@ const Profile = () => {
         console.error('Update profile error:', error);
         throw error;
       }
+
+      console.log('Profile updated successfully');
 
       // Update local profile state
       setProfile(prev => ({ ...prev, full_name: fullName }));

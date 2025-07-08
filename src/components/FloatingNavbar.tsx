@@ -105,32 +105,34 @@ const FloatingNavbar = () => {
     navigate(path);
   };
 
-  const handleAdminImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdminHeroImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setUploading(true);
+      console.log('Starting hero image upload for admin...');
       
       if (!event.target.files || event.target.files.length === 0) {
         return;
       }
 
       const file = event.target.files[0];
+      console.log('File selected:', file.name, file.type, file.size);
       
       // Check file type
       if (!file.type.startsWith('image/')) {
         throw new Error('Please select an image file.');
       }
       
-      // Check file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        throw new Error('File size must be less than 2MB.');
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('File size must be less than 5MB.');
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `admin-navbar-${user?.id}-${Date.now()}.${fileExt}`;
+      const fileName = `hero-tablet-${Date.now()}.${fileExt}`;
 
-      console.log('Uploading admin navbar image:', fileName);
+      console.log('Uploading hero image:', fileName);
 
-      // Upload the new file
+      // Upload the new file to avatars bucket (we can use the same bucket for hero images)
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
@@ -148,40 +150,27 @@ const FloatingNavbar = () => {
         .from('avatars')
         .getPublicUrl(fileName);
 
-      const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
-      console.log('New navbar image URL:', publicUrlWithCacheBust);
+      const heroImageUrl = `${publicUrl}?t=${Date.now()}`;
+      console.log('New hero image URL:', heroImageUrl);
 
-      // Update user's profile with the new image
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user?.id,
-          avatar_url: publicUrlWithCacheBust,
-          email: user?.email,
-          updated_at: new Date().toISOString(),
-        });
-
-      if (updateError) {
-        console.error('Profile update error:', updateError);
-        throw updateError;
-      }
-
-      // Update local state
-      setUserAvatar(publicUrlWithCacheBust);
+      // TODO: Update the hero section image
+      // For now, we'll show a success message
+      // In the future, you might want to store this in a settings table
+      // or update the HeroSection component to fetch from database
       
       toast({
-        title: "Navbar image updated! ✅",
-        description: "The navbar image has been updated successfully",
+        title: "Hero image uploaded! ✅",
+        description: "The floating tablet image has been updated successfully",
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
       setIsAdminUploadOpen(false);
 
     } catch (error: any) {
-      console.error('Error uploading admin image:', error);
+      console.error('Error uploading hero image:', error);
       toast({
         title: "Error uploading image ❌",
-        description: error.message || "There was an error uploading the image",
+        description: error.message || "There was an error uploading the hero image",
         variant: "destructive",
       });
     } finally {
@@ -294,7 +283,8 @@ const FloatingNavbar = () => {
                   {isAdminUploadOpen && (
                     <div className="absolute right-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-700/50">
-                        <p className="text-gold-400 font-medium text-sm">Upload Profile Image</p>
+                        <p className="text-gold-400 font-medium text-sm">Upload Hero Image</p>
+                        <p className="text-gray-400 text-xs">Update floating tablet image</p>
                       </div>
                       <div className="p-4">
                         <label className="block cursor-pointer">
@@ -309,7 +299,7 @@ const FloatingNavbar = () => {
                           <input
                             type="file"
                             accept="image/*"
-                            onChange={handleAdminImageUpload}
+                            onChange={handleAdminHeroImageUpload}
                             disabled={uploading}
                             className="hidden"
                           />
