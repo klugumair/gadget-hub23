@@ -75,7 +75,6 @@ const Profile = () => {
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
-      const filePath = fileName;
 
       console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
 
@@ -83,16 +82,20 @@ const Profile = () => {
       if (profile?.avatar_url) {
         const oldPath = profile.avatar_url.split('/').pop();
         if (oldPath && oldPath !== fileName) {
-          await supabase.storage
-            .from('avatars')
-            .remove([oldPath]);
+          try {
+            await supabase.storage
+              .from('avatars')
+              .remove([oldPath]);
+          } catch (removeError) {
+            console.log('Could not remove old avatar:', removeError);
+          }
         }
       }
 
       // Upload the new file
       const { error: uploadError, data: uploadData } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { 
+        .upload(fileName, file, { 
           upsert: true,
           contentType: file.type
         });
@@ -104,19 +107,20 @@ const Profile = () => {
 
       console.log('Upload successful:', uploadData);
 
-      // Get the public URL
+      // Get the public URL with cache busting
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
-        .getPublicUrl(filePath);
+        .getPublicUrl(fileName);
 
-      console.log('Public URL:', publicUrl);
+      const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+      console.log('Public URL:', publicUrlWithCacheBust);
 
       // Update the profile with the new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .upsert({
           id: user?.id,
-          avatar_url: publicUrl,
+          avatar_url: publicUrlWithCacheBust,
           email: user?.email,
           full_name: fullName,
           updated_at: new Date().toISOString(),
@@ -127,8 +131,8 @@ const Profile = () => {
         throw updateError;
       }
 
-      // Update local state
-      const updatedProfile = { ...profile, avatar_url: publicUrl };
+      // Update local state immediately
+      const updatedProfile = { ...profile, avatar_url: publicUrlWithCacheBust };
       setProfile(updatedProfile);
       
       toast({
@@ -137,8 +141,11 @@ const Profile = () => {
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
-      // Reload the page to update navigation bar
-      window.location.reload();
+      // Refresh profile data and reload page
+      await fetchProfile();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
 
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
@@ -149,6 +156,10 @@ const Profile = () => {
       });
     } finally {
       setUploading(false);
+      // Reset the file input
+      if (event.target) {
+        event.target.value = '';
+      }
     }
   };
 
