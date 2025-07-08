@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,7 +32,7 @@ const Profile = () => {
         .eq('id', user?.id)
         .maybeSingle();
 
-      if (error) {
+      if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
@@ -42,32 +41,34 @@ const Profile = () => {
         setFullName(data.full_name || '');
       } else {
         // Create profile if it doesn't exist
+        const newProfile = {
+          id: user?.id,
+          email: user?.email,
+          full_name: '',
+          avatar_url: null
+        };
+        
         const { error: insertError } = await supabase
           .from('profiles')
-          .insert({
-            id: user?.id,
-            email: user?.email,
-            full_name: '',
-            avatar_url: null
-          });
+          .insert(newProfile);
         
         if (insertError) {
           console.error('Error creating profile:', insertError);
-        } else {
-          setProfile({
-            id: user?.id,
-            email: user?.email,
-            full_name: '',
-            avatar_url: null
+          toast({
+            title: "Error creating profile",
+            description: insertError.message,
+            variant: "destructive",
           });
+        } else {
+          setProfile(newProfile);
           setFullName('');
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching profile:', error);
       toast({
         title: "Error fetching profile",
-        description: "Could not load your profile information",
+        description: error.message || "Could not load your profile information",
         variant: "destructive",
       });
     } finally {
@@ -80,7 +81,7 @@ const Profile = () => {
       setUploading(true);
       
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
+        return;
       }
 
       const file = event.target.files[0];
@@ -98,24 +99,10 @@ const Profile = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
 
-      console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
-
-      // First, remove the old avatar if it exists
-      if (profile?.avatar_url) {
-        const oldPath = profile.avatar_url.split('/').pop();
-        if (oldPath && oldPath !== fileName) {
-          try {
-            await supabase.storage
-              .from('avatars')
-              .remove([oldPath]);
-          } catch (removeError) {
-            console.log('Could not remove old avatar:', removeError);
-          }
-        }
-      }
+      console.log('Uploading file:', fileName);
 
       // Upload the new file
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
           upsert: true,
@@ -127,15 +114,13 @@ const Profile = () => {
         throw uploadError;
       }
 
-      console.log('Upload successful:', uploadData);
-
-      // Get the public URL with cache busting
+      // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
 
       const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
-      console.log('Public URL:', publicUrlWithCacheBust);
+      console.log('New avatar URL:', publicUrlWithCacheBust);
 
       // Update the profile with the new avatar URL
       const { error: updateError } = await supabase
@@ -149,25 +134,18 @@ const Profile = () => {
         });
 
       if (updateError) {
-        console.error('Update error:', updateError);
+        console.error('Profile update error:', updateError);
         throw updateError;
       }
 
-      // Update local state immediately
-      const updatedProfile = { ...profile, avatar_url: publicUrlWithCacheBust };
-      setProfile(updatedProfile);
+      // Update local state
+      setProfile(prev => ({ ...prev, avatar_url: publicUrlWithCacheBust }));
       
       toast({
         title: "Avatar updated! ✅",
         description: "Your profile picture has been updated successfully",
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
-
-      // Refresh profile data and reload page
-      await fetchProfile();
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
 
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
@@ -197,8 +175,6 @@ const Profile = () => {
           email: user?.email,
           avatar_url: profile?.avatar_url,
           updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'id'
         });
 
       if (error) {
@@ -207,18 +183,13 @@ const Profile = () => {
       }
 
       // Update local profile state
-      setProfile(prev => prev ? { ...prev, full_name: fullName } : null);
+      setProfile(prev => ({ ...prev, full_name: fullName }));
 
       toast({
         title: "Profile updated! ✅",
         description: "Your profile has been updated successfully",
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
-
-      // Refresh the page to update navbar
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
 
     } catch (error: any) {
       console.error('Error updating profile:', error);
@@ -264,6 +235,7 @@ const Profile = () => {
                         src={profile.avatar_url}
                         alt="Avatar"
                         className="w-full h-full object-cover"
+                        key={profile.avatar_url}
                         onError={(e) => {
                           console.error("Failed to load avatar:", profile.avatar_url);
                           e.currentTarget.style.display = "none";

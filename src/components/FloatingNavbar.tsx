@@ -35,7 +35,7 @@ const FloatingNavbar = () => {
             .from('profiles')
             .select('avatar_url')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           if (data?.avatar_url) {
             setUserAvatar(data.avatar_url);
@@ -110,7 +110,7 @@ const FloatingNavbar = () => {
       setUploading(true);
       
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
+        return;
       }
 
       const file = event.target.files[0];
@@ -128,6 +128,8 @@ const FloatingNavbar = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `admin-navbar-${user?.id}-${Date.now()}.${fileExt}`;
 
+      console.log('Uploading admin navbar image:', fileName);
+
       // Upload the new file
       const { error: uploadError } = await supabase.storage
         .from('avatars')
@@ -141,17 +143,15 @@ const FloatingNavbar = () => {
         throw uploadError;
       }
 
-      // Get the public URL with cache busting
+      // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
 
       const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+      console.log('New navbar image URL:', publicUrlWithCacheBust);
 
-      // Update user avatar state
-      setUserAvatar(publicUrlWithCacheBust);
-      
-      // Update profile with new image
+      // Update user's profile with the new image
       const { error: updateError } = await supabase
         .from('profiles')
         .upsert({
@@ -162,9 +162,12 @@ const FloatingNavbar = () => {
         });
 
       if (updateError) {
-        console.error('Update error:', updateError);
+        console.error('Profile update error:', updateError);
         throw updateError;
       }
+
+      // Update local state
+      setUserAvatar(publicUrlWithCacheBust);
       
       toast({
         title: "Navbar image updated! ✅",
@@ -291,7 +294,7 @@ const FloatingNavbar = () => {
                   {isAdminUploadOpen && (
                     <div className="absolute right-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-700/50">
-                        <p className="text-gold-400 font-medium text-sm">Upload Navbar Image</p>
+                        <p className="text-gold-400 font-medium text-sm">Upload Profile Image</p>
                       </div>
                       <div className="p-4">
                         <label className="block cursor-pointer">
@@ -337,6 +340,7 @@ const FloatingNavbar = () => {
                         src={userAvatar} 
                         alt="Profile" 
                         className="w-full h-full rounded-full object-cover"
+                        key={userAvatar}
                       />
                     ) : (
                       <User size={24} />
