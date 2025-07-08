@@ -31,15 +31,37 @@ const Profile = () => {
         .from('profiles')
         .select('*')
         .eq('id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         throw error;
       }
 
       if (data) {
         setProfile(data);
         setFullName(data.full_name || '');
+      } else {
+        // Create profile if it doesn't exist
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user?.id,
+            email: user?.email,
+            full_name: '',
+            avatar_url: null
+          });
+        
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+        } else {
+          setProfile({
+            id: user?.id,
+            email: user?.email,
+            full_name: '',
+            avatar_url: null
+          });
+          setFullName('');
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -175,9 +197,17 @@ const Profile = () => {
           email: user?.email,
           avatar_url: profile?.avatar_url,
           updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'id'
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Update profile error:', error);
+        throw error;
+      }
+
+      // Update local profile state
+      setProfile(prev => prev ? { ...prev, full_name: fullName } : null);
 
       toast({
         title: "Profile updated! ✅",
@@ -185,12 +215,16 @@ const Profile = () => {
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
-      fetchProfile();
+      // Refresh the page to update navbar
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast({
-        title: "Error updating profile",
-        description: error.message,
+        title: "Error updating profile ❌",
+        description: error.message || "Could not update your profile",
         variant: "destructive",
       });
     } finally {

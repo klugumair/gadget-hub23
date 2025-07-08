@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import AuthModal from './AuthModal';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
+import { isAdmin } from '@/utils/adminUtils';
+import { useToast } from '@/hooks/use-toast';
 
 const FloatingNavbar = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -15,8 +17,11 @@ const FloatingNavbar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [isAdminUploadOpen, setIsAdminUploadOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { user, signOut } = useAuth();
   const { cartItems } = useCart();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -100,6 +105,91 @@ const FloatingNavbar = () => {
     navigate(path);
   };
 
+  const handleAdminImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('You must select an image to upload.');
+      }
+
+      const file = event.target.files[0];
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Please select an image file.');
+      }
+      
+      // Check file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        throw new Error('File size must be less than 2MB.');
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `admin-navbar-${user?.id}-${Date.now()}.${fileExt}`;
+
+      // Upload the new file
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { 
+          upsert: true,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+
+      // Get the public URL with cache busting
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const publicUrlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+
+      // Update user avatar state
+      setUserAvatar(publicUrlWithCacheBust);
+      
+      // Update profile with new image
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user?.id,
+          avatar_url: publicUrlWithCacheBust,
+          email: user?.email,
+          updated_at: new Date().toISOString(),
+        });
+
+      if (updateError) {
+        console.error('Update error:', updateError);
+        throw updateError;
+      }
+      
+      toast({
+        title: "Navbar image updated! ✅",
+        description: "The navbar image has been updated successfully",
+        className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
+      });
+
+      setIsAdminUploadOpen(false);
+
+    } catch (error: any) {
+      console.error('Error uploading admin image:', error);
+      toast({
+        title: "Error uploading image ❌",
+        description: error.message || "There was an error uploading the image",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      // Reset the file input
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   return (
     <>
       <nav className="fixed top-4 left-4 right-4 z-50 bg-black/80 backdrop-blur-lg border border-gold-400/20 rounded-3xl shadow-2xl h-20">
@@ -173,7 +263,7 @@ const FloatingNavbar = () => {
               )}
             </div>
 
-            {/* Right Side - Cart, Profile, Mobile Menu */}
+            {/* Right Side - Cart, Admin Upload, Profile, Mobile Menu */}
             <div className="flex items-center space-x-6">
               <Link 
                 to="/cart" 
@@ -186,6 +276,46 @@ const FloatingNavbar = () => {
                   </span>
                 )}
               </Link>
+
+              {/* Admin Upload Button - Only visible for admins */}
+              {user && isAdmin(user.email) && (
+                <div className="relative hidden md:block">
+                  <button
+                    onClick={() => setIsAdminUploadOpen(!isAdminUploadOpen)}
+                    className="p-2 text-gold-400 hover:text-gold-300 transition-colors bg-black/50 rounded-full border border-gold-400/30"
+                    disabled={uploading}
+                  >
+                    <Plus size={16} />
+                  </button>
+                  
+                  {isAdminUploadOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-lg border border-gold-400/30 rounded-xl shadow-2xl py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-700/50">
+                        <p className="text-gold-400 font-medium text-sm">Upload Navbar Image</p>
+                      </div>
+                      <div className="p-4">
+                        <label className="block cursor-pointer">
+                          <div className="flex items-center justify-center p-3 border-2 border-dashed border-gold-400/30 rounded-lg hover:border-gold-400/50 transition-colors">
+                            <div className="text-center">
+                              <Plus size={20} className="mx-auto text-gold-400 mb-2" />
+                              <p className="text-sm text-gray-300">
+                                {uploading ? 'Uploading...' : 'Choose Image'}
+                              </p>
+                            </div>
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAdminImageUpload}
+                            disabled={uploading}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Mobile Menu Button - Only visible on mobile */}
               <button
