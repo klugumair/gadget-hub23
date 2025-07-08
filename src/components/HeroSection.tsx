@@ -1,7 +1,30 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const HeroSection = () => {
+  const [heroImageUrl, setHeroImageUrl] = useState('/lovable-uploads/f2353fe1-f956-4d32-8129-7eefb75528d2.png');
+
+  useEffect(() => {
+    fetchHeroImage();
+  }, []);
+
+  const fetchHeroImage = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'hero_image_url')
+        .maybeSingle();
+
+      if (data?.value) {
+        setHeroImageUrl(data.value);
+      }
+    } catch (error) {
+      console.error('Error fetching hero image:', error);
+    }
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-dark opacity-90"></div>
@@ -33,9 +56,15 @@ const HeroSection = () => {
                 <div className="bg-black p-6 rounded-2xl">
                   <div className="w-full h-80 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center relative">
                     <img 
-                      src="/lovable-uploads/f2353fe1-f956-4d32-8129-7eefb75528d2.png" 
-                      alt="Gadget Hub Logo"
+                      src={heroImageUrl} 
+                      alt="Gadget Hub Hero"
                       className="max-w-full max-h-full object-contain"
+                      key={heroImageUrl}
+                      onError={(e) => {
+                        console.error("Failed to load hero image:", heroImageUrl);
+                        // Fallback to default image
+                        e.currentTarget.src = '/lovable-uploads/f2353fe1-f956-4d32-8129-7eefb75528d2.png';
+                      }}
                     />
                   </div>
                 </div>

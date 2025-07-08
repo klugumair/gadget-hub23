@@ -132,7 +132,7 @@ const FloatingNavbar = () => {
 
       console.log('Uploading hero image:', fileName);
 
-      // Upload the new file to avatars bucket (we can use the same bucket for hero images)
+      // Upload the new file to avatars bucket
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
@@ -153,18 +153,34 @@ const FloatingNavbar = () => {
       const heroImageUrl = `${publicUrl}?t=${Date.now()}`;
       console.log('New hero image URL:', heroImageUrl);
 
-      // TODO: Update the hero section image
-      // For now, we'll show a success message
-      // In the future, you might want to store this in a settings table
-      // or update the HeroSection component to fetch from database
+      // Update the settings table with the new hero image URL
+      const { error: updateError } = await supabase
+        .from('settings')
+        .upsert({
+          key: 'hero_image_url',
+          value: heroImageUrl,
+          updated_at: new Date().toISOString()
+        });
+
+      if (updateError) {
+        console.error('Settings update error:', updateError);
+        throw updateError;
+      }
+
+      console.log('Hero image setting updated successfully');
       
       toast({
-        title: "Hero image uploaded! ✅",
-        description: "The floating tablet image has been updated successfully",
+        title: "Hero image updated! ✅",
+        description: "The floating tablet image has been updated successfully. Refresh the page to see changes.",
         className: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold",
       });
 
       setIsAdminUploadOpen(false);
+
+      // Refresh the page to show the new hero image
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
 
     } catch (error: any) {
       console.error('Error uploading hero image:', error);
