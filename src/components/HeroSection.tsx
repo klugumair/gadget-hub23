@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,13 +11,15 @@ const HeroSection = () => {
   const fetchHeroImage = async () => {
     try {
       const { data, error } = await supabase
-        .from('settings')
-        .select('value')
-        .eq('key', 'hero_image_url')
-        .maybeSingle();
+        .rpc('get_setting', { setting_key: 'hero_image_url' });
 
-      if (data?.value) {
-        setHeroImageUrl(data.value);
+      if (error) {
+        console.error('Error fetching hero image:', error);
+        return;
+      }
+
+      if (data) {
+        setHeroImageUrl(data);
       }
     } catch (error) {
       console.error('Error fetching hero image:', error);

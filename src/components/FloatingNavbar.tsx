@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Search, Menu, X, Plus } from 'lucide-react';
@@ -153,13 +152,11 @@ const FloatingNavbar = () => {
       const heroImageUrl = `${publicUrl}?t=${Date.now()}`;
       console.log('New hero image URL:', heroImageUrl);
 
-      // Update the settings table with the new hero image URL
+      // Update the settings table with the new hero image URL using RPC
       const { error: updateError } = await supabase
-        .from('settings')
-        .upsert({
-          key: 'hero_image_url',
-          value: heroImageUrl,
-          updated_at: new Date().toISOString()
+        .rpc('update_setting', { 
+          setting_key: 'hero_image_url', 
+          setting_value: heroImageUrl 
         });
 
       if (updateError) {
